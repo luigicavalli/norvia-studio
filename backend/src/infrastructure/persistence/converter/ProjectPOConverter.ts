@@ -29,6 +29,7 @@ import { ProjectPO } from "../po/ProjectPO.js";
  * ----------
  */
 import type { IPersistenceConverter } from "./IPersistenceConverter.js";
+import { Budget } from "../../../domain/model/Budget.js";
 
 
 export class ProjectPOConverter implements IPersistenceConverter<ProjectPO, Project> {
@@ -49,13 +50,16 @@ export class ProjectPOConverter implements IPersistenceConverter<ProjectPO, Proj
 
         projectBO.status          = po.status as ProjectStatuses;
         projectBO.priority        = po.priority as ProjectPriorities;
+
+        projectBO.budget = new Budget();
         projectBO.budget.amount   = po.budget_amount;
         projectBO.budget.currency = po.budget_currency as Currencies;
-        projectBO.startDate       = po.start_date;
-        projectBO.dueDate         = po.due_date;
-        projectBO.completedAt     = po.completed_at ?? null;
-        projectBO.createdAt       = po.created_at;
-        projectBO.updatedAt       = po.updated_at;
+
+        projectBO.startDate   = po.start_date;
+        projectBO.dueDate     = po.due_date;
+        projectBO.completedAt = po.completed_at ?? null;
+        projectBO.createdAt   = po.created_at;
+        projectBO.updatedAt   = po.updated_at;
 
         return projectBO;
 

@@ -32,6 +32,7 @@ import { ProjectDTO } from "../dto/ProjectDTO.js";
  * ----------
  */
 import type { IDTOConverter } from "./IDTOConverter.js";
+import { Budget } from "../../domain/model/Budget.js";
 
 
 export class ProjectDTOConverter implements IDTOConverter<ProjectDTO, Project> {
@@ -73,13 +74,16 @@ export class ProjectDTOConverter implements IDTOConverter<ProjectDTO, Project> {
 
         projectBO.status          = dto.status as ProjectStatuses;
         projectBO.priority        = dto.priority as ProjectPriorities;
+
+        projectBO.budget = new Budget();
         projectBO.budget.amount   = dto.budgetAmount;
         projectBO.budget.currency = dto.budgetCurrency as Currencies;
-        projectBO.startDate       = dto.startDate;
-        projectBO.dueDate         = dto.dueDate;
-        projectBO.completedAt     = dto.completedAt ?? null;
-        projectBO.createdAt       = dto.createdAt;
-        projectBO.updatedAt       = dto.updatedAt;
+
+        projectBO.startDate   = dto.startDate;
+        projectBO.dueDate     = dto.dueDate;
+        projectBO.completedAt = dto.completedAt ?? null;
+        projectBO.createdAt   = dto.createdAt;
+        projectBO.updatedAt   = dto.updatedAt;
 
         return projectBO;
 
