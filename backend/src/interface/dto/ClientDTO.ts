@@ -1,47 +1,34 @@
-/**
- * --------
- * ENTITIES
- * --------
- */
-import type { Company, ICompany } from "./Company.js";
+import type { CompanyDTO, ICompanyDTO } from "./CompanyDTO.js";
 
-/**
- * ----
- * ENUM
- * ----
- */
-import type { ClientStatuses } from "../enums/ClientStatuses.js";
+export interface IClientDTO {
 
-
-export interface IClient {
-
-    id:        string;
-    firstName: string;
-    lastName:  string;
-    email:     string;
-    phone:     number;
-    company:   ICompany;
-    vatNumber: string;
-    status:    ClientStatuses;
-    notes:     string;
-    createdAt: Date;
-    updatedAt: Date;
+    id:         string;
+    firstName:  string;
+    lastName:   string;
+    email:      string;
+    phone:      number;
+    company:    ICompanyDTO;
+    vatNumber:  string;
+    status:     string;
+    notes:      string;
+    createdAt:  Date;
+    updatedAt:  Date;
 
 };
 
-export class Client implements IClient {
+export class ClientDTO implements IClientDTO {
 
-    private _id:        string;
-    private _firstName: string;
-    private _lastName:  string;
-    private _email:     string;
-    private _phone:     number;
-    private _company:   Company;
-    private _vatNumber: string;
-    private _status:    ClientStatuses;
-    private _notes:     string;
-    private _createdAt: Date;
-    private _updatedAt: Date;
+    private _id:         string;
+    private _firstName:  string;
+    private _lastName:   string;
+    private _email:      string;
+    private _phone:      number;
+    private _company:    CompanyDTO;
+    private _vatNumber:  string;
+    private _status:     string;
+    private _notes:      string;
+    private _createdAt:  Date;
+    private _updatedAt:  Date;
 
     /* ***************
      * Getter & Setter
@@ -87,11 +74,11 @@ export class Client implements IClient {
         this._phone = value;
     }
 
-    public get company(): Company {
+    public get company(): CompanyDTO {
         return this._company;
     }
 
-    public set company(value: Company) {
+    public set company(value: CompanyDTO) {
         this._company = value;
     }
 
@@ -103,11 +90,11 @@ export class Client implements IClient {
         this._vatNumber = value;
     }
 
-    public get status(): ClientStatuses {
+    public get status(): string {
         return this._status;
     }
 
-    public set status(value: ClientStatuses) {
+    public set status(value: string) {
         this._status = value;
     }
 
@@ -133,6 +120,10 @@ export class Client implements IClient {
 
     public set updatedAt(value: Date) {
         this._updatedAt = value;
+    }
+
+    public get fullName(): string {
+        return `${this._firstName} ${this._lastName}`;
     }
 
 };
