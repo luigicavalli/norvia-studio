@@ -1,4 +1,4 @@
-import type { Company } from "../model/Company.js";
+import type { Company }     from "../model/Company.js";
 import type { IRepository } from "./IRepository.js";
 
 export interface CompanyRepository extends IRepository<string, Company> {

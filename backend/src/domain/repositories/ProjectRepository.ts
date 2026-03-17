@@ -1,6 +1,6 @@
+import type { Project }         from "../model/Project.js";
+import type { IRepository }     from "./IRepository.js";
 import type { ProjectStatuses } from "../enums/ProjectStatuses.js";
-import type { Project }     from "../model/Project.js";
-import type { IRepository } from "./IRepository.js";
 
 export interface ProjectRepository extends IRepository<string, Project> {
 
