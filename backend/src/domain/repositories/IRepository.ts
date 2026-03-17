@@ -23,12 +23,12 @@ export interface IRepository<I, E> {
      * Create/update a new entity
      * @param entity the entity to be saved
      */
-    save(entity: E): Promise<void>;
+    save(entity: E): Promise<E>;
 
     /**
      * Delete an entity by ID
      * @param id the entity ID
      */
-    delete(id: I): Promise<void>;
+    delete(id: I): Promise<boolean>;
 
 };
