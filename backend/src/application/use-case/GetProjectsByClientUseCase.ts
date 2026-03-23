@@ -5,8 +5,8 @@ import type { ProjectRepository } from "../../domain/repositories/ProjectReposit
 
 interface GetProjectsByClientInput {
     clientId: string;
-    limit?:   number;
-    offset?:  number;
+    limit?:   number | undefined;
+    offset?:  number | undefined;
 }
 
 export class GetProjectsByClientUseCase implements IUseCase<GetProjectsByClientInput, Project[]> {

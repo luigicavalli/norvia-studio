@@ -4,8 +4,8 @@ import type { CompanyRepository } from "../../domain/repositories/CompanyReposit
 
 
 interface GetAllCompaniesInput {
-    limit?:  number,
-    offset?: number
+    limit?:  number | undefined,
+    offset?: number | undefined
 }
 
 export class GetAllCompaniesUseCase implements IUseCase<GetAllCompaniesInput, Company[]> {

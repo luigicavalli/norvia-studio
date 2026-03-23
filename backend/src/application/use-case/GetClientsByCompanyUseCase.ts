@@ -5,8 +5,8 @@ import type { ClientRepository } from "../../domain/repositories/ClientRepositor
 
 interface GetClientsByCompanyInput {
     companyId: string;
-    limit?:    number;
-    offset?:   number;
+    limit?:    number | undefined;
+    offset?:   number | undefined;
 }
 
 export class GetClientsByCompanyUseCase implements IUseCase<GetClientsByCompanyInput, Client[]> {

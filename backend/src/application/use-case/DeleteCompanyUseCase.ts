@@ -1,13 +1,14 @@
 import { AppErrors }              from "../error/AppError.js";
+import type { Company }           from "../../domain/model/Company.js";
 import type { IUseCase }          from "./IUseCase.js";
 import type { CompanyRepository } from "../../domain/repositories/CompanyRepository.js";
 
 
-export class DeleteCompanyUseCase implements IUseCase<string, boolean> {
+export class DeleteCompanyUseCase implements IUseCase<Company, boolean> {
 
     public constructor(private readonly companyRepository: CompanyRepository) {}
 
-    public async execute(input: string): Promise<boolean> {
+    public async execute(input: Company): Promise<boolean> {
         
         const success: boolean = await this.companyRepository.delete(input);
 
