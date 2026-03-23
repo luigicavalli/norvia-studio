@@ -122,7 +122,7 @@ export class ClientPO implements IClientPO {
         this._updated_at = value;
     }
 
-    public flatten(): any {
+    public flatten(): unknown {
         return {
             id:         this.id,
             first_name: this.first_name,

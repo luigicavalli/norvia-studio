@@ -3,5 +3,6 @@ export enum ProjectStatuses {
     ACTIVE    = 'ACTIVE',
     ON_HOLD   = 'ON_HOLD',
     COMPLETED = 'COMPLETED',
-    CANCELLED = 'CANCELLED'
+    CANCELLED = 'CANCELLED',
+    UNKNOWN   = 'UNKNOWN'
 };

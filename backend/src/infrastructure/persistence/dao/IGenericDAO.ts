@@ -11,7 +11,7 @@ export interface IGenericDAO<I, PO> {
      * @param id the entity ID
      * @returns the PO entity
      */
-    findById(id: I): Promise<PO>;
+    findById(id: I): Promise<PO | null>;
 
     /**
      * Retrieve all PO entities

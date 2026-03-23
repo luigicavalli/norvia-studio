@@ -10,6 +10,6 @@ export interface ProjectRepository extends IRepository<string, Project> {
 
     updateStatus(projectId: string, status: ProjectStatuses): Promise<Project>;
 
-    findByNameAndClient(projectName: string, clientId: string): Promise<Project | null>;
+    findByNameAndClient(projectName: string, clientId: string, limit?: number, offset?: number): Promise<Project[]>;
 
 }

@@ -26,9 +26,9 @@ export interface IRepository<I, E> {
     save(entity: E): Promise<E>;
 
     /**
-     * Delete an entity by ID
-     * @param id the entity ID
+     * Delete an entity
+     * @param E the entity to be deleted
      */
-    delete(id: I): Promise<boolean>;
+    delete(entity: E): Promise<boolean>;
 
 };

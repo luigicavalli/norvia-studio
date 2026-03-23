@@ -142,7 +142,7 @@ export class ProjectPO implements IProjectPO {
         this._updated_at = value;
     }
 
-    public flatten(): any {
+    public flatten(): unknown {
         return {
             id:              this.id,
             name:            this.name,
