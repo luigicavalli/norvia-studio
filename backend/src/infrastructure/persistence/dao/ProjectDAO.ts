@@ -7,7 +7,7 @@ export interface ProjectDAO extends IGenericDAO<string, ProjectPO | ProjectPOFla
 
     findAll(limit?: number, offset?: number): Promise<ProjectPOFlat[]>;
 
-    findById(id: string): Promise<ProjectPOFlat>;
+    findById(id: string): Promise<ProjectPOFlat | null>;
 
     findByClient(clientId: string, limit?: number, offset?: number): Promise<ProjectPOFlat[]>;
 
