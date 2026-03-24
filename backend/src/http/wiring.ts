@@ -26,6 +26,7 @@ import { GetAllCompaniesUseCase }     from "../application/use-case/GetAllCompan
 import { GetProjectsByClientUseCase } from "../application/use-case/GetProjectsByClientUseCase.js";
 import { UpdateProjectStatusUseCase } from "../application/use-case/UpdateProjectStatusUseCase.js";
 import { GetClientsByCompanyUseCase } from "../application/use-case/GetClientsByCompanyUseCase.js";
+import { configDotenv } from "dotenv";
 
 // =========================================================================
 //                          COMPLETE BOOTSTRAP
@@ -35,10 +36,12 @@ import { GetClientsByCompanyUseCase } from "../application/use-case/GetClientsBy
 //                        POSTGRES POOL SINGLETON
 // =========================================================================
 
+configDotenv({ path: '../.env', quiet: true });
+
 const POSTGRES_USER:       string | undefined = process.env.POSTGRES_USER;
 const POSTGRES_PASSWORD:   string | undefined = process.env.POSTGRES_PASSWORD;
-const POSTGRES_DB_NAME:    string | undefined = process.env.DB_NAME;
-const POSTGRES_PORT:       number | undefined = Number(process.env.PORT);
+const POSTGRES_DB_NAME:    string | undefined = process.env.POSTGRES_DB_NAME;
+const POSTGRES_PORT:       number | undefined = Number(process.env.POSTGRES_PORT);
 
 if (!POSTGRES_USER)     throw new Error('Missing Postgres username');
 if (!POSTGRES_PASSWORD) throw new Error('Missing Postgres password');
