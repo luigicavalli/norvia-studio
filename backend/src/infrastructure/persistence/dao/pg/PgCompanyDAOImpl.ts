@@ -1,6 +1,6 @@
-import type { Pool } from "pg";
+import type { Pool }       from "pg";
+import { CompanyPO }       from "../../po/CompanyPO.js";
 import type { CompanyDAO } from "../CompanyDAO.js";
-import { CompanyPO } from "../../po/CompanyPO.js";
 
 
 export class PgCompanyDAOImpl implements CompanyDAO {

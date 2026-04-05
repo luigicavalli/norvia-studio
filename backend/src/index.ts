@@ -1,7 +1,8 @@
-import express, { type NextFunction, type Request, type Response } from 'express';
+import { errorHandler }    from './http/errorHandler.js';
+import { configDotenv }    from 'dotenv';
 import { createApiRouter } from './http/routes.js';
-import { errorHandler } from './http/errorHandler.js';
-import { configDotenv } from 'dotenv';
+
+import express, { type NextFunction, type Request, type Response } from 'express';
 
 
 configDotenv({ path: '../.env', quiet: true });

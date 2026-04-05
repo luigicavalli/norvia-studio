@@ -1,7 +1,9 @@
-import { wiring }                                                 from "./wiring.js";
-import type { ClientDTO }                                         from "../interface/dto/ClientDTO.js";
-import type { ProjectDTO }                                        from "../interface/dto/ProjectDTO.js";
-import type { CompanyDTO }                                        from "../interface/dto/CompanyDTO.js";
+import { wiring }          from "./wiring.js";
+import { AppResponse }     from "../application/response/AppResponse.js";
+import type { ClientDTO }  from "../interface/dto/ClientDTO.js";
+import type { ProjectDTO } from "../interface/dto/ProjectDTO.js";
+import type { CompanyDTO } from "../interface/dto/CompanyDTO.js";
+
 import { Router, type NextFunction, type Request, type Response } from "express";
 
 
@@ -17,9 +19,11 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { limit, offset } = req.query as any;
 
-            const projects = await projectCtrl.getAll(limit, offset);
+            const projects: ProjectDTO[] = await projectCtrl.getAll(limit, offset);
 
-            res.status(200).json(projects);
+            const hasMore: boolean = projects.length === limit;
+
+            AppResponse.paginated(res, projects, hasMore);
         } catch (error) {
             next(error);
         }
@@ -31,9 +35,9 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { id } = req.params as any;
 
-            const project = await projectCtrl.getById(id);
+            const project: ProjectDTO | null = await projectCtrl.getById(id);
 
-            res.status(200).json(project);
+            AppResponse.ok(res, project);
         } catch (error) {
             next(error);
         }
@@ -48,9 +52,11 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { limit, offset } = req.query as any;
 
-            const projects = await projectCtrl.getByClient(id, limit, offset);
+            const projects: ProjectDTO[] = await projectCtrl.getByClient(id, limit, offset);
 
-            res.status(200).json(projects);
+            const hasMore: boolean = projects.length === limit;
+
+            AppResponse.paginated(res, projects, hasMore);
         } catch (error) {
             next(error);
         }
@@ -59,11 +65,11 @@ export const createApiRouter = (deps = wiring) => {
     // Projects - Create a new Project
     router.post('/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as ProjectDTO;
+            const body: ProjectDTO = req.body as ProjectDTO;
 
-            await projectCtrl.save(body)
+            await projectCtrl.save(body);
 
-            res.status(200).json({ message: 'Project created' });
+            AppResponse.created(res, null, 'Project created');
         } catch (error) {
             next(error);
         }
@@ -72,24 +78,24 @@ export const createApiRouter = (deps = wiring) => {
     // Projects - Update an existing Project
     router.put('/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as ProjectDTO;
+            const body: ProjectDTO = req.body as ProjectDTO;
 
             await projectCtrl.save(body);
 
-            res.status(200).json({ message: 'Project edited' });
+            AppResponse.created(res, null, 'Project edited');
         } catch (error) {
             next(error);
         }
     });
 
     // Projects - Delete an existing Project
-    router.put('/projects', async (req: Request, res: Response, next: NextFunction) => {
+    router.delete('/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as ProjectDTO;
+            const body: ProjectDTO = req.body as ProjectDTO;
 
             await projectCtrl.delete(body);
 
-            res.status(200).json({ message: 'Project deleted' });
+            AppResponse.noContent(res);
         } catch (error) {
             next(error);
         }
@@ -101,9 +107,11 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { limit, offset } = req.query as any;
 
-            const companies = await companyCtrl.getAll(limit, offset);
+            const companies: CompanyDTO[] = await companyCtrl.getAll(limit, offset);
 
-            res.status(200).json(companies);
+            const hasMore: boolean = companies.length === limit;
+
+            AppResponse.paginated(res, companies, hasMore);
         } catch (error) {
             next(error);
         }
@@ -115,9 +123,9 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { id } = req.params as any;
 
-            const company = await companyCtrl.getById(id);
+            const company: CompanyDTO | null = await companyCtrl.getById(id);
 
-            res.status(200).json(company);
+            AppResponse.ok(res, company);
         } catch (error) {
             next(error);
         }
@@ -126,11 +134,11 @@ export const createApiRouter = (deps = wiring) => {
     // Companies - Create a new Company
     router.post('/companies', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as CompanyDTO;
+            const body: CompanyDTO = req.body as CompanyDTO;
 
             await companyCtrl.save(body);
 
-            res.status(200).json({ message: 'Company created' });
+            AppResponse.created(res, null, 'Company created');
         } catch (error) {
             next(error);
         }
@@ -139,11 +147,11 @@ export const createApiRouter = (deps = wiring) => {
     // Companies - Update an existing Company
     router.put('/companies', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as CompanyDTO;
+            const body: CompanyDTO = req.body as CompanyDTO;
 
             await companyCtrl.save(body);
 
-            res.status(200).json({ message: 'Company edited' });
+            AppResponse.ok(res, null, 'Company edited');
         } catch (error) {
             next(error);
         }
@@ -152,11 +160,11 @@ export const createApiRouter = (deps = wiring) => {
     // Companies - Delete an existing Company
     router.delete('/companies', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as CompanyDTO;
+            const body: CompanyDTO = req.body as CompanyDTO;
 
-            await companyCtrl.save(body);
+            await companyCtrl.delete(body);
 
-            res.status(200).json({ message: 'Company deleted' });
+            AppResponse.noContent(res);
         } catch (error) {
             next(error);
         }
@@ -168,9 +176,11 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { limit, offset } = req.query as any;
 
-            const clients = await clientCtrl.getAll(limit, offset);
+            const clients: ClientDTO[] = await clientCtrl.getAll(limit, offset);
 
-            res.status(200).json(clients);
+            const hasMore: boolean = clients.length === limit;
+
+            AppResponse.paginated(res, clients, hasMore);
         } catch (error) {
             next(error);
         }
@@ -185,9 +195,11 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { limit, offset } = req.query as any;
 
-            const clients = await clientCtrl.getByCompany(id, limit, offset);
+            const clients: ClientDTO[] = await clientCtrl.getByCompany(id, limit, offset);
 
-            res.status(200).json(clients);
+            const hasMore: boolean = clients.length === limit;
+
+            AppResponse.paginated(res, clients, hasMore);
         } catch (error) {
             next(error);
         }
@@ -199,9 +211,9 @@ export const createApiRouter = (deps = wiring) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { id } = req.params as any;
 
-            const client = await clientCtrl.getById(id);
+            const client: ClientDTO | null = await clientCtrl.getById(id);
 
-            res.status(200).json(client);
+            AppResponse.ok(res, client);
         } catch (error) {
             next(error);
         }
@@ -210,11 +222,11 @@ export const createApiRouter = (deps = wiring) => {
     // Clients - Create a new Client
     router.post('/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as ClientDTO;
+            const body: ClientDTO = req.body as ClientDTO;
 
             await clientCtrl.save(body);
 
-            res.status(200).json({ message: 'Client created' });
+            AppResponse.created(res, null, 'Client created');
         } catch (error) {
             next(error);
         }
@@ -223,11 +235,11 @@ export const createApiRouter = (deps = wiring) => {
     // Clients - Update an existing Client
     router.put('/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as ClientDTO;
+            const body: ClientDTO = req.body as ClientDTO;
 
             await clientCtrl.save(body);
 
-            res.status(200).json({ message: 'Client edited' });
+            AppResponse.created(res, null, 'Client edited');
         } catch (error) {
             next(error);
         }
@@ -236,11 +248,11 @@ export const createApiRouter = (deps = wiring) => {
     // Clients - Delete an existing Client
     router.delete('/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body = req.body as ClientDTO;
+            const body: ClientDTO = req.body as ClientDTO;
 
             await clientCtrl.delete(body);
 
-            res.status(200).json({ message: 'Client deleted' });
+            AppResponse.noContent(res);
         } catch (error) {
             next(error);
         }
