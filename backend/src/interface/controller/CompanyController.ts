@@ -1,4 +1,4 @@
-import type { Company }                from "../../domain/model/Company.js";
+import { Company }                     from "../../domain/model/Company.js";
 import type { CompanyDTO }             from "../dto/CompanyDTO.js";
 import type { IDTOConverter }          from "../converter/IDTOConverter.js";
 import { CompanyDTOConverter }         from "../converter/CompanyDTOConverter.js";
@@ -67,9 +67,10 @@ export class CompanyController {
 
     };
 
-    public async delete(companyDTO: CompanyDTO): Promise<void> {
+    public async delete(id: string): Promise<void> {
 
-        const company: Company = this.converter.toBO(companyDTO);
+        const company = new Company();
+        company.id = id;
 
         await this.deleteCompanyUC.execute(company);
 

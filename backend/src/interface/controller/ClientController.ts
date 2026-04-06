@@ -1,4 +1,4 @@
-import type { Client }                     from "../../domain/model/Client.js";
+import { Client }                          from "../../domain/model/Client.js";
 import type { ClientDTO }                  from "../dto/ClientDTO.js";
 import { ClientDTOConverter }              from "../converter/ClientDTOConverter.js";
 import type { IDTOConverter }              from "../converter/IDTOConverter.js";
@@ -39,11 +39,11 @@ export class ClientController {
 
     };
 
-    public async getByCompany(companyId: string, limit?: number, offset?: number): Promise<ClientDTO[]> {
+    public async getByCompany(workspaceId: string, companyId: string, limit?: number, offset?: number): Promise<ClientDTO[]> {
 
         const clientDTOs: ClientDTO[] = [];
 
-        const records: Client[] = await this.getClientsByCompanyUC.execute({ companyId, limit, offset });
+        const records: Client[] = await this.getClientsByCompanyUC.execute({ workspaceId, companyId, limit, offset });
         
         records.forEach((record: Client) => {
             const clientDTO: ClientDTO = this.converter.toDTO(record);
@@ -85,9 +85,10 @@ export class ClientController {
 
     };
 
-    public async delete(clientDTO: ClientDTO): Promise<void> {
+    public async delete(id: string): Promise<void> {
 
-        const client: Client = this.converter.toBO(clientDTO);
+        const client = new Client();
+        client.id = id;
 
         await this.deleteClientUC.execute(client);
 
