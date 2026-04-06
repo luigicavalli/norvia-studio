@@ -1,19 +1,104 @@
-import { wiring }          from "./wiring.js";
-import { AppResponse }     from "../application/response/AppResponse.js";
-import type { ClientDTO }  from "../interface/dto/ClientDTO.js";
-import type { ProjectDTO } from "../interface/dto/ProjectDTO.js";
-import type { CompanyDTO } from "../interface/dto/CompanyDTO.js";
+import { wiring }             from "./wiring.js";
+import { AppResponse }        from "../application/response/AppResponse.js";
+import type { ClientDTO }     from "../interface/dto/ClientDTO.js";
+import type { ProjectDTO }    from "../interface/dto/ProjectDTO.js";
+import type { CompanyDTO }    from "../interface/dto/CompanyDTO.js";
+import type { WorkspaceDTO }  from "../interface/dto/WorkspaceDTO.js";
 
 import { Router, type NextFunction, type Request, type Response } from "express";
 
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { projectCtrl, companyCtrl, clientCtrl } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl } = deps;
 
     const router = Router();
 
-    // Projects - Get all projects
+    // -------------------------------------------------------------------------
+    // Workspaces
+    // -------------------------------------------------------------------------
+
+    // Get all workspaces
+    router.get('/workspaces', async (_req: Request, res: Response, next: NextFunction) => {
+        try {
+            const workspaces: WorkspaceDTO[] = await workspaceCtrl.getAll();
+
+            AppResponse.ok(res, workspaces);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get a workspace by its slug  — must be before /:id to avoid route conflict
+    router.get('/workspaces/slug/:slug', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const slug = req.params["slug"] as string;
+
+            const workspace: WorkspaceDTO = await workspaceCtrl.getBySlug(slug);
+
+            AppResponse.ok(res, workspace);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get a workspace by its ID
+    router.get('/workspaces/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            const workspace: WorkspaceDTO = await workspaceCtrl.getById(id);
+
+            AppResponse.ok(res, workspace);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Create a new Workspace
+    router.post('/workspaces', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: WorkspaceDTO = req.body as WorkspaceDTO;
+
+            await workspaceCtrl.save(body);
+
+            AppResponse.created(res, null, 'Workspace created');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update an existing Workspace
+    router.put('/workspaces/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: WorkspaceDTO = req.body as WorkspaceDTO;
+
+            await workspaceCtrl.update(body);
+
+            AppResponse.ok(res, null, 'Workspace edited');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Delete an existing Workspace
+    router.delete('/workspaces/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            await workspaceCtrl.delete(id);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Projects
+    // -------------------------------------------------------------------------
+
+    // Get all projects
     router.get('/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,30 +114,15 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Projects - Get a project by its ID
-    router.get('/projects/:id', async (req: Request, res: Response, next: NextFunction) => {
+    // Get all projects belonging to a client  — GET /clients/:id/projects?workspaceId=xxx
+    router.get('/clients/:id/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { id } = req.params as any;
-
-            const project: ProjectDTO | null = await projectCtrl.getById(id);
-
-            AppResponse.ok(res, project);
-        } catch (error) {
-            next(error);
-        }
-    });
-
-    // Projects - Get all projects related to a Client ID
-    router.get('/projects/client/:id', async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { id } = req.params as any;
+            const clientId = req.params["id"] as string;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { limit, offset } = req.query as any;
+            const { workspaceId, limit, offset } = req.query as any;
 
-            const projects: ProjectDTO[] = await projectCtrl.getByClient(id, limit, offset);
+            const projects: ProjectDTO[] = await projectCtrl.getByClient(workspaceId, clientId, limit, offset);
 
             const hasMore: boolean = projects.length === limit;
 
@@ -62,7 +132,20 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Projects - Create a new Project
+    // Get a project by its ID
+    router.get('/projects/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            const project: ProjectDTO | null = await projectCtrl.getById(id);
+
+            AppResponse.ok(res, project);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Create a new Project
     router.post('/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const body: ProjectDTO = req.body as ProjectDTO;
@@ -75,25 +158,25 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Projects - Update an existing Project
-    router.put('/projects', async (req: Request, res: Response, next: NextFunction) => {
+    // Update an existing Project
+    router.put('/projects/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const body: ProjectDTO = req.body as ProjectDTO;
 
-            await projectCtrl.save(body);
+            await projectCtrl.update(body);
 
-            AppResponse.created(res, null, 'Project edited');
+            AppResponse.ok(res, null, 'Project edited');
         } catch (error) {
             next(error);
         }
     });
 
-    // Projects - Delete an existing Project
-    router.delete('/projects', async (req: Request, res: Response, next: NextFunction) => {
+    // Delete an existing Project
+    router.delete('/projects/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body: ProjectDTO = req.body as ProjectDTO;
+            const id = req.params["id"] as string;
 
-            await projectCtrl.delete(body);
+            await projectCtrl.delete(id);
 
             AppResponse.noContent(res);
         } catch (error) {
@@ -101,7 +184,11 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Companies - Get all companies
+    // -------------------------------------------------------------------------
+    // Companies
+    // -------------------------------------------------------------------------
+
+    // Get all companies
     router.get('/companies', async (req: Request, res: Response, next: NextFunction) => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,11 +204,28 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Companies - Get a Company by its ID
+    // Get all clients belonging to a company  — GET /companies/:id/clients?workspaceId=xxx
+    router.get('/companies/:id/clients', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const companyId = req.params["id"] as string;
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const clients: ClientDTO[] = await clientCtrl.getByCompany(workspaceId, companyId, limit, offset);
+
+            const hasMore: boolean = clients.length === limit;
+
+            AppResponse.paginated(res, clients, hasMore);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get a Company by its ID
     router.get('/companies/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { id } = req.params as any;
+            const id = req.params["id"] as string;
 
             const company: CompanyDTO | null = await companyCtrl.getById(id);
 
@@ -131,7 +235,7 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Companies - Create a new Company
+    // Create a new Company
     router.post('/companies', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const body: CompanyDTO = req.body as CompanyDTO;
@@ -144,12 +248,12 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Companies - Update an existing Company
-    router.put('/companies', async (req: Request, res: Response, next: NextFunction) => {
+    // Update an existing Company
+    router.put('/companies/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const body: CompanyDTO = req.body as CompanyDTO;
 
-            await companyCtrl.save(body);
+            await companyCtrl.update(body);
 
             AppResponse.ok(res, null, 'Company edited');
         } catch (error) {
@@ -157,12 +261,12 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Companies - Delete an existing Company
-    router.delete('/companies', async (req: Request, res: Response, next: NextFunction) => {
+    // Delete an existing Company
+    router.delete('/companies/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body: CompanyDTO = req.body as CompanyDTO;
+            const id = req.params["id"] as string;
 
-            await companyCtrl.delete(body);
+            await companyCtrl.delete(id);
 
             AppResponse.noContent(res);
         } catch (error) {
@@ -170,7 +274,11 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Clients - Get all clients
+    // -------------------------------------------------------------------------
+    // Clients
+    // -------------------------------------------------------------------------
+
+    // Get all clients
     router.get('/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -186,30 +294,10 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Clients - Get all clients related to a Company
-    router.get('/clients/company/:id', async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { id } = req.params as any;
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { limit, offset } = req.query as any;
-
-            const clients: ClientDTO[] = await clientCtrl.getByCompany(id, limit, offset);
-
-            const hasMore: boolean = clients.length === limit;
-
-            AppResponse.paginated(res, clients, hasMore);
-        } catch (error) {
-            next(error);
-        }
-    });
-
-    // Clients - Get a client by its ID
+    // Get a client by its ID
     router.get('/clients/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { id } = req.params as any;
+            const id = req.params["id"] as string;
 
             const client: ClientDTO | null = await clientCtrl.getById(id);
 
@@ -219,7 +307,7 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Clients - Create a new Client
+    // Create a new Client
     router.post('/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const body: ClientDTO = req.body as ClientDTO;
@@ -232,25 +320,25 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
-    // Clients - Update an existing Client
-    router.put('/clients', async (req: Request, res: Response, next: NextFunction) => {
+    // Update an existing Client
+    router.put('/clients/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
             const body: ClientDTO = req.body as ClientDTO;
 
-            await clientCtrl.save(body);
+            await clientCtrl.update(body);
 
-            AppResponse.created(res, null, 'Client edited');
+            AppResponse.ok(res, null, 'Client edited');
         } catch (error) {
             next(error);
         }
     });
 
-    // Clients - Delete an existing Client
-    router.delete('/clients', async (req: Request, res: Response, next: NextFunction) => {
+    // Delete an existing Client
+    router.delete('/clients/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const body: ClientDTO = req.body as ClientDTO;
+            const id = req.params["id"] as string;
 
-            await clientCtrl.delete(body);
+            await clientCtrl.delete(id);
 
             AppResponse.noContent(res);
         } catch (error) {
