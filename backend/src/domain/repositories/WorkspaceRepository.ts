@@ -9,4 +9,6 @@ export interface WorkspaceRepository extends IRepository<string, Workspace> {
 
     findBySlug(slug: string): Promise<Workspace | null>;
 
+    findByUserId(userId: string): Promise<Workspace[]>;
+
 };

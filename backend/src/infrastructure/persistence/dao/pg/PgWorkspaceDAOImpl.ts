@@ -48,6 +48,19 @@ export class PgWorkspaceDAOImpl implements WorkspaceDAO {
 
     };
 
+    public async findByUserId(userId: string): Promise<WorkspacePO[]> {
+
+        const { rows } = await this.pool.query(
+            `SELECT w.* FROM workspaces w
+             JOIN team_members tm ON tm.workspace_id = w.id
+             WHERE tm.user_id = $1`,
+            [ userId ]
+        );
+
+        return rows;
+
+    };
+
     public async save(entity: WorkspacePO): Promise<WorkspacePO> {
 
         const { rows } = await this.pool.query(
