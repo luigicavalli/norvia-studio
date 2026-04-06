@@ -22,9 +22,9 @@ import { Project } from "../../domain/model/Project.js";
  * DTO
  * ---
  */
-import { ClientDTO }  from "../dto/ClientDTO.js";
-import { CompanyDTO } from "../dto/CompanyDTO.js";
-import { ProjectDTO } from "../dto/ProjectDTO.js";
+import type { ClientDTO }  from "../dto/ClientDTO.js";
+import type { CompanyDTO } from "../dto/CompanyDTO.js";
+import type { ProjectDTO } from "../dto/ProjectDTO.js";
 
 /**
  * ----------
@@ -81,7 +81,7 @@ export class ProjectDTOConverter implements IDTOConverter<ProjectDTO, Project> {
 
         projectBO.startDate   = dto.startDate;
         projectBO.dueDate     = dto.dueDate;
-        projectBO.completedAt = dto.completedAt ?? null;
+        projectBO.completedAt = dto.completedAt ?? undefined;
         projectBO.createdAt   = dto.createdAt;
         projectBO.updatedAt   = dto.updatedAt;
 
@@ -91,20 +91,20 @@ export class ProjectDTOConverter implements IDTOConverter<ProjectDTO, Project> {
 
     toDTO(bo: Project): ProjectDTO {
 
-        const projectDTO: ProjectDTO = new ProjectDTO();
+        const projectDTO: ProjectDTO = {} as ProjectDTO;
 
         projectDTO.id          = bo.id;
         projectDTO.name        = bo.name;
         projectDTO.description = bo.description;
 
-        projectDTO.client = new ClientDTO();
+        projectDTO.client = {} as ClientDTO;
         projectDTO.client.id        = bo.client.id;
         projectDTO.client.firstName = bo.client.firstName;
         projectDTO.client.lastName  = bo.client.lastName;
         projectDTO.client.email     = bo.client.email;
         projectDTO.client.phone     = bo.client.phone;
 
-        projectDTO.client.company = new CompanyDTO();
+        projectDTO.client.company = {} as CompanyDTO;
         projectDTO.client.company.id        = bo.client.company.id;
         projectDTO.client.company.name      = bo.client.company.name;
         projectDTO.client.company.taxCode   = bo.client.company.taxCode;

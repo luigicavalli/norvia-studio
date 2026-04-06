@@ -10,7 +10,7 @@ import { Company } from "../../domain/model/Company.js";
  * DTO
  * ---
  */
-import { CompanyDTO } from "../dto/CompanyDTO.js";
+import type { CompanyDTO } from "../dto/CompanyDTO.js";
 
 /**
  * ----------
@@ -45,7 +45,7 @@ export class CompanyDTOConverter implements IDTOConverter<CompanyDTO, Company> {
 
     toDTO(bo: Company): CompanyDTO {
 
-        const companyDTO: CompanyDTO = new CompanyDTO();
+        const companyDTO: CompanyDTO = {} as CompanyDTO;
 
         companyDTO.id        = bo.id;
         companyDTO.name      = bo.name;

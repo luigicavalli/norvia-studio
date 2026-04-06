@@ -14,12 +14,6 @@ export interface IRepository<I, E> {
     findById(id: I): Promise<E | null>;
 
     /**
-     * Retrieve all entities
-     * @returns a list of all entities
-     */
-    findAll(): Promise<E[]>;
-
-    /**
      * Create/update a new entity
      * @param entity the entity to be saved
      */

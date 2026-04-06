@@ -3,7 +3,8 @@
  * ENTITIES
  * --------
  */
-import type { Company, ICompany } from "./Company.js";
+import type { ICompany, Company }     from "./Company.js";
+import type { IWorkspace, Workspace } from "./Workspace.js";
 
 /**
  * ----
@@ -15,33 +16,35 @@ import type { ClientStatuses } from "../enums/ClientStatuses.js";
 
 export interface IClient {
 
-    id:        string;
-    firstName: string;
-    lastName:  string;
-    email:     string;
-    phone:     number;
-    company:   ICompany;
-    vatNumber: string;
-    status:    ClientStatuses;
-    notes:     string;
-    createdAt: Date;
-    updatedAt: Date;
+    id:          string;
+    workspace:   IWorkspace;
+    firstName:   string;
+    lastName:    string;
+    email:       string;
+    phone:       number;
+    company:     ICompany;
+    vatNumber:   string;
+    status:      ClientStatuses;
+    notes:       string;
+    createdAt:   Date;
+    updatedAt:   Date;
 
 };
 
 export class Client implements IClient {
 
-    private _id:        string;
-    private _firstName: string;
-    private _lastName:  string;
-    private _email:     string;
-    private _phone:     number;
-    private _company:   Company;
-    private _vatNumber: string;
-    private _status:    ClientStatuses;
-    private _notes:     string;
-    private _createdAt: Date;
-    private _updatedAt: Date;
+    private _id:          string;
+    private _workspace:   Workspace;
+    private _firstName:   string;
+    private _lastName:    string;
+    private _email:       string;
+    private _phone:       number;
+    private _company:     Company;
+    private _vatNumber:   string;
+    private _status:      ClientStatuses;
+    private _notes:       string;
+    private _createdAt:   Date;
+    private _updatedAt:   Date;
 
     /* ***************
      * Getter & Setter
@@ -53,6 +56,14 @@ export class Client implements IClient {
 
     public set id(value: string) {
         this._id = value;
+    }
+
+    public get workspace(): Workspace {
+        return this._workspace;
+    }
+
+    public set workspace(value: Workspace) {
+        this._workspace = value;
     }
 
     public get firstName(): string {

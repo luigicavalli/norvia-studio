@@ -1,5 +1,4 @@
 import { type Pool }            from 'pg';
-import { ProjectPOFlat }        from '../../po/ProjectPOFlat.js';
 import { type ProjectPO }       from '../../po/ProjectPO.js';
 import { type ProjectDAO }      from '../ProjectDAO.js';
 import { type ProjectStatuses } from '../../../../domain/enums/ProjectStatuses.js';
@@ -9,139 +8,126 @@ export class PgProjectDAOImpl implements ProjectDAO {
 
     public constructor(private readonly pool: Pool) {}
 
-    public async findById(id: string): Promise<ProjectPOFlat | null> {
+    public async findAll(limit?: number, offset?: number): Promise<ProjectPO[]> {
 
-        let project: ProjectPOFlat = new ProjectPOFlat();
+        const params: unknown[] = [];
+        let query = 'SELECT * FROM projects ORDER BY created_at DESC';
+
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
+
+        const { rows } = await this.pool.query(query, params);
+
+        return rows;
+
+    };
+
+    public async findByWorkspace(workspaceId: string, limit?: number, offset?: number): Promise<ProjectPO[]> {
+
+        const params: unknown[] = [ workspaceId ];
+        let query = 'SELECT * FROM projects WHERE workspace_id = $1 ORDER BY created_at DESC';
+
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
+
+        const { rows } = await this.pool.query(query, params);
+
+        return rows;
+
+    };
+
+    public async findById(id: string): Promise<ProjectPO | null> {
 
         const { rows } = await this.pool.query(
-            'SELECT * FROM projects_flat WHERE project_id = $1',
+            'SELECT * FROM projects WHERE id = $1',
             [ id ]
         );
 
-        project = rows[0];
-
-        return project ?? null;
+        return rows[0] ?? null;
 
     };
 
-    public async findAll(limit?: number, offset?: number): Promise<ProjectPOFlat[]> {
+    public async findByClient(workspaceId: string, clientId: string, limit?: number, offset?: number): Promise<ProjectPO[]> {
 
-        let projects: ProjectPOFlat[] = [];
+        const params: unknown[] = [ workspaceId, clientId ];
+        let query = 'SELECT * FROM projects WHERE workspace_id = $1 AND client_id = $2 ORDER BY created_at DESC';
 
-        const params: unknown[] = [];
-
-        let query = 'SELECT * FROM projects_flat';
-
-        if (limit  !== undefined) params.push(limit);  query += ` LIMIT $${params.length}`;
-        if (offset !== undefined) params.push(offset); query += ` OFFSET $${params.length}`;
-
-        const { rows } = await this.pool.query(query);
-
-        projects = rows;
-
-        return projects;
-
-    };
-
-    public async findByClient(clientId: string, limit?: number, offset?: number): Promise<ProjectPOFlat[]> {
-
-        let projects: ProjectPOFlat[] = [];
-
-        const params: unknown[] = [ clientId ];
-
-        let query = 'SELECT * FROM projects_flat WHERE project_client_id = $1';
-
-        if (limit  !== undefined) params.push(limit);  query += ` LIMIT $${params.length}`;
-        if (offset !== undefined) params.push(offset); query += ` OFFSET $${params.length}`;
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
 
         const { rows } = await this.pool.query(query, params);
 
-        if (rows.length > 0) {
-            projects = rows;
-        }
-
-        return projects;
+        return rows;
 
     };
 
-    public async findByNameAndClient(name: string, clientId: string, limit?: number, offset?: number): Promise<ProjectPOFlat[]> {
+    public async findByNameAndClient(workspaceId: string, projectName: string, clientId: string, limit?: number, offset?: number): Promise<ProjectPO[]> {
 
-        let projects: ProjectPOFlat[] = [];
+        const params: unknown[] = [ workspaceId, projectName, clientId ];
+        let query = 'SELECT * FROM projects WHERE workspace_id = $1 AND name = $2 AND client_id = $3';
 
-        const params: unknown[] = [ name, clientId ];
-
-        let query = 'SELECT * FROM projects_flat WHERE project_name = $1 AND project_client_id = $2';
-
-        if (limit  !== undefined) params.push(limit);  query += ` LIMIT $${params.length}`;
-        if (offset !== undefined) params.push(offset); query += ` OFFSET $${params.length}`;
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
 
         const { rows } = await this.pool.query(query, params);
 
-        projects = rows;
-
-        return projects;
+        return rows;
 
     };
 
-    public async save(project: ProjectPO): Promise<ProjectPO> {
-
-        const projectFlattened = project.flatten() as ProjectPO;
-
-        const values = [
-            projectFlattened.name,
-            projectFlattened.description,
-            projectFlattened.client,
-            projectFlattened.status,
-            projectFlattened.priority,
-            projectFlattened.budget_amount,
-            projectFlattened.budget_currency,
-            projectFlattened.start_date,
-            projectFlattened.due_date,
-            projectFlattened.completed_at
-        ];
+    public async save(entity: ProjectPO): Promise<ProjectPO> {
 
         const { rows } = await this.pool.query(
             `INSERT INTO projects (
-                name, description, client,
-                status, priority, budget_amount,
-                budget_currency, start_date, due_date,
-                completed_at
+                id, workspace_id, name, description, client_id,
+                quote_id, status, priority, budget_amount, budget_currency,
+                start_date, due_date, completed_at, created_at, updated_at
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
-            ) RETURNING *`, values
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
+            ) ON CONFLICT (id) DO UPDATE SET
+                name            = EXCLUDED.name,
+                description     = EXCLUDED.description,
+                client_id       = EXCLUDED.client_id,
+                quote_id        = EXCLUDED.quote_id,
+                status          = EXCLUDED.status,
+                priority        = EXCLUDED.priority,
+                budget_amount   = EXCLUDED.budget_amount,
+                budget_currency = EXCLUDED.budget_currency,
+                start_date      = EXCLUDED.start_date,
+                due_date        = EXCLUDED.due_date,
+                completed_at    = EXCLUDED.completed_at,
+                updated_at      = EXCLUDED.updated_at
+            RETURNING *`,
+            [
+                entity.id, entity.workspace_id, entity.name, entity.description, entity.client_id,
+                entity.quote_id, entity.status, entity.priority, entity.budget_amount, entity.budget_currency,
+                entity.start_date, entity.due_date, entity.completed_at, entity.created_at, entity.updated_at
+            ]
         );
 
-        const createdProject: ProjectPO = rows[0];
-
-        return createdProject;
+        return rows[0];
 
     };
 
     public async updateStatus(projectId: string, status: ProjectStatuses): Promise<ProjectPO> {
-        
-        const { rows } = await this.pool.query(`
-            UPDATE projects SET status = $1 WHERE id = $2 RETURNING *`,
+
+        const { rows } = await this.pool.query(
+            'UPDATE projects SET status = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
             [ status, projectId ]
         );
 
-        const project: ProjectPO = rows[0];
-
-        return project;
+        return rows[0];
 
     };
 
-    public async delete(project: ProjectPO): Promise<boolean> {
-        
-        const { rows } = await this.pool.query(
-            `DELETE FROM projects WHERE id = $1 RETURNING id`,
-            [ project.id ]
+    public async delete(entity: ProjectPO): Promise<boolean> {
+
+        const { rowCount } = await this.pool.query(
+            'DELETE FROM projects WHERE id = $1',
+            [ entity.id ]
         );
 
-        if (rows[0] !== project.id) {
-            return false;
-        }
-
-        return true;
+        return (rowCount ?? 0) > 0;
 
     };
 

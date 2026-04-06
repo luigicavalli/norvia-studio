@@ -1,5 +1,4 @@
 import { type Pool }      from 'pg';
-import { ClientPOFlat }   from '../../po/ClientPOFlat.js';
 import { type ClientPO }  from '../../po/ClientPO.js';
 import { type ClientDAO } from '../ClientDAO.js';
 
@@ -8,106 +7,120 @@ export class PgClientDAOImpl implements ClientDAO {
 
     public constructor(private readonly pool: Pool) {}
 
-    public async findById(id: string): Promise<ClientPOFlat | null> {
+    public async findAll(limit?: number, offset?: number): Promise<ClientPO[]> {
 
-        let client: ClientPOFlat = new ClientPOFlat();
+        const params: unknown[] = [];
+        let query = 'SELECT * FROM clients ORDER BY created_at DESC';
+
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
+
+        const { rows } = await this.pool.query(query, params);
+
+        return rows;
+
+    };
+
+    public async findByWorkspace(workspaceId: string, limit?: number, offset?: number): Promise<ClientPO[]> {
+
+        const params: unknown[] = [ workspaceId ];
+        let query = 'SELECT * FROM clients WHERE workspace_id = $1 ORDER BY created_at DESC';
+
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
+
+        const { rows } = await this.pool.query(query, params);
+
+        return rows;
+
+    };
+
+    public async findById(id: string): Promise<ClientPO | null> {
 
         const { rows } = await this.pool.query(
-            'SELECT * FROM clients_flat WHERE client_id = $1',
+            'SELECT * FROM clients WHERE id = $1',
             [ id ]
         );
 
-        client = rows[0];
-
-        return client ?? null;
+        return rows[0] ?? null;
 
     };
 
-    public async findAll(): Promise<ClientPOFlat[]> {
-
-        let clients: ClientPOFlat[] = [];
-
-        const { rows } = await this.pool.query('SELECT * FROM clients_flat');
-
-        clients = rows;
-
-        return clients ?? [];
-
-    };
-
-    public async findByEmail(email: string): Promise<ClientPOFlat | null> {
-
-        let client: ClientPOFlat = new ClientPOFlat();
+    public async findByIds(ids: string[]): Promise<ClientPO[]> {
 
         const { rows } = await this.pool.query(
-            'SELECT * FROM clients_flat WHERE client_email = $1',
-            [ email ]
+            'SELECT * FROM clients WHERE id = ANY($1)',
+            [ ids ]
         );
 
-        client = rows[0];
-
-        return client ?? null;
+        return rows;
 
     };
 
-    public async findByCompany(companyId: string): Promise<ClientPOFlat[]> {
+    public async findByCompany(workspaceId: string, companyId: string, limit?: number, offset?: number): Promise<ClientPO[]> {
 
-        let clients: ClientPOFlat[] = [];
+        const params: unknown[] = [ workspaceId, companyId ];
+        let query = 'SELECT * FROM clients WHERE workspace_id = $1 AND company_id = $2 ORDER BY created_at DESC';
+
+        if (limit  !== undefined) { params.push(limit);  query += ` LIMIT $${params.length}`;  }
+        if (offset !== undefined) { params.push(offset); query += ` OFFSET $${params.length}`; }
+
+        const { rows } = await this.pool.query(query, params);
+
+        return rows;
+
+    };
+
+    public async findByEmail(workspaceId: string, email: string): Promise<ClientPO | null> {
 
         const { rows } = await this.pool.query(
-            'SELECT * FROM clients_flat WHERE client_company_id = $1',
-            [ companyId ]
+            'SELECT * FROM clients WHERE workspace_id = $1 AND email = $2',
+            [ workspaceId, email ]
         );
 
-        clients = rows;
-
-        return clients;
+        return rows[0] ?? null;
 
     };
 
-    public async save(client: ClientPO): Promise<ClientPO> {
-
-        let clientFlattened = client.flatten() as ClientPO;
-
-        const values = [
-            clientFlattened.first_name,
-            clientFlattened.last_name,
-            clientFlattened.email,
-            clientFlattened.phone,
-            clientFlattened.company,
-            clientFlattened.vat_number,
-            clientFlattened.status,
-            clientFlattened.notes
-        ];
+    public async save(entity: ClientPO): Promise<ClientPO> {
 
         const { rows } = await this.pool.query(
             `INSERT INTO clients (
-                first_name, last_name, email,
-                phone, company, vat_number,
-                status, notes
+                id, workspace_id, first_name, last_name, email,
+                phone, company_id, vat_number, status, notes,
+                created_at, updated_at
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7, $8
-            ) RETURNING *`, values
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+            ) ON CONFLICT (id) DO UPDATE SET
+                first_name = EXCLUDED.first_name,
+                last_name  = EXCLUDED.last_name,
+                email      = EXCLUDED.email,
+                phone      = EXCLUDED.phone,
+                company_id = EXCLUDED.company_id,
+                vat_number = EXCLUDED.vat_number,
+                status     = EXCLUDED.status,
+                notes      = EXCLUDED.notes,
+                updated_at = EXCLUDED.updated_at
+            RETURNING *`,
+            [
+                entity.id, entity.workspace_id, entity.first_name, entity.last_name, entity.email,
+                entity.phone, entity.company_id, entity.vat_number, entity.status, entity.notes,
+                entity.created_at, entity.updated_at
+            ]
         );
 
-        const createdClient: ClientPO = rows[0];
-
-        return createdClient;
+        return rows[0];
 
     };
 
-    public async delete(client: ClientPO): Promise<boolean> {
-        
-        const { rows } = await this.pool.query(
-            `DELETE FROM clients WHERE id = $1 RETURNING id`,
-            [ client.id ]
+    public async delete(entity: ClientPO): Promise<boolean> {
+
+        const { rowCount } = await this.pool.query(
+            'DELETE FROM clients WHERE id = $1',
+            [ entity.id ]
         );
 
-        if (rows[0] !== client.id) {
-            return false;
-        }
-
-        return true;
+        return (rowCount ?? 0) > 0;
 
     };
 

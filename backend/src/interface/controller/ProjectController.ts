@@ -1,4 +1,4 @@
-import type { Project }                    from "../../domain/model/Project.js";
+import { Project }                         from "../../domain/model/Project.js";
 import type { ProjectDTO }                 from "../dto/ProjectDTO.js";
 import type { IDTOConverter }              from "../converter/IDTOConverter.js";
 import { ProjectDTOConverter }             from "../converter/ProjectDTOConverter.js";
@@ -42,11 +42,11 @@ export class ProjectController {
 
     };
 
-    public async getByClient(clientId: string, limit?: number, offset?: number): Promise<ProjectDTO[]> {
+    public async getByClient(workspaceId: string, clientId: string, limit?: number, offset?: number): Promise<ProjectDTO[]> {
 
         const projectDTOs: ProjectDTO[] = [];
 
-        const records: Project[] = await this.getProjectsByClientUC.execute({ clientId, limit, offset });
+        const records: Project[] = await this.getProjectsByClientUC.execute({ workspaceId, clientId, limit, offset });
 
         records.forEach((record: Project) => {
             const projectDTO: ProjectDTO = this.converter.toDTO(record);
@@ -94,9 +94,10 @@ export class ProjectController {
 
     };
 
-    public async delete(projectDTO: ProjectDTO): Promise<void> {
+    public async delete(id: string): Promise<void> {
 
-        const project: Project = this.converter.toBO(projectDTO);
+        const project = new Project();
+        project.id = id;
 
         await this.deleteProjectUC.execute(project);
 

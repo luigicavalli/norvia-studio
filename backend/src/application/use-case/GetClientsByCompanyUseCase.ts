@@ -4,9 +4,10 @@ import type { ClientRepository } from "../../domain/repositories/ClientRepositor
 
 
 interface GetClientsByCompanyInput {
-    companyId: string;
-    limit?:    number | undefined;
-    offset?:   number | undefined;
+    workspaceId: string;
+    companyId:   string;
+    limit?:      number | undefined;
+    offset?:     number | undefined;
 }
 
 export class GetClientsByCompanyUseCase implements IUseCase<GetClientsByCompanyInput, Client[]> {
@@ -15,12 +16,13 @@ export class GetClientsByCompanyUseCase implements IUseCase<GetClientsByCompanyI
 
     public async execute(input: GetClientsByCompanyInput): Promise<Client[]> {
 
-        const companyId: string = input.companyId;
+        const workspaceId: string = input.workspaceId;
+        const companyId:   string = input.companyId;
 
         const limit:  number | undefined = input.limit;
         const offset: number | undefined = input.offset;
-        
-        const clients: Client[] = await this.clientRepository.findByCompany(companyId, limit, offset);
+
+        const clients: Client[] = await this.clientRepository.findByCompany(workspaceId, companyId, limit, offset);
 
         return clients;
 

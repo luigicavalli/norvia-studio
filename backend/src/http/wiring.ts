@@ -2,6 +2,10 @@ import { getPoolInstance }            from "../infrastructure/persistence/dao/pg
 import { PgClientDAOImpl }            from "../infrastructure/persistence/dao/pg/PgClientDAOImpl.js";
 import { PgProjectDAOImpl }           from "../infrastructure/persistence/dao/pg/PgProjectDAOImpl.js";
 import { PgCompanyDAOImpl }           from "../infrastructure/persistence/dao/pg/PgCompanyDAOImpl.js";
+import { PgWorkspaceDAOImpl }         from "../infrastructure/persistence/dao/pg/PgWorkspaceDAOImpl.js";
+import { PgAssignmentDAOImpl }        from "../infrastructure/persistence/dao/pg/PgAssignmentDAOImpl.js";
+import { PgTeamMemberDAOImpl }        from "../infrastructure/persistence/dao/pg/PgTeamMemberDAOImpl.js";
+import { PgQuoteDAOImpl }             from "../infrastructure/persistence/dao/pg/PgQuoteDAOImpl.js";
 import { ClientController }           from "../interface/controller/ClientController.js";
 import { ProjectController }          from "../interface/controller/ProjectController.js";
 import { CompanyController }          from "../interface/controller/CompanyController.js";
@@ -22,10 +26,18 @@ import { GetProjectByIdUseCase }      from "../application/use-case/GetProjectBy
 import { GetCompanyByIdUseCase }      from "../application/use-case/GetCompanyByIdUseCase.js";
 import { ProjectRepositoryImpl }      from "../infrastructure/persistence/repository/ProjectRepositoryImpl.js";
 import { CompanyRepositoryImpl }      from "../infrastructure/persistence/repository/CompanyRepositoryImpl.js";
+import { WorkspaceRepositoryImpl }    from "../infrastructure/persistence/repository/WorkspaceRepositoryImpl.js";
 import { GetAllCompaniesUseCase }     from "../application/use-case/GetAllCompaniesUseCase.js";
 import { GetProjectsByClientUseCase } from "../application/use-case/GetProjectsByClientUseCase.js";
 import { UpdateProjectStatusUseCase } from "../application/use-case/UpdateProjectStatusUseCase.js";
 import { GetClientsByCompanyUseCase } from "../application/use-case/GetClientsByCompanyUseCase.js";
+import { GetAllWorkspacesUseCase }    from "../application/use-case/GetAllWorkspacesUseCase.js";
+import { GetWorkspaceByIdUseCase }    from "../application/use-case/GetWorkspaceByIdUseCase.js";
+import { GetWorkspaceBySlugUseCase }  from "../application/use-case/GetWorkspaceBySlugUseCase.js";
+import { CreateWorkspaceUseCase }     from "../application/use-case/CreateWorkspaceUseCase.js";
+import { UpdateWorkspaceUseCase }     from "../application/use-case/UpdateWorkspaceUseCase.js";
+import { DeleteWorkspaceUseCase }     from "../application/use-case/DeleteWorkspaceUseCase.js";
+import { WorkspaceController }        from "../interface/controller/WorkspaceController.js";
 
 // =========================================================================
 //                          COMPLETE BOOTSTRAP
@@ -40,10 +52,15 @@ const pgPoolInstance        = getPoolInstance();
 const projectDAO            = new PgProjectDAOImpl(pgPoolInstance);
 const companyDAO            = new PgCompanyDAOImpl(pgPoolInstance);
 const clientDAO             = new PgClientDAOImpl(pgPoolInstance);
+const workspaceDAO          = new PgWorkspaceDAOImpl(pgPoolInstance);
+const assignmentDAO         = new PgAssignmentDAOImpl(pgPoolInstance);
+const teamMemberDAO         = new PgTeamMemberDAOImpl(pgPoolInstance);
+const quoteDAO              = new PgQuoteDAOImpl(pgPoolInstance);
 
-const projectRepo           = new ProjectRepositoryImpl(projectDAO);
-const companyRepo           = new CompanyRepositoryImpl(companyDAO);
+const projectRepo           = new ProjectRepositoryImpl(projectDAO, workspaceDAO, assignmentDAO, teamMemberDAO, clientDAO, quoteDAO);
+const companyRepo           = new CompanyRepositoryImpl(companyDAO, workspaceDAO);
 const clientRepo            = new ClientRepositoryImpl(clientDAO);
+const workspaceRepo         = new WorkspaceRepositoryImpl(workspaceDAO);
 
 // =========================================================================
 //                           APPLICATION LAYER
@@ -63,6 +80,13 @@ const createCompanyUC       = new CreateCompanyUseCase(companyRepo);
 const updateCompanyUC       = new UpdateCompanyUseCase(companyRepo);
 const deleteCompanyUC       = new DeleteCompanyUseCase(companyRepo);
 
+const getAllWorkspacesUC    = new GetAllWorkspacesUseCase(workspaceRepo);
+const getWorkspaceByIdUC   = new GetWorkspaceByIdUseCase(workspaceRepo);
+const getWorkspaceBySlugUC = new GetWorkspaceBySlugUseCase(workspaceRepo);
+const createWorkspaceUC    = new CreateWorkspaceUseCase(workspaceRepo);
+const updateWorkspaceUC    = new UpdateWorkspaceUseCase(workspaceRepo);
+const deleteWorkspaceUC    = new DeleteWorkspaceUseCase(workspaceRepo);
+
 const getAllClientsUC       = new GetAllClientsUseCase(clientRepo);
 const getClientsByCompanyUC = new GetClientsByCompanyUseCase(clientRepo);
 const getClientByIdUC       = new GetClientByIdUseCase(clientRepo);
@@ -74,11 +98,13 @@ const deleteClientUC        = new DeleteClientUseCase(clientRepo);
 //                           INTERFACE LAYER
 // =========================================================================
 
+const workspaceCtrl         = new WorkspaceController(getAllWorkspacesUC, getWorkspaceByIdUC, getWorkspaceBySlugUC, createWorkspaceUC, updateWorkspaceUC, deleteWorkspaceUC);
 const projectCtrl           = new ProjectController(getAllProjectsUC, getProjectsByClientUC, getProjectByIdUC, createProjectUC, updateProjectUC, updateProjectStatusUC, deleteProjectUC);
 const companyCtrl           = new CompanyController(getAllCompaniesUC, getCompanyByIdUC, createCompanyUC, updateCompanyUC, deleteCompanyUC);
 const clientCtrl            = new ClientController(getAllClientsUC, getClientsByCompanyUC, getClientByIdUC, createClientUC, updateClientUC, deleteClientUC);
 
 export const wiring = {
+    workspaceCtrl,
     projectCtrl,
     companyCtrl,
     clientCtrl

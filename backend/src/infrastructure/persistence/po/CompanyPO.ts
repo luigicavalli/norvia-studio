@@ -1,34 +1,18 @@
-export interface ICompanyPO {
+export class CompanyPO {
 
-    id:         string;
-    name:       string;
-    tax_code:   string;
-    email:      string;
-    phone:      number;
-    address:    string;
-    city:       string;
-    zip_code:   number;
-    country:    string;
-    website:    string;
-    created_at: Date;
-    updated_at: Date;
-
-};
-
-export class CompanyPO implements ICompanyPO {
-
-    private _id:         string;
-    private _name:       string;
-    private _tax_code:   string;
-    private _email:      string;
-    private _phone:      number;
-    private _address:    string;
-    private _city:       string;
-    private _zip_code:   number;
-    private _country:    string;
-    private _website:    string;
-    private _created_at: Date;
-    private _updated_at: Date;
+    private _id:           string;
+    private _workspace_id: string;
+    private _name:         string;
+    private _tax_code:     string;
+    private _email:        string;
+    private _phone:        number;
+    private _address:      string;
+    private _city:         string;
+    private _zip_code:     number;
+    private _country:      string;
+    private _website:      string;
+    private _created_at:   Date;
+    private _updated_at:   Date;
 
     /* ***************
      * Getter & Setter
@@ -40,6 +24,14 @@ export class CompanyPO implements ICompanyPO {
 
     public set id(value: string) {
         this._id = value;
+    }
+
+    public get workspace_id(): string {
+        return this._workspace_id;
+    }
+
+    public set workspace_id(value: string) {
+        this._workspace_id = value;
     }
 
     public get name(): string {

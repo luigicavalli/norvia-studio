@@ -10,7 +10,7 @@ export class CreateCompanyUseCase implements IUseCase<Company, Company> {
 
     public async execute(input: Company): Promise<Company> {
 
-        const existingCompany: Company | null = await this.companyRepository.findByTaxCode(input.taxCode);
+        const existingCompany: Company | null = await this.companyRepository.findByTaxCode(input.workspace.id, input.taxCode);
 
         if (existingCompany) {
             throw AppErrors.conflict('Company already exists', 'COMPANY_ALREADY_EXISTS');

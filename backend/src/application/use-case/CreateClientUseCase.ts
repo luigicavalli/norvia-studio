@@ -10,7 +10,7 @@ export class CreateClientUseCase implements IUseCase<Client, Client> {
 
     public async execute(input: Client): Promise<Client> {
 
-        const existingClient: Client | null = await this.clientRepository.findByEmail(input.email);
+        const existingClient: Client | null = await this.clientRepository.findByEmail(input.workspace.id, input.email);
 
         if (existingClient) {
             throw AppErrors.conflict('Client already exists', 'CLIENT_ALREADY_EXISTS');

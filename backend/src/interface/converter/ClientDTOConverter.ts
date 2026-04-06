@@ -18,8 +18,8 @@ import { Company } from "../../domain/model/Company.js";
  * DTO
  * ---
  */
-import { ClientDTO }  from "../dto/ClientDTO.js";
-import { CompanyDTO } from "../dto/CompanyDTO.js";
+import type { ClientDTO }  from "../dto/ClientDTO.js";
+import type { CompanyDTO } from "../dto/CompanyDTO.js";
 
 /**
  * ----------
@@ -67,7 +67,7 @@ export class ClientDTOConverter implements IDTOConverter<ClientDTO, Client> {
 
     toDTO(bo: Client): ClientDTO {
 
-        const clientDTO: ClientDTO = new ClientDTO();
+        const clientDTO: ClientDTO = {} as ClientDTO;
 
         clientDTO.id        = bo.id;
         clientDTO.firstName = bo.firstName;
@@ -75,7 +75,7 @@ export class ClientDTOConverter implements IDTOConverter<ClientDTO, Client> {
         clientDTO.email     = bo.email;
         clientDTO.phone     = bo.phone;
 
-        clientDTO.company = new CompanyDTO();
+        clientDTO.company = {} as CompanyDTO;
         clientDTO.company.id        = bo.company.id;
         clientDTO.company.name      = bo.company.name;
         clientDTO.company.taxCode   = bo.company.taxCode;

@@ -4,9 +4,10 @@ import type { ProjectRepository } from "../../domain/repositories/ProjectReposit
 
 
 interface GetProjectsByClientInput {
-    clientId: string;
-    limit?:   number | undefined;
-    offset?:  number | undefined;
+    workspaceId: string;
+    clientId:    string;
+    limit?:      number | undefined;
+    offset?:     number | undefined;
 }
 
 export class GetProjectsByClientUseCase implements IUseCase<GetProjectsByClientInput, Project[]> {
@@ -15,12 +16,13 @@ export class GetProjectsByClientUseCase implements IUseCase<GetProjectsByClientI
 
     public async execute(input: GetProjectsByClientInput): Promise<Project[]> {
 
-        const clientId: string = input.clientId;
+        const workspaceId: string = input.workspaceId;
+        const clientId:    string = input.clientId;
 
         const limit:  number | undefined = input.limit;
         const offset: number | undefined = input.offset;
-        
-        const projects: Project[] = await this.projectRepository.findByClient(clientId, limit, offset);
+
+        const projects: Project[] = await this.projectRepository.findByClient(workspaceId, clientId, limit, offset);
 
         return projects;
 
