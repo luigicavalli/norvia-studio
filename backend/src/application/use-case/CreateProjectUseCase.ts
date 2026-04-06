@@ -13,7 +13,7 @@ export class CreateProjectUseCase implements IUseCase<Project, Project> {
         const projectName: string = input.name;
         const clientId:    string = input.client.id;
 
-        const existingProject = await this.projectRepository.findByNameAndClient(projectName, clientId);
+        const existingProject = await this.projectRepository.findByNameAndClient(input.workspace.id, projectName, clientId);
 
         if (existingProject) {
             throw AppErrors.conflict('Project already exists for this client', 'PROJECT_ALREADY_EXISTS');
