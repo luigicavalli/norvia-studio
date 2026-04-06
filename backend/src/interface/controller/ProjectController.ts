@@ -26,11 +26,11 @@ export class ProjectController {
         private readonly deleteProjectUC:       DeleteProjectUseCase
     ) {}
 
-    public async getAll(limit?: number, offset?: number): Promise<ProjectDTO[]> {
+    public async getAll(workspaceId: string, userId: string, limit?: number, offset?: number): Promise<ProjectDTO[]> {
 
         const projectDTOs: ProjectDTO[] = [];
 
-        const records: Project[] = await this.getAllProjectsUC.execute({ limit, offset });
+        const records: Project[] = await this.getAllProjectsUC.execute({ workspaceId, userId, limit, offset });
 
         records.forEach((record: Project) => {
             const projectDTO: ProjectDTO = this.converter.toDTO(record);
@@ -42,11 +42,11 @@ export class ProjectController {
 
     };
 
-    public async getByClient(workspaceId: string, clientId: string, limit?: number, offset?: number): Promise<ProjectDTO[]> {
+    public async getByClient(workspaceId: string, clientId: string, userId: string, limit?: number, offset?: number): Promise<ProjectDTO[]> {
 
         const projectDTOs: ProjectDTO[] = [];
 
-        const records: Project[] = await this.getProjectsByClientUC.execute({ workspaceId, clientId, limit, offset });
+        const records: Project[] = await this.getProjectsByClientUC.execute({ workspaceId, clientId, userId, limit, offset });
 
         records.forEach((record: Project) => {
             const projectDTO: ProjectDTO = this.converter.toDTO(record);

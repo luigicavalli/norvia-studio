@@ -23,12 +23,12 @@ export class ClientController {
         private readonly deleteClientUC:        DeleteClientUseCase
     ) {}
 
-    public async getAll(limit?: number, offset?: number): Promise<ClientDTO[]> {
+    public async getAll(workspaceId: string, userId: string, limit?: number, offset?: number): Promise<ClientDTO[]> {
 
         const clientDTOs: ClientDTO[] = [];
 
-        const records: Client[] = await this.getAllClientsUC.execute({ limit, offset });
-        
+        const records: Client[] = await this.getAllClientsUC.execute({ workspaceId, userId, limit, offset });
+
         records.forEach((record: Client) => {
             const clientDTO: ClientDTO = this.converter.toDTO(record);
 
@@ -39,12 +39,12 @@ export class ClientController {
 
     };
 
-    public async getByCompany(workspaceId: string, companyId: string, limit?: number, offset?: number): Promise<ClientDTO[]> {
+    public async getByCompany(workspaceId: string, companyId: string, userId: string, limit?: number, offset?: number): Promise<ClientDTO[]> {
 
         const clientDTOs: ClientDTO[] = [];
 
-        const records: Client[] = await this.getClientsByCompanyUC.execute({ workspaceId, companyId, limit, offset });
-        
+        const records: Client[] = await this.getClientsByCompanyUC.execute({ workspaceId, companyId, userId, limit, offset });
+
         records.forEach((record: Client) => {
             const clientDTO: ClientDTO = this.converter.toDTO(record);
 

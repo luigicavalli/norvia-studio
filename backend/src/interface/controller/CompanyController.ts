@@ -21,11 +21,11 @@ export class CompanyController {
         private readonly deleteCompanyUC:   DeleteCompanyUseCase
     ) {}
 
-    public async getAll(limit?: number, offset?: number): Promise<CompanyDTO[]> {
+    public async getAll(workspaceId: string, userId: string, limit?: number, offset?: number): Promise<CompanyDTO[]> {
 
         const companyDTOs: CompanyDTO[] = [];
-        
-        const records: Company[] = await this.getAllCompaniesUC.execute({ limit, offset });
+
+        const records: Company[] = await this.getAllCompaniesUC.execute({ workspaceId, userId, limit, offset });
 
         records.forEach((record: Company) => {
             const companyDTO: CompanyDTO = this.converter.toDTO(record);
