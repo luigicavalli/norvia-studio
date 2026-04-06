@@ -1,16 +1,19 @@
-import { wiring }             from "./wiring.js";
-import { AppResponse }        from "../application/response/AppResponse.js";
-import type { ClientDTO }     from "../interface/dto/ClientDTO.js";
-import type { ProjectDTO }    from "../interface/dto/ProjectDTO.js";
-import type { CompanyDTO }    from "../interface/dto/CompanyDTO.js";
-import type { WorkspaceDTO }  from "../interface/dto/WorkspaceDTO.js";
+import { wiring }                from "./wiring.js";
+import { AppResponse }           from "../application/response/AppResponse.js";
+import type { ClientDTO }        from "../interface/dto/ClientDTO.js";
+import type { ProjectDTO }       from "../interface/dto/ProjectDTO.js";
+import type { CompanyDTO }       from "../interface/dto/CompanyDTO.js";
+import type { WorkspaceDTO }     from "../interface/dto/WorkspaceDTO.js";
+import type { TeamMemberDTO }    from "../interface/dto/TeamMemberDTO.js";
+import { TeamMemberRoles }       from "../domain/enums/TeamMemberRoles.js";
+import { getAuth }               from "@clerk/express";
 
 import { Router, type NextFunction, type Request, type Response } from "express";
 
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl } = deps;
 
     const router = Router();
 
@@ -19,9 +22,11 @@ export const createApiRouter = (deps = wiring) => {
     // -------------------------------------------------------------------------
 
     // Get all workspaces
-    router.get('/workspaces', async (_req: Request, res: Response, next: NextFunction) => {
+    router.get('/workspaces', async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const workspaces: WorkspaceDTO[] = await workspaceCtrl.getAll();
+            const { userId } = getAuth(req);
+
+            const workspaces: WorkspaceDTO[] = await workspaceCtrl.getAll(userId!);
 
             AppResponse.ok(res, workspaces);
         } catch (error) {
@@ -58,9 +63,10 @@ export const createApiRouter = (deps = wiring) => {
     // Create a new Workspace
     router.post('/workspaces', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             const body: WorkspaceDTO = req.body as WorkspaceDTO;
 
-            await workspaceCtrl.save(body);
+            await workspaceCtrl.save(body, userId!);
 
             AppResponse.created(res, null, 'Workspace created');
         } catch (error) {
@@ -71,9 +77,10 @@ export const createApiRouter = (deps = wiring) => {
     // Update an existing Workspace
     router.put('/workspaces/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             const body: WorkspaceDTO = req.body as WorkspaceDTO;
 
-            await workspaceCtrl.update(body);
+            await workspaceCtrl.update(body, userId!);
 
             AppResponse.ok(res, null, 'Workspace edited');
         } catch (error) {
@@ -84,9 +91,74 @@ export const createApiRouter = (deps = wiring) => {
     // Delete an existing Workspace
     router.delete('/workspaces/:id', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             const id = req.params["id"] as string;
 
-            await workspaceCtrl.delete(id);
+            await workspaceCtrl.delete(id, userId!);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Team Members
+    // -------------------------------------------------------------------------
+
+    // Get all members of a workspace
+    router.get('/workspaces/:id/members', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const workspaceId = req.params["id"] as string;
+
+            const members: TeamMemberDTO[] = await teamMemberCtrl.getByWorkspace(workspaceId, userId!);
+
+            AppResponse.ok(res, members);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Add a member to a workspace
+    router.post('/workspaces/:id/members', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const workspaceId = req.params["id"] as string;
+            const { newUserId, role } = req.body as { newUserId: string; role: TeamMemberRoles };
+
+            const member: TeamMemberDTO = await teamMemberCtrl.add(workspaceId, newUserId, role, userId!);
+
+            AppResponse.created(res, member, 'Member added');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update a member's role
+    router.put('/workspaces/:id/members/:memberId', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const workspaceId = req.params["id"] as string;
+            const memberId    = req.params["memberId"] as string;
+            const { role }    = req.body as { role: TeamMemberRoles };
+
+            const member: TeamMemberDTO = await teamMemberCtrl.updateRole(memberId, workspaceId, role, userId!);
+
+            AppResponse.ok(res, member, 'Role updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Remove a member from a workspace
+    router.delete('/workspaces/:id/members/:memberId', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const workspaceId = req.params["id"] as string;
+            const memberId    = req.params["memberId"] as string;
+
+            await teamMemberCtrl.remove(memberId, workspaceId, userId!);
 
             AppResponse.noContent(res);
         } catch (error) {
@@ -98,13 +170,14 @@ export const createApiRouter = (deps = wiring) => {
     // Projects
     // -------------------------------------------------------------------------
 
-    // Get all projects
+    // Get all projects  — GET /projects?workspaceId=xxx
     router.get('/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { limit, offset } = req.query as any;
+            const { workspaceId, limit, offset } = req.query as any;
 
-            const projects: ProjectDTO[] = await projectCtrl.getAll(limit, offset);
+            const projects: ProjectDTO[] = await projectCtrl.getAll(workspaceId, userId!, limit, offset);
 
             const hasMore: boolean = projects.length === limit;
 
@@ -117,12 +190,13 @@ export const createApiRouter = (deps = wiring) => {
     // Get all projects belonging to a client  — GET /clients/:id/projects?workspaceId=xxx
     router.get('/clients/:id/projects', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             const clientId = req.params["id"] as string;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { workspaceId, limit, offset } = req.query as any;
 
-            const projects: ProjectDTO[] = await projectCtrl.getByClient(workspaceId, clientId, limit, offset);
+            const projects: ProjectDTO[] = await projectCtrl.getByClient(workspaceId, clientId, userId!, limit, offset);
 
             const hasMore: boolean = projects.length === limit;
 
@@ -188,13 +262,14 @@ export const createApiRouter = (deps = wiring) => {
     // Companies
     // -------------------------------------------------------------------------
 
-    // Get all companies
+    // Get all companies  — GET /companies?workspaceId=xxx
     router.get('/companies', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { limit, offset } = req.query as any;
+            const { workspaceId, limit, offset } = req.query as any;
 
-            const companies: CompanyDTO[] = await companyCtrl.getAll(limit, offset);
+            const companies: CompanyDTO[] = await companyCtrl.getAll(workspaceId, userId!, limit, offset);
 
             const hasMore: boolean = companies.length === limit;
 
@@ -207,12 +282,13 @@ export const createApiRouter = (deps = wiring) => {
     // Get all clients belonging to a company  — GET /companies/:id/clients?workspaceId=xxx
     router.get('/companies/:id/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             const companyId = req.params["id"] as string;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const { workspaceId, limit, offset } = req.query as any;
 
-            const clients: ClientDTO[] = await clientCtrl.getByCompany(workspaceId, companyId, limit, offset);
+            const clients: ClientDTO[] = await clientCtrl.getByCompany(workspaceId, companyId, userId!, limit, offset);
 
             const hasMore: boolean = clients.length === limit;
 
@@ -278,13 +354,14 @@ export const createApiRouter = (deps = wiring) => {
     // Clients
     // -------------------------------------------------------------------------
 
-    // Get all clients
+    // Get all clients  — GET /clients?workspaceId=xxx
     router.get('/clients', async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const { userId } = getAuth(req);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { limit, offset } = req.query as any;
+            const { workspaceId, limit, offset } = req.query as any;
 
-            const clients: ClientDTO[] = await clientCtrl.getAll(limit, offset);
+            const clients: ClientDTO[] = await clientCtrl.getAll(workspaceId, userId!, limit, offset);
 
             const hasMore: boolean = clients.length === limit;
 
