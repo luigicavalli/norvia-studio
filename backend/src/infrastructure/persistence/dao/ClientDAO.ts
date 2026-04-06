@@ -1,17 +1,20 @@
-import type { ClientPO }     from "../po/ClientPO.js";
-import type { IGenericDAO }  from "./IGenericDAO.js";
-import type { ClientPOFlat } from "../po/ClientPOFlat.js";
+import type { ClientPO }    from "../po/ClientPO.js";
+import type { IGenericDAO } from "./IGenericDAO.js";
 
 
-export interface ClientDAO extends IGenericDAO<string, ClientPO | ClientPOFlat> {
+export interface ClientDAO extends IGenericDAO<string, ClientPO> {
 
-    findAll(limit?: number, offset?: number): Promise<ClientPOFlat[]>;
+    findAll(limit?: number, offset?: number): Promise<ClientPO[]>;
 
-    findByCompany(companyId: string, limit?: number, offset?: number): Promise<ClientPOFlat[]>
+    findByWorkspace(workspaceId: string, limit?: number, offset?: number): Promise<ClientPO[]>;
 
-    findByEmail(email: string): Promise<ClientPOFlat | null>;
+    findById(id: string): Promise<ClientPO | null>;
 
-    findById(id: string): Promise<ClientPOFlat | null>;
+    findByIds(ids: string[]): Promise<ClientPO[]>;
+
+    findByCompany(workspaceId: string, companyId: string, limit?: number, offset?: number): Promise<ClientPO[]>;
+
+    findByEmail(workspaceId: string, email: string): Promise<ClientPO | null>;
 
     save(entity: ClientPO): Promise<ClientPO>;
 

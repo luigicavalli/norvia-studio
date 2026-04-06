@@ -1,36 +1,18 @@
-import type { ClientPO, IClientPO } from "./ClientPO.js";
-
-export interface IProjectPO {
-    
-    id:              string;
-    name:            string;
-    description:     string;
-    client:          IClientPO;
-    status:          string;
-    priority:        string;
-    budget_amount:   number;
-    budget_currency: string;
-    start_date:      Date;
-    due_date:        Date;
-    completed_at:    Date;
-    created_at:      Date;
-    updated_at:      Date;
-    
-};
-
-export class ProjectPO implements IProjectPO {
+export class ProjectPO {
 
     private _id:              string;
+    private _workspace_id:    string;
     private _name:            string;
     private _description:     string;
-    private _client:          ClientPO;
+    private _client_id:       string;
+    private _quote_id:        string | null;
     private _status:          string;
     private _priority:        string;
     private _budget_amount:   number;
     private _budget_currency: string;
     private _start_date:      Date;
     private _due_date:        Date;
-    private _completed_at:    Date;
+    private _completed_at:    Date | null;
     private _created_at:      Date;
     private _updated_at:      Date;
 
@@ -44,6 +26,14 @@ export class ProjectPO implements IProjectPO {
 
     public set id(value: string) {
         this._id = value;
+    }
+
+    public get workspace_id(): string {
+        return this._workspace_id;
+    }
+
+    public set workspace_id(value: string) {
+        this._workspace_id = value;
     }
 
     public get name(): string {
@@ -62,12 +52,20 @@ export class ProjectPO implements IProjectPO {
         this._description = value;
     }
 
-    public get client(): ClientPO {
-        return this._client;
+    public get client_id(): string {
+        return this._client_id;
     }
 
-    public set client(value: ClientPO) {
-        this._client = value;
+    public set client_id(value: string) {
+        this._client_id = value;
+    }
+
+    public get quote_id(): string | null {
+        return this._quote_id;
+    }
+
+    public set quote_id(value: string | null) {
+        this._quote_id = value;
     }
 
     public get status(): string {
@@ -118,11 +116,11 @@ export class ProjectPO implements IProjectPO {
         this._due_date = value;
     }
 
-    public get completed_at(): Date {
+    public get completed_at(): Date | null {
         return this._completed_at;
     }
 
-    public set completed_at(value: Date) {
+    public set completed_at(value: Date | null) {
         this._completed_at = value;
     }
 
@@ -140,24 +138,6 @@ export class ProjectPO implements IProjectPO {
 
     public set updated_at(value: Date) {
         this._updated_at = value;
-    }
-
-    public flatten(): unknown {
-        return {
-            id:              this.id,
-            name:            this.name,
-            description:     this.description,
-            client:          this.client.id,
-            status:          this.status,
-            priority:        this.priority,
-            budget_amount:   this.budget_amount,
-            budget_currency: this.budget_currency,
-            start_date:      this.start_date,
-            due_date:        this.due_date,
-            completed_at:    this.completed_at,
-            created_at:      this.created_at,
-            updated_at:      this.updated_at
-        };
     }
 
 };

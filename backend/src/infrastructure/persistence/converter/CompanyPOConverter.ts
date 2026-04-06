@@ -47,8 +47,9 @@ export class CompanyPOConverter implements IPersistenceConverter<CompanyPO, Comp
 
         const companyPO: CompanyPO = new CompanyPO();
 
-        companyPO.id         = bo.id;
-        companyPO.name       = bo.name;
+        companyPO.id           = bo.id;
+        companyPO.workspace_id = bo.workspace.id;
+        companyPO.name         = bo.name;
         companyPO.tax_code   = bo.taxCode;
         companyPO.email      = bo.email;
         companyPO.phone      = bo.phone;

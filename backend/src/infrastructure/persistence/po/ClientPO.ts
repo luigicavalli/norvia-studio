@@ -1,34 +1,17 @@
-import type { CompanyPO, ICompanyPO } from "./CompanyPO.js";
+export class ClientPO {
 
-export interface IClientPO {
-
-    id:         string;
-    first_name: string;
-    last_name:  string;
-    email:      string;
-    phone:      number;
-    company:    ICompanyPO;
-    vat_number: string;
-    status:     string;
-    notes:      string;
-    created_at: Date;
-    updated_at: Date;
-
-};
-
-export class ClientPO implements IClientPO {
-
-    private _id:          string;
-    private _first_name:  string;
-    private _last_name:   string;
-    private _email:       string;
-    private _phone:       number;
-    private _company:     CompanyPO;
-    private _vat_number:  string;
-    private _status:      string;
-    private _notes:       string;
-    private _created_at:  Date;
-    private _updated_at:  Date;
+    private _id:           string;
+    private _workspace_id: string;
+    private _first_name:   string;
+    private _last_name:    string;
+    private _email:        string;
+    private _phone:        number;
+    private _company_id:   string;
+    private _vat_number:   string;
+    private _status:       string;
+    private _notes:        string;
+    private _created_at:   Date;
+    private _updated_at:   Date;
 
     /* ***************
      * Getter & Setter
@@ -40,6 +23,14 @@ export class ClientPO implements IClientPO {
 
     public set id(value: string) {
         this._id = value;
+    }
+
+    public get workspace_id(): string {
+        return this._workspace_id;
+    }
+
+    public set workspace_id(value: string) {
+        this._workspace_id = value;
     }
 
     public get first_name(): string {
@@ -74,12 +65,12 @@ export class ClientPO implements IClientPO {
         this._phone = value;
     }
 
-    public get company(): CompanyPO {
-        return this._company;
+    public get company_id(): string {
+        return this._company_id;
     }
 
-    public set company(value: CompanyPO) {
-        this._company = value;
+    public set company_id(value: string) {
+        this._company_id = value;
     }
 
     public get vat_number(): string {
@@ -120,22 +111,6 @@ export class ClientPO implements IClientPO {
 
     public set updated_at(value: Date) {
         this._updated_at = value;
-    }
-
-    public flatten(): unknown {
-        return {
-            id:         this.id,
-            first_name: this.first_name,
-            last_name:  this.last_name,
-            email:      this.email,
-            phone:      this.phone,
-            company:    this.company.id,
-            vat_number: this.vat_number,
-            status:     this.status,
-            notes:      this.notes,
-            created_at: this.created_at,
-            updated_at: this.updated_at
-        };
     }
 
 };

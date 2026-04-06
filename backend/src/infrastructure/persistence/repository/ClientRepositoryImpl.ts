@@ -1,100 +1,69 @@
 import type { Client }                from "../../../domain/model/Client.js";
-import { ClientPOFlat }               from "../po/ClientPOFlat.js";
 import type { ClientPO }              from "../po/ClientPO.js";
 import type { ClientDAO }             from "../dao/ClientDAO.js";
 import { ClientPOConverter }          from "../converter/ClientPOConverter.js";
-import { ClientPOFlatConverter }      from "../converter/ClientPOFlatConverter.js";
 import type { ClientRepository }      from "../../../domain/repositories/ClientRepository.js";
 import type { IPersistenceConverter } from "../converter/IPersistenceConverter.js";
 
 
 export class ClientRepositoryImpl implements ClientRepository {
 
-    private readonly converter:     IPersistenceConverter<ClientPO, Client>     = new ClientPOConverter();
-    private readonly flatConverter: IPersistenceConverter<ClientPOFlat, Client> = new ClientPOFlatConverter();
+    private readonly clientConverter: IPersistenceConverter<ClientPO, Client> = new ClientPOConverter();
 
     public constructor(private readonly dao: ClientDAO) {}
 
     public async findAll(limit?: number, offset?: number): Promise<Client[]> {
-        
-        const clients: Client[] = [];
-                
-        const records: ClientPOFlat[] = await this.dao.findAll(limit, offset);
 
-        records.forEach((record: ClientPOFlat) => {
-            const client: Client = this.flatConverter.toBO(record);
+        const records: ClientPO[] = await this.dao.findAll(limit, offset);
 
-            clients.push(client);
-        });
-
-        return clients;
+        return records.map((r) => this.clientConverter.toBO(r));
 
     };
 
-    public async findByCompany(companyId: string, limit?: number, offset?: number): Promise<Client[]> {
+    public async findByWorkspace(workspaceId: string, limit?: number, offset?: number): Promise<Client[]> {
 
-        const clients: Client[] = [];
-                
-        const records: ClientPOFlat[] = await this.dao.findByCompany(companyId, limit, offset);
+        const records: ClientPO[] = await this.dao.findByWorkspace(workspaceId, limit, offset);
 
-        records.forEach((record: ClientPOFlat) => {
-            const client: Client = this.flatConverter.toBO(record);
-
-            clients.push(client);
-        });
-
-        return clients;
-        
-    };
-
-    public async findByEmail(email: string): Promise<Client | null> {
-
-        const record: ClientPOFlat | null = await this.dao.findByEmail(email);
-        
-        if (!record) {
-            return null;
-        }
-
-        const client: Client = this.flatConverter.toBO(record);
-
-        return client;
+        return records.map((r) => this.clientConverter.toBO(r));
 
     };
 
     public async findById(id: string): Promise<Client | null> {
-        
-        const record: ClientPOFlat | null = await this.dao.findById(id);
-        
-        if (!record) {
-            return null;
-        }
 
-        const client: Client = this.flatConverter.toBO(record);
+        const record: ClientPO | null = await this.dao.findById(id);
 
-        return client;
-        
+        return record ? this.clientConverter.toBO(record) : null;
+
+    };
+
+    public async findByCompany(workspaceId: string, companyId: string, limit?: number, offset?: number): Promise<Client[]> {
+
+        const records: ClientPO[] = await this.dao.findByCompany(workspaceId, companyId, limit, offset);
+
+        return records.map((r) => this.clientConverter.toBO(r));
+
+    };
+
+    public async findByEmail(workspaceId: string, email: string): Promise<Client | null> {
+
+        const record: ClientPO | null = await this.dao.findByEmail(workspaceId, email);
+
+        return record ? this.clientConverter.toBO(record) : null;
+
     };
 
     public async save(entity: Client): Promise<Client> {
 
-        const clientPO: ClientPO = this.converter.toPO(entity);
-        
-        const record: ClientPO = await this.dao.save(clientPO);
+        const record: ClientPO = await this.dao.save(this.clientConverter.toPO(entity));
 
-        const createdClient: Client = this.converter.toBO(record);
-
-        return createdClient;
+        return this.clientConverter.toBO(record);
 
     };
 
     public async delete(entity: Client): Promise<boolean> {
-        
-        const clientPO: ClientPO = this.converter.toPO(entity);
-        
-        const success: boolean = await this.dao.delete(clientPO);
 
-        return success ? true : false;
-        
+        return this.dao.delete(this.clientConverter.toPO(entity));
+
     };
-    
+
 };
