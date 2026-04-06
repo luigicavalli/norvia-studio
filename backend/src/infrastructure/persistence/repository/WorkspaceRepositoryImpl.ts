@@ -28,6 +28,14 @@ export class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     };
 
+    public async findByUserId(userId: string): Promise<Workspace[]> {
+
+        const records: WorkspacePO[] = await this.dao.findByUserId(userId);
+
+        return records.map((r) => this.converter.toBO(r));
+
+    };
+
     public async findBySlug(slug: string): Promise<Workspace | null> {
 
         const record: WorkspacePO | null = await this.dao.findBySlug(slug);

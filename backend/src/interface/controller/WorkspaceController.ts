@@ -23,9 +23,9 @@ export class WorkspaceController {
         private readonly deleteWorkspaceUC:    DeleteWorkspaceUseCase
     ) {}
 
-    public async getAll(): Promise<WorkspaceDTO[]> {
+    public async getAll(userId: string): Promise<WorkspaceDTO[]> {
 
-        const workspaces: Workspace[] = await this.getAllWorkspacesUC.execute();
+        const workspaces: Workspace[] = await this.getAllWorkspacesUC.execute(userId);
 
         return workspaces.map((w) => this.converter.toDTO(w));
 
@@ -47,28 +47,28 @@ export class WorkspaceController {
 
     };
 
-    public async save(dto: WorkspaceDTO): Promise<void> {
+    public async save(dto: WorkspaceDTO, userId: string): Promise<void> {
 
         const workspace: Workspace = this.converter.toBO(dto);
 
-        await this.createWorkspaceUC.execute(workspace);
+        await this.createWorkspaceUC.execute({ workspace, userId });
 
     };
 
-    public async update(dto: WorkspaceDTO): Promise<void> {
+    public async update(dto: WorkspaceDTO, userId: string): Promise<void> {
 
         const workspace: Workspace = this.converter.toBO(dto);
 
-        await this.updateWorkspaceUC.execute(workspace);
+        await this.updateWorkspaceUC.execute({ workspace, userId });
 
     };
 
-    public async delete(id: string): Promise<void> {
+    public async delete(id: string, userId: string): Promise<void> {
 
         const workspace = new Workspace();
         workspace.id = id;
 
-        await this.deleteWorkspaceUC.execute(workspace);
+        await this.deleteWorkspaceUC.execute({ workspace, userId });
 
     };
 

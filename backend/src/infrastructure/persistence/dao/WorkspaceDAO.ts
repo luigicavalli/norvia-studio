@@ -11,6 +11,8 @@ export interface WorkspaceDAO extends IGenericDAO<string, WorkspacePO> {
 
     findBySlug(slug: string): Promise<WorkspacePO | null>;
 
+    findByUserId(userId: string): Promise<WorkspacePO[]>;
+
     save(entity: WorkspacePO): Promise<WorkspacePO>;
 
     delete(entity: WorkspacePO): Promise<boolean>;

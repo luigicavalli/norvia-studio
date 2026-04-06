@@ -3,13 +3,13 @@ import type { IUseCase }            from "./IUseCase.js";
 import type { WorkspaceRepository } from "../../domain/repositories/WorkspaceRepository.js";
 
 
-export class GetAllWorkspacesUseCase implements IUseCase<void, Workspace[]> {
+export class GetAllWorkspacesUseCase implements IUseCase<string, Workspace[]> {
 
     public constructor(private readonly workspaceRepository: WorkspaceRepository) {}
 
-    public async execute(): Promise<Workspace[]> {
+    public async execute(userId: string): Promise<Workspace[]> {
 
-        return this.workspaceRepository.findAll();
+        return this.workspaceRepository.findByUserId(userId);
 
     }
 

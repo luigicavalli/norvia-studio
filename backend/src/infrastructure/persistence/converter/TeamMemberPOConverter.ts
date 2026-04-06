@@ -1,6 +1,7 @@
-import { TeamMember }               from "../../../domain/model/TeamMember.js";
-import { TeamMemberPO }             from "../po/TeamMemberPO.js";
-import type { TeamMemberRoles }     from "../../../domain/enums/TeamMemberRoles.js";
+import { TeamMember }                 from "../../../domain/model/TeamMember.js";
+import { TeamMemberPO }               from "../po/TeamMemberPO.js";
+import { Workspace }                  from "../../../domain/model/Workspace.js";
+import type { TeamMemberRoles }       from "../../../domain/enums/TeamMemberRoles.js";
 import type { IPersistenceConverter } from "./IPersistenceConverter.js";
 
 
@@ -10,11 +11,15 @@ export class TeamMemberPOConverter implements IPersistenceConverter<TeamMemberPO
 
         const teamMemberBo: TeamMember = new TeamMember();
 
-            teamMemberBo.id        = po.id;
-            teamMemberBo.userId    = po.user_id;
-            teamMemberBo.role      = po.role as TeamMemberRoles;
-            teamMemberBo.createdAt = po.created_at;
-            teamMemberBo.updatedAt = po.updated_at;
+            teamMemberBo.id           = po.id;
+
+            teamMemberBo.workspace    = new Workspace();
+            teamMemberBo.workspace.id = po.workspace_id;
+
+            teamMemberBo.userId       = po.user_id;
+            teamMemberBo.role         = po.role as TeamMemberRoles;
+            teamMemberBo.createdAt    = po.created_at;
+            teamMemberBo.updatedAt    = po.updated_at;
 
         return teamMemberBo;
 
