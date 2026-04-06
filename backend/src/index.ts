@@ -1,6 +1,7 @@
 import { errorHandler }    from './http/errorHandler.js';
 import { configDotenv }    from 'dotenv';
 import { createApiRouter } from './http/routes.js';
+import { clerkMiddleware, requireAuth } from '@clerk/express';
 
 import express, { type NextFunction, type Request, type Response } from 'express';
 
@@ -13,6 +14,8 @@ if (!port) throw new Error('Missing Express port');
 
 const app = express();
 
+app.use(clerkMiddleware());
+
 const jsonParser = express.json();
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -23,7 +26,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return jsonParser(req, res, next);
 });
 
-app.use('/api', createApiRouter());
+app.use('/health', (_req: Request, res: Response) => res.send(`${new Date().toISOString()} - Health ok`));
+
+app.use('/api', requireAuth(), createApiRouter());
+
 app.use(errorHandler);
 
 app.listen(port, (error: Error | undefined): void => {
