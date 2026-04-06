@@ -3,8 +3,11 @@
  * ENTITIES
  * --------
  */
-import type { Budget, IBudget } from "./Budget.js";
-import type { Client, IClient } from "./Client.js";
+import type { IQuote, Quote }           from "./Quote.js";
+import type { IBudget, Budget }         from "./Budget.js";
+import type { IClient, Client }         from "./Client.js";
+import type { IWorkspace, Workspace }   from "./Workspace.js";
+import type { IAssignment, Assignment } from "./Assignment.js";
 
 /**
  * ----
@@ -20,13 +23,16 @@ export interface IProject {
     id:          string;
     name:        string;
     description: string;
+    workspace:   IWorkspace;
+    assignments: IAssignment[];
     client:      IClient;
     status:      ProjectStatuses;
     priority:    ProjectPriorities;
     budget:      IBudget;
+    quote:       IQuote | undefined;
     startDate:   Date;
     dueDate:     Date;
-    completedAt: Date;
+    completedAt: Date | undefined;
     createdAt:   Date;
     updatedAt:   Date;
 
@@ -37,13 +43,16 @@ export class Project implements IProject {
     private _id:          string;
     private _name:        string;
     private _description: string;
+    private _workspace:   Workspace;
+    private _assignments: Assignment[];
     private _client:      Client;
     private _status:      ProjectStatuses;
     private _priority:    ProjectPriorities;
     private _budget:      Budget;
+    private _quote:       Quote | undefined;
     private _startDate:   Date;
     private _dueDate:     Date;
-    private _completedAt: Date;
+    private _completedAt: Date | undefined;
     private _createdAt:   Date;
     private _updatedAt:   Date;
 
@@ -73,6 +82,22 @@ export class Project implements IProject {
 
     public set description(value: string) {
         this._description = value;
+    }
+
+    public get workspace(): Workspace {
+        return this._workspace;
+    }
+
+    public set workspace(value: Workspace) {
+        this._workspace = value;
+    }
+
+    public get assignments(): Assignment[] {
+        return this._assignments;
+    }
+
+    public set assignments(value: Assignment[]) {
+        this._assignments = value;
     }
 
     public get client(): Client {
@@ -107,6 +132,14 @@ export class Project implements IProject {
         this._budget = value;
     }
 
+    public get quote(): Quote | undefined {
+        return this._quote;
+    }
+
+    public set quote(value: Quote | undefined) {
+        this._quote = value;
+    }
+
     public get startDate(): Date {
         return this._startDate;
     }
@@ -123,11 +156,11 @@ export class Project implements IProject {
         this._dueDate = value;
     }
 
-    public get completedAt(): Date {
+    public get completedAt(): Date | undefined {
         return this._completedAt;
     }
 
-    public set completedAt(value: Date) {
+    public set completedAt(value: Date | undefined) {
         this._completedAt = value;
     }
 

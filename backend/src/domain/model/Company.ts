@@ -1,34 +1,44 @@
+/**
+ * --------
+ * ENTITIES
+ * --------
+ */
+import type { IWorkspace, Workspace } from "./Workspace.js";
+
+
 export interface ICompany {
 
-    id:        string;
-    name:      string;
-    taxCode:   string;
-    email:     string;
-    phone:     number;
-    address:   string;
-    city:      string;
-    zipCode:   number;
-    country:   string;
-    website:   string;
-    createdAt: Date;
-    updatedAt: Date;
+    id:          string;
+    name:        string;
+    workspace:   IWorkspace;
+    taxCode:     string;
+    email:       string;
+    phone:       number;
+    address:     string;
+    city:        string;
+    zipCode:     number;
+    country:     string;
+    website:     string;
+    createdAt:   Date;
+    updatedAt:   Date;
 
 };
 
 export class Company implements ICompany {
 
-    private _id:        string;
-    private _name:      string;
-    private _taxCode:   string;
-    private _email:     string;
-    private _phone:     number;
-    private _address:   string;
-    private _city:      string;
-    private _zipCode:   number;
-    private _country:   string;
-    private _website:   string;
-    private _createdAt: Date;
-    private _updatedAt: Date;
+    private _id:          string;
+    private _name:        string;
+    private _workspace:   Workspace;
+    private _taxCode:     string;
+    private _email:       string;
+    private _phone:       number;
+    private _address:     string;
+    private _city:        string;
+    private _zipCode:     number;
+    private _country:     string;
+    private _website:     string;
+    private _createdAt:   Date;
+    private _updatedAt:   Date;
 
     /* ***************
      * Getter & Setter
@@ -48,6 +58,14 @@ export class Company implements ICompany {
 
     public set name(value: string) {
         this._name = value;
+    }
+
+    public get workspace(): Workspace {
+        return this._workspace;
+    }
+
+    public set workspace(value: Workspace) {
+        this._workspace = value;
     }
 
     public get taxCode(): string {
