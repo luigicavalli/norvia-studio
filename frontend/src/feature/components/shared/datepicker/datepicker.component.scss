@@ -1,0 +1,307 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.dp-wrapper {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.375rem;
+  width:          100%;
+}
+
+// Label
+
+.dp-label {
+  font-size:   0.75rem;
+  font-weight: 500;
+  color:       var(--color-text);
+}
+
+// Container (input row)
+
+.dp-container {
+  --dp-focus: var(--color-accent);
+
+  position: relative;
+  display:  flex;
+  width:    100%;
+
+  background-color: var(--color-surface);
+  border:           1px solid var(--color-border);
+  border-radius:    0.25rem;
+
+  transition:
+    border-color 120ms ease,
+    box-shadow   120ms ease;
+
+  &:focus-within {
+    border-color: var(--dp-focus);
+    box-shadow:   0 0 0 3px color-mix(in srgb, var(--dp-focus) 18%, transparent);
+  }
+
+  // Colors
+
+  &.dp--primary   { --dp-focus: var(--color-accent);  }
+  &.dp--secondary { --dp-focus: #71717a;               }
+  &.dp--success   { --dp-focus: var(--color-success);  }
+  &.dp--warning   { --dp-focus: var(--color-warning);  }
+  &.dp--danger    { --dp-focus: var(--color-danger);   }
+
+  // Sizes
+
+  &.dp--sm { height: 1.875rem; font-size: 0.75rem;    }
+  &.dp--md { height: 2.25rem;  font-size: 0.875rem;   }
+  &.dp--lg { height: 2.75rem;  font-size: 0.9375rem;  }
+
+  // Error
+
+  &.dp--error {
+    --dp-focus:   var(--color-danger);
+    border-color: var(--color-danger);
+  }
+
+  // Disabled
+
+  &.dp--disabled {
+    opacity:        0.4;
+    pointer-events: none;
+  }
+
+  // Open — bottom radius rimosso per raccordo col calendar
+  &.dp--open {
+    border-bottom-left-radius:  0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+// Input text
+
+.dp-input {
+  flex:        1;
+  min-width:   0;
+  background:  transparent;
+  border:      none;
+  outline:     none;
+  color:       var(--color-text-strong);
+  font-family: inherit;
+  font-size:   inherit;
+  font-weight: 400;
+  padding:     0 0.5rem 0 0.75rem;
+  cursor:      text;
+
+  &::placeholder { color: var(--color-muted); }
+  &:disabled     { cursor: not-allowed; }
+}
+
+// Calendar icon button
+
+.dp-icon-btn {
+  all:         unset;
+  display:     flex;
+  align-items: center;
+  padding:     0 0.625rem;
+  color:       var(--color-muted);
+  cursor:      pointer;
+  transition:  color 120ms ease;
+  flex-shrink: 0;
+
+  &:hover   { color: var(--color-text-strong); }
+  &:disabled { cursor: not-allowed; }
+}
+
+// Calendar popup
+
+.dp-calendar {
+  position:   absolute;
+  top:        100%;
+  left:       -1px;
+  z-index:    100;
+  width:      280px;
+
+  background-color: var(--color-surface);
+  border:           1px solid var(--dp-focus);
+  border-top:       none;
+  border-bottom-left-radius:  0.25rem;
+  border-bottom-right-radius: 0.25rem;
+  box-shadow: 0 6px 16px color-mix(in srgb, #000 8%, transparent);
+  padding:    0.75rem;
+}
+
+// Header (frecce + titolo)
+
+.dp-header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   0.5rem;
+
+  &__center {
+    display:     flex;
+    align-items: center;
+    gap:         0.25rem;
+  }
+
+  &__btn {
+    all:         unset;
+    cursor:      pointer;
+    font-size:   0.875rem;
+    font-weight: 600;
+    color:       var(--color-text-strong);
+    padding:     0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    transition:  background-color 100ms ease;
+
+    &:hover { background-color: var(--color-border); }
+  }
+
+  &__range {
+    font-size:   0.875rem;
+    font-weight: 600;
+    color:       var(--color-text-strong);
+  }
+}
+
+.dp-nav {
+  all:         unset;
+  display:     flex;
+  align-items: center;
+  cursor:      pointer;
+  color:       var(--color-muted);
+  padding:     0.25rem;
+  border-radius: 0.25rem;
+  transition:  background-color 100ms ease, color 100ms ease;
+
+  &:hover {
+    background-color: var(--color-border);
+    color:            var(--color-text-strong);
+  }
+}
+
+// Weekday labels
+
+.dp-weekdays {
+  display:               grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom:         0.25rem;
+
+  span {
+    text-align:  center;
+    font-size:   0.6875rem;
+    font-weight: 500;
+    color:       var(--color-muted);
+    padding:     0.25rem 0;
+  }
+}
+
+// Days grid
+
+.dp-days {
+  display:               grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:                   2px;
+}
+
+.dp-day {
+  all:           unset;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  height:        32px;
+  border-radius: 0.25rem;
+  font-size:     0.8125rem;
+  cursor:        pointer;
+  color:         var(--color-text);
+  transition:    background-color 80ms ease, color 80ms ease;
+
+  &:hover {
+    background-color: var(--color-border);
+  }
+
+  &--today {
+    font-weight: 600;
+    color:       var(--dp-focus);
+  }
+
+  &--selected {
+    background-color: var(--dp-focus);
+    color:            #fff;
+    font-weight:      600;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--dp-focus) 85%, #000);
+    }
+  }
+}
+
+// Month grid (4 colonne × 3 righe)
+
+.dp-month-grid {
+  display:               grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:                   4px;
+}
+
+.dp-month {
+  all:           unset;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  height:        40px;
+  border-radius: 0.25rem;
+  font-size:     0.8125rem;
+  cursor:        pointer;
+  color:         var(--color-text);
+  transition:    background-color 80ms ease, color 80ms ease;
+
+  &:hover       { background-color: var(--color-border); }
+
+  &--current    { color: var(--dp-focus); font-weight: 600; }
+
+  &--selected {
+    background-color: var(--dp-focus);
+    color:            #fff;
+    font-weight:      600;
+  }
+}
+
+// Year grid (4 colonne × 3 righe)
+
+.dp-year-grid {
+  display:               grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:                   4px;
+}
+
+.dp-year {
+  all:           unset;
+  display:       flex;
+  align-items:   center;
+  justify-content: center;
+  height:        40px;
+  border-radius: 0.25rem;
+  font-size:     0.8125rem;
+  cursor:        pointer;
+  color:         var(--color-text);
+  transition:    background-color 80ms ease, color 80ms ease;
+
+  &:hover       { background-color: var(--color-border); }
+
+  &--current    { color: var(--dp-focus); font-weight: 600; }
+
+  &--selected {
+    background-color: var(--dp-focus);
+    color:            #fff;
+    font-weight:      600;
+  }
+}
+
+// Hint / error
+
+.dp-message {
+  font-size:   0.75rem;
+  line-height: 1.4;
+  color:       var(--color-muted);
+
+  &--error { color: var(--color-danger); }
+}

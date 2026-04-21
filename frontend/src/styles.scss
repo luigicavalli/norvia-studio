@@ -1,1 +1,81 @@
-/* You can add global styles to this file, and also import other style files */
+// Font "Inter"
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+// Neutrals (base dell'UI)
+:root {
+  color-scheme:         light;  // disabilita dark mode di sistema
+  font-family:          'inter';
+
+  --color-bg:           #f9fafb;   // sfondo app
+  --color-surface:      #ffffff;   // card, sidebar
+  --color-border:       #e4e7ec;   // dividers, bordi
+  --color-muted:        #9ca3af;   // placeholder, label secondari
+  --color-text:         #374151;   // testo principale
+  --color-text-strong:  #111827;   // titoli
+
+  // Accent
+  --color-accent:       #6366f1;   // indigo — azioni primarie, link, focus ring
+  --color-accent-hover: #4f46e5;
+
+  // Semantic
+  --color-success:      #22c55e;
+  --color-warning:      #f59e0b;
+  --color-danger:       #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+  margin:     0;
+  padding:    0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color:            var(--color-text);
+  font-family:      'Inter', sans-serif;
+  font-size:        0.875rem;
+  line-height:      1.5;
+  -webkit-font-smoothing:  antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// H1 — nome workspace / titoli pagina principali
+h1 {
+  font-size:   1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+// H2 — sezioni di pagina
+h2 {
+  font-size:   1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+// H3 — sottosezioni, card title
+h3 {
+  font-size:   0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+// H4 — groups labels, intestazioni tabella
+h4 {
+  font-size:      0.8125rem;
+  font-weight:    500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+// Body
+p  {
+  font-size:   0.875rem;
+  line-height: 1.6;
+}
+
+// Helper / meta info
+small {
+  font-size:   0.75rem;
+  line-height: 1.5;
+}
