@@ -1,0 +1,23 @@
+<button
+  class="btn"
+  [class]="classes()"
+  [type]="type()"
+  [disabled]="disabled() || loading()"
+  [attr.aria-label]="ariaLabel()"
+  [style.width]="width()"
+  [style.height]="height()"
+  (click)="clicked.emit()"
+>
+  @if (loading()) {
+    <span class="btn__spinner" aria-hidden="true"></span>
+  }
+
+  <span class="btn__content" [class.btn__content--hidden]="loading()">
+    <ng-content select="[icon-left]" />
+    @if (!iconOnly()) {
+      {{ label() }}
+    }
+    <ng-content select="[icon-right]" />
+  </span>
+
+</button>
