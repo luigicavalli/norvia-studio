@@ -77,6 +77,10 @@
             [errorMessage]="fieldError('login', 'password')"
           />
 
+          @if (authError()) {
+            <p class="auth-error">{{ authError() }}</p>
+          }
+
           <app-button
             label="Accedi"
             type="submit"
@@ -139,6 +143,10 @@
             [error]="!!fieldError('register', 'password')"
             [errorMessage]="fieldError('register', 'password')"
           />
+
+          @if (authError()) {
+            <p class="auth-error">{{ authError() }}</p>
+          }
 
           <app-button
             label="Crea account"

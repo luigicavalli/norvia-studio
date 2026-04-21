@@ -160,6 +160,17 @@
   }
 }
 
+// Errore Clerk
+
+.auth-error {
+  font-size:        0.8125rem;
+  color:            var(--color-danger);
+  background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  border:           1px solid color-mix(in srgb, var(--color-danger) 20%, transparent);
+  border-radius:    0.25rem;
+  padding:          0.5rem 0.75rem;
+}
+
 // Responsive — sotto 768px nascondi il brand
 
 @media (max-width: 768px) {
