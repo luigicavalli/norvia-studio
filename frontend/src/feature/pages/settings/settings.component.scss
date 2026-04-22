@@ -1,0 +1,97 @@
+.settings {
+  max-width: 720px;
+  margin:    0 auto;
+  padding:   2rem 1.5rem;
+  display:   flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+// ── Page header ────────────────────────────────────────────────────────────
+
+.settings__header {
+  h1 { color: var(--color-text-strong); }
+  p  { color: var(--color-muted); margin-top: 0.25rem; }
+}
+
+// ── Card ───────────────────────────────────────────────────────────────────
+
+.settings__card {
+  background:    var(--color-surface);
+  border:        1px solid var(--color-border);
+  border-radius: 12px;
+  overflow:      hidden;
+}
+
+.settings__card-header {
+  padding:       1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border);
+
+  h2 { color: var(--color-text-strong); margin-bottom: 0.125rem; }
+  p  { color: var(--color-muted); font-size: 0.875rem; }
+}
+
+// ── Form ───────────────────────────────────────────────────────────────────
+
+.settings__form {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.settings__form-footer {
+  display:         flex;
+  justify-content: flex-end;
+  padding-top:     0.25rem;
+}
+
+// ── Toggle list ────────────────────────────────────────────────────────────
+
+.settings__toggle-list {
+  display:        flex;
+  flex-direction: column;
+  gap:            1.25rem;
+}
+
+// ── Plan ───────────────────────────────────────────────────────────────────
+
+.settings__plan {
+  padding:         1.25rem 1.5rem;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  gap:             1rem;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items:    flex-start;
+  }
+}
+
+.settings__plan-name {
+  display:     flex;
+  align-items: center;
+  gap:         0.5rem;
+  margin-bottom: 0.5rem;
+
+  strong { font-size: 1rem; color: var(--color-text-strong); }
+}
+
+.settings__plan-features {
+  list-style: none;
+  display:    flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  li {
+    font-size: 0.8125rem;
+    color:     var(--color-muted);
+
+    &::before {
+      content:      '✓ ';
+      color:        var(--color-success);
+      font-weight:  600;
+    }
+  }
+}

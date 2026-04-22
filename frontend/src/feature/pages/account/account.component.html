@@ -1,0 +1,99 @@
+<div class="account">
+
+  <!-- Header -->
+  <div class="account__header">
+    <app-avatar [name]="displayName()" [imageUrl]="user()?.imageUrl ?? null" size="xl" />
+    <div>
+      <h1>{{ displayName() }}</h1>
+      <p class="account__email">{{ email() }}</p>
+    </div>
+  </div>
+
+  <!-- Profilo -->
+  <section class="account__card">
+    <div class="account__card-header">
+      <h2>Informazioni personali</h2>
+      <p>Aggiorna il tuo nome visualizzato.</p>
+    </div>
+
+    <form class="account__form" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
+      <div class="account__row">
+        <app-input
+          label="Nome"
+          placeholder="Mario"
+          formControlName="firstName"
+          [error]="!!fieldError('profile', 'firstName')"
+          [errorMessage]="fieldError('profile', 'firstName')"
+        />
+        <app-input
+          label="Cognome"
+          placeholder="Rossi"
+          formControlName="lastName"
+          [error]="!!fieldError('profile', 'lastName')"
+          [errorMessage]="fieldError('profile', 'lastName')"
+        />
+      </div>
+
+      <div class="account__form-footer">
+        <app-button label="Salva modifiche" type="submit" size="sm" [loading]="profileSaving" />
+      </div>
+    </form>
+  </section>
+
+  <!-- Password -->
+  <section class="account__card">
+    <div class="account__card-header">
+      <h2>Sicurezza</h2>
+      <p>Aggiorna la tua password di accesso.</p>
+    </div>
+
+    <form class="account__form" [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()">
+      <app-input
+        label="Password attuale"
+        type="password"
+        placeholder="••••••••"
+        formControlName="currentPassword"
+        [error]="!!fieldError('password', 'currentPassword')"
+        [errorMessage]="fieldError('password', 'currentPassword')"
+      />
+      <div class="account__row">
+        <app-input
+          label="Nuova password"
+          type="password"
+          placeholder="••••••••"
+          formControlName="newPassword"
+          [error]="!!fieldError('password', 'newPassword')"
+          [errorMessage]="fieldError('password', 'newPassword')"
+        />
+        <app-input
+          label="Conferma password"
+          type="password"
+          placeholder="••••••••"
+          formControlName="confirmPassword"
+          [error]="!!fieldError('password', 'confirmPassword')"
+          [errorMessage]="fieldError('password', 'confirmPassword')"
+        />
+      </div>
+
+      <div class="account__form-footer">
+        <app-button label="Aggiorna password" type="submit" size="sm" [loading]="passwordSaving" />
+      </div>
+    </form>
+  </section>
+
+  <!-- Zona pericolosa -->
+  <section class="account__card account__card--danger">
+    <div class="account__card-header">
+      <h2>Zona pericolosa</h2>
+      <p>Azioni irreversibili sull'account.</p>
+    </div>
+    <div class="account__danger-body">
+      <div>
+        <strong>Elimina account</strong>
+        <p>L'account e tutti i dati associati verranno eliminati definitivamente.</p>
+      </div>
+      <app-button label="Elimina account" size="sm" color="danger" variant="outlined" />
+    </div>
+  </section>
+
+</div>

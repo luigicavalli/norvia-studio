@@ -1,0 +1,103 @@
+<div class="settings">
+
+  <div class="settings__header">
+    <h1>Impostazioni</h1>
+    <p>Gestisci il tuo workspace e le tue preferenze.</p>
+  </div>
+
+  <!-- Workspace -->
+  <section class="settings__card">
+    <div class="settings__card-header">
+      <h2>Workspace</h2>
+      <p>Nome e descrizione del tuo spazio di lavoro.</p>
+    </div>
+    <form class="settings__form" [formGroup]="workspaceForm" (ngSubmit)="onSaveWorkspace()">
+      <app-input
+        label="Nome workspace"
+        placeholder="Il mio workspace"
+        formControlName="name"
+      />
+      <app-input
+        label="Descrizione"
+        placeholder="Una breve descrizione del workspace (opzionale)"
+        formControlName="description"
+      />
+      <div class="settings__form-footer">
+        <app-button label="Salva" type="submit" size="sm" [loading]="workspaceSaving" />
+      </div>
+    </form>
+  </section>
+
+  <!-- Notifiche -->
+  <section class="settings__card">
+    <div class="settings__card-header">
+      <h2>Notifiche email</h2>
+      <p>Scegli quando vuoi ricevere aggiornamenti via email.</p>
+    </div>
+    <form class="settings__form" [formGroup]="notifForm">
+      <div class="settings__toggle-list">
+        <app-toggle
+          formControlName="taskAssigned"
+          label="Task assegnati a me"
+          hint="Ricevi un'email quando un task ti viene assegnato."
+        />
+        <app-toggle
+          formControlName="deadlines"
+          label="Scadenze imminenti"
+          hint="Avviso 24 ore prima della scadenza di un task."
+        />
+        <app-toggle
+          formControlName="comments"
+          label="Nuovi commenti"
+          hint="Notifica quando qualcuno commenta su un tuo task."
+        />
+        <app-toggle
+          formControlName="weeklyDigest"
+          label="Digest settimanale"
+          hint="Riepilogo delle attività del team ogni lunedì."
+        />
+      </div>
+      <div class="settings__form-footer">
+        <app-button label="Salva preferenze" type="button" size="sm" (clicked)="onSaveNotifications()" />
+      </div>
+    </form>
+  </section>
+
+  <!-- Lingua -->
+  <section class="settings__card">
+    <div class="settings__card-header">
+      <h2>Lingua</h2>
+      <p>Lingua dell'interfaccia.</p>
+    </div>
+    <div class="settings__form" [formGroup]="appearanceForm">
+      <app-select
+        label="Lingua"
+        formControlName="language"
+        [options]="languageOptions"
+      />
+    </div>
+  </section>
+
+  <!-- Piano -->
+  <section class="settings__card">
+    <div class="settings__card-header">
+      <h2>Piano</h2>
+      <p>Il tuo piano attuale e le funzionalità disponibili.</p>
+    </div>
+    <div class="settings__plan">
+      <div class="settings__plan-info">
+        <div class="settings__plan-name">
+          <strong>Free</strong>
+          <app-badge label="Attivo" variant="success" size="sm" />
+        </div>
+        <ul class="settings__plan-features">
+          <li>Fino a 3 progetti</li>
+          <li>1 membro del team</li>
+          <li>Storage 1 GB</li>
+        </ul>
+      </div>
+      <app-button label="Passa a Pro" size="sm" color="primary" />
+    </div>
+  </section>
+
+</div>

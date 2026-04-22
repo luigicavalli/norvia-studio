@@ -1,0 +1,68 @@
+<div class="table-wrap">
+  <table class="table">
+
+    <!-- Head -->
+    <thead>
+      <tr>
+        @for (col of columns(); track col.key) {
+          <th
+            class="table__th"
+            [class.table__th--sortable]="col.sortable"
+            [style.width]="col.width ?? 'auto'"
+            (click)="onSort(col)"
+          >
+            <span class="table__th-inner">
+              {{ col.label }}
+              @if (col.sortable) {
+                <span
+                  class="table__sort-icon"
+                  [class.table__sort-icon--asc]="sort()?.key === col.key && sort()?.direction === 'asc'"
+                  [class.table__sort-icon--desc]="sort()?.key === col.key && sort()?.direction === 'desc'"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                       stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 3 18 9"/>
+                    <polyline points="6 15 12 21 18 15"/>
+                  </svg>
+                </span>
+              }
+            </span>
+          </th>
+        }
+      </tr>
+    </thead>
+
+    <!-- Body -->
+    <tbody>
+      @if (loading()) {
+        @for (i of [1,2,3,4,5]; track i) {
+          <tr class="table__row">
+            @for (col of columns(); track col.key) {
+              <td class="table__td"><span class="table__skeleton"></span></td>
+            }
+          </tr>
+        }
+      } @else if (rows().length === 0) {
+        <tr>
+          <td class="table__empty" [attr.colspan]="columns().length">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <p>{{ emptyMessage() }}</p>
+          </td>
+        </tr>
+      } @else {
+        @for (row of rows(); track trackRow($index, row)) {
+          <tr class="table__row">
+            @for (col of columns(); track col.key) {
+              <td class="table__td">{{ cellValue(row, col.key) }}</td>
+            }
+          </tr>
+        }
+      }
+    </tbody>
+
+  </table>
+</div>
