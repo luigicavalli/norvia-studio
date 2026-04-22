@@ -1,0 +1,27 @@
+.avatar {
+  display:       block;
+  border-radius: 50%;
+  object-fit:    cover;
+  flex-shrink:   0;
+
+  // ── Sizes ────────────────────────────────────────────────────────────────
+
+  &--xs { width: 20px; height: 20px; font-size: 0.5625rem; }
+  &--sm { width: 28px; height: 28px; font-size: 0.6875rem; }
+  &--md { width: 36px; height: 36px; font-size: 0.8125rem; }
+  &--lg { width: 48px; height: 48px; font-size: 1rem;      }
+  &--xl { width: 64px; height: 64px; font-size: 1.25rem;   }
+
+  // ── Initials fallback ─────────────────────────────────────────────────────
+
+  &--initials {
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    background:      var(--color-accent);
+    color:           #fff;
+    font-weight:     600;
+    line-height:     1;
+    user-select:     none;
+  }
+}

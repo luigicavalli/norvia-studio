@@ -1,0 +1,121 @@
+<nav class="navbar">
+
+  <!-- Logo -->
+  <a class="navbar__brand" routerLink="/home">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3"  y="3"  width="7" height="7" rx="1"/>
+      <rect x="14" y="3"  width="7" height="7" rx="1"/>
+      <rect x="3"  y="14" width="7" height="7" rx="1"/>
+      <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
+    <span>FlowDesk</span>
+  </a>
+
+  <!-- Actions -->
+  <div class="navbar__actions">
+
+    <!-- Notifications -->
+    <div class="navbar__dropdown-wrap">
+      <button class="navbar__icon-btn" (click)="toggleNotif()" [class.navbar__icon-btn--active]="notifOpen()" aria-label="Notifiche">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        @if (unreadCount() > 0) {
+          <span class="navbar__badge">{{ unreadCount() }}</span>
+        }
+      </button>
+
+      @if (notifOpen()) {
+        <div class="navbar__dropdown navbar__dropdown--notif">
+          <div class="navbar__dropdown-header">
+            <span>Notifiche</span>
+            @if (unreadCount() > 0) {
+              <button class="navbar__dropdown-action" (click)="markAllRead()">Segna tutte come lette</button>
+            }
+          </div>
+          @if (notifications().length === 0) {
+            <p class="navbar__dropdown-empty">Nessuna notifica</p>
+          } @else {
+            <ul class="navbar__notif-list">
+              @for (n of notifications(); track n.id) {
+                <li class="navbar__notif-item" [class.navbar__notif-item--unread]="n.unread">
+                  @if (n.unread) {
+                    <span class="navbar__notif-dot"></span>
+                  }
+                  <div class="navbar__notif-body">
+                    <p>{{ n.text }}</p>
+                    <small>{{ n.time }}</small>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- User menu -->
+    <div class="navbar__dropdown-wrap">
+      <button class="navbar__avatar-btn" (click)="toggleUserMenu()" [class.navbar__avatar-btn--active]="userMenuOpen()" aria-label="Menu utente">
+        @if (avatarUrl()) {
+          <img class="navbar__avatar" [src]="avatarUrl()!" [alt]="displayName()" />
+        } @else {
+          <span class="navbar__avatar navbar__avatar--initials">{{ initials() }}</span>
+        }
+      </button>
+
+      @if (userMenuOpen()) {
+        <div class="navbar__dropdown navbar__dropdown--user">
+          <div class="navbar__dropdown-header navbar__dropdown-header--user">
+            <strong>{{ displayName() }}</strong>
+          </div>
+
+          <ul class="navbar__menu-list">
+            <li>
+              <a class="navbar__menu-item" routerLink="/account" (click)="userMenuOpen.set(false)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                Account
+              </a>
+            </li>
+            <li>
+              <a class="navbar__menu-item" routerLink="/settings" (click)="userMenuOpen.set(false)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                Impostazioni
+              </a>
+            </li>
+          </ul>
+
+          <div class="navbar__dropdown-divider"></div>
+
+          <ul class="navbar__menu-list">
+            <li>
+              <button class="navbar__menu-item navbar__menu-item--danger" (click)="onSignOut()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Esci
+              </button>
+            </li>
+          </ul>
+
+        </div>
+      }
+    </div>
+
+  </div>
+
+</nav>
