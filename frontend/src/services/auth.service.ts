@@ -21,6 +21,8 @@ import { Clerk } from '@clerk/clerk-js';
 import { environment } from '../environments/environment';
 
 
+export type SignInResult = 'complete' | 'needs_second_factor';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -44,13 +46,13 @@ export class AuthService {
   }
 
   private syncState(): void {
-    this.isSignedIn.set(!!this.clerk.user);
+    this.isSignedIn.set(!!this.clerk.session);
     this.user.set(this.clerk.user);
   }
 
   // --- Auth ---
 
-  async signIn(email: string, password: string): Promise<void> {
+  async signIn(email: string, password: string): Promise<SignInResult> {
     const attempt = await this.clerk.client!.signIn.create({
       identifier: email,
       password,
@@ -58,7 +60,37 @@ export class AuthService {
 
     if (attempt.status === 'complete') {
       await this.clerk.setActive({ session: attempt.createdSessionId });
-      await this.router.navigate(['/dashboard']);
+      this.syncState();
+      await this.router.navigate(['/home']);
+      return 'complete';
+    }
+
+    if (attempt.status === 'needs_second_factor') {
+      return 'needs_second_factor';
+    }
+
+    throw new Error(`Unexpected sign-in status: ${attempt.status}`);
+  }
+
+  async verifyMfa(code: string): Promise<void> {
+    const signIn = this.clerk.client!.signIn;
+
+    const strategies = (signIn.supportedSecondFactors ?? []) as { strategy: string }[];
+    const strategy   =
+      strategies.find(f => f.strategy === 'totp')?.strategy ??
+      strategies.find(f => f.strategy === 'phone_code')?.strategy ??
+      strategies.find(f => f.strategy === 'email_code')?.strategy ??
+      'totp';
+
+    const attempt = await signIn.attemptSecondFactor({
+      strategy: strategy as 'totp' | 'phone_code' | 'email_code' | 'backup_code',
+      code,
+    });
+
+    if (attempt.status === 'complete') {
+      await this.clerk.setActive({ session: attempt.createdSessionId });
+      this.syncState();
+      await this.router.navigate(['/home']);
     }
   }
 
@@ -78,11 +110,21 @@ export class AuthService {
 
     if (attempt.status === 'complete') {
       await this.clerk.setActive({ session: attempt.createdSessionId });
-      await this.router.navigate(['/dashboard']);
+      this.syncState();
+      await this.router.navigate(['/home']);
     }
 
     // Se Clerk richiede verifica email (status === 'missing_requirements')
     // si può gestire qui il flusso OTP
+  }
+
+  async updateProfile(firstName: string, lastName: string): Promise<void> {
+    await this.clerk.user!.update({ firstName, lastName });
+    this.syncState();
+  }
+
+  async updatePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await this.clerk.user!.updatePassword({ currentPassword, newPassword });
   }
 
   async signOut(): Promise<void> {

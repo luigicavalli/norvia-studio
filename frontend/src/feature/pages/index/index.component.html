@@ -41,19 +41,21 @@
   <div class="auth-form-side">
     <div class="auth-card">
 
-      <!-- Tab -->
-      <div class="auth-tabs">
-        <button
-          class="auth-tab"
-          [class.auth-tab--active]="mode() === 'login'"
-          (click)="setMode('login')"
-        >Accedi</button>
-        <button
-          class="auth-tab"
-          [class.auth-tab--active]="mode() === 'register'"
-          (click)="setMode('register')"
-        >Registrati</button>
-      </div>
+      <!-- Tab (nascosto durante MFA) -->
+      @if (mode() !== 'mfa') {
+        <div class="auth-tabs">
+          <button
+            class="auth-tab"
+            [class.auth-tab--active]="mode() === 'login'"
+            (click)="setMode('login')"
+          >Accedi</button>
+          <button
+            class="auth-tab"
+            [class.auth-tab--active]="mode() === 'register'"
+            (click)="setMode('register')"
+          >Registrati</button>
+        </div>
+      }
 
       <!-- Login -->
       @if (mode() === 'login') {
@@ -92,6 +94,49 @@
           <p class="auth-switch">
             Non hai un account?
             <button type="button" class="auth-switch__link" (click)="setMode('register')">Registrati</button>
+          </p>
+
+        </form>
+      }
+
+      <!-- MFA -->
+      @if (mode() === 'mfa') {
+        <form class="auth-form" [formGroup]="mfaForm" (ngSubmit)="onMfa()">
+
+          <div class="auth-mfa-header">
+            <div class="auth-mfa-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="5" y="11" width="14" height="10" rx="2"/>
+                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+              </svg>
+            </div>
+            <h2>Verifica in due passaggi</h2>
+            <p>Inserisci il codice dalla tua app di autenticazione.</p>
+          </div>
+
+          <app-input
+            label="Codice di verifica"
+            placeholder="000000"
+            formControlName="code"
+            [error]="!!fieldError('mfa', 'code')"
+            [errorMessage]="fieldError('mfa', 'code')"
+          />
+
+          @if (authError()) {
+            <p class="auth-error">{{ authError() }}</p>
+          }
+
+          <app-button
+            label="Verifica"
+            type="submit"
+            size="md"
+            width="100%"
+            [loading]="loading()"
+          />
+
+          <p class="auth-switch">
+            <button type="button" class="auth-switch__link" (click)="setMode('login')">← Torna al login</button>
           </p>
 
         </form>

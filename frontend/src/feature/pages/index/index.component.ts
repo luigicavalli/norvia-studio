@@ -23,7 +23,7 @@ import { ButtonComponent }     from '../../components/shared/button/button.compo
 import { DatepickerComponent } from '../../components/shared/datepicker/datepicker.component';
 
 
-type AuthMode = 'login' | 'register';
+type AuthMode = 'login' | 'register' | 'mfa';
 
 @Component({
   selector:    'app-index',
@@ -36,8 +36,8 @@ export class IndexComponent {
   private  readonly fb   = inject(FormBuilder);
   private  readonly auth = inject(AuthService);
 
-  protected readonly mode    = signal<AuthMode>('login');
-  protected readonly loading = signal<boolean>(false);
+  protected readonly mode      = signal<AuthMode>('login');
+  protected readonly loading   = signal<boolean>(false);
   protected readonly authError = signal<string>('');
 
   protected readonly loginForm = this.fb.group({
@@ -53,7 +53,11 @@ export class IndexComponent {
     password:  ['',  [Validators.required, Validators.minLength(8)]],
   });
 
-  protected setMode(mode: AuthMode): void {
+  protected readonly mfaForm = this.fb.group({
+    code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(8)]],
+  });
+
+  protected setMode(mode: 'login' | 'register'): void {
     this.mode.set(mode);
     this.authError.set('');
     this.loginForm.reset();
@@ -68,7 +72,27 @@ export class IndexComponent {
 
     try {
       const { email, password } = this.loginForm.value;
-      await this.auth.signIn(email!, password!);
+      const result = await this.auth.signIn(email!, password!);
+
+      if (result === 'needs_second_factor') {
+        this.mode.set('mfa');
+        this.authError.set('');
+      }
+    } catch (err: unknown) {
+      this.authError.set(this.parseClerkError(err));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  protected async onMfa(): Promise<void> {
+    if (this.mfaForm.invalid) { this.mfaForm.markAllAsTouched(); return; }
+
+    this.loading.set(true);
+    this.authError.set('');
+
+    try {
+      await this.auth.verifyMfa(this.mfaForm.value.code!);
     } catch (err: unknown) {
       this.authError.set(this.parseClerkError(err));
     } finally {
@@ -98,14 +122,17 @@ export class IndexComponent {
     }
   }
 
-  protected fieldError(form: 'login' | 'register', field: string): string {
-    const group = (form === 'login' ? this.loginForm : this.registerForm) as FormGroup;
-    const ctrl  = group.get(field);
+  protected fieldError(form: 'login' | 'register' | 'mfa', field: string): string {
+    const group = (
+      form === 'login'    ? this.loginForm    :
+      form === 'register' ? this.registerForm :
+      this.mfaForm
+    ) as FormGroup;
 
+    const ctrl = group.get(field);
     if (!ctrl?.invalid || !ctrl.touched) return '';
 
     const e = ctrl.errors ?? {};
-
     if (e['required'])  return 'Campo obbligatorio';
     if (e['email'])     return 'Inserisci un\'email valida';
     if (e['minlength']) return `Minimo ${e['minlength'].requiredLength} caratteri`;
