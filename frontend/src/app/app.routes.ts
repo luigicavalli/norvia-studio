@@ -3,7 +3,11 @@ import { Routes } from '@angular/router';
 import { IndexComponent }   from '../feature/pages/index/index.component';
 import { ShellComponent }   from '../feature/components/shell/shell.component';
 import { HomeComponent }    from '../feature/pages/home/home.component';
-import { AccountComponent } from '../feature/pages/account/account.component';
+import { AccountComponent }  from '../feature/pages/account/account.component';
+import { SettingsComponent }  from '../feature/pages/settings/settings.component';
+import { ProjectsComponent }  from '../feature/pages/projects/projects.component';
+import { ClientsComponent }   from '../feature/pages/clients/clients.component';
+import { TeamComponent }      from '../feature/pages/team/team.component';
 
 import { authGuard } from './guards/auth.guard';
 
@@ -15,8 +19,12 @@ export const routes: Routes = [
     component:   ShellComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'home',    component: HomeComponent    },
-      { path: 'account', component: AccountComponent },
+      { path: 'home',     component: HomeComponent     },
+      { path: 'account',  component: AccountComponent  },
+      { path: 'settings', component: SettingsComponent },
+      { path: 'projects', component: ProjectsComponent },
+      { path: 'clients',  component: ClientsComponent  },
+      { path: 'team',     component: TeamComponent     },
     ],
   },
   { path: '**', redirectTo: '' },

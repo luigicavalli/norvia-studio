@@ -1,0 +1,142 @@
+<div class="team">
+
+  <!-- Header -->
+  <div class="team__header">
+    <div>
+      <h1>Team</h1>
+      <p class="team__subtitle">{{ totalCount() }} membro{{ totalCount() === 1 ? '' : 'i' }} nel workspace</p>
+    </div>
+    <app-button label="Invita membro" size="sm" (clicked)="openModal()">
+      <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </app-button>
+  </div>
+
+  <!-- Members list -->
+  <section class="team__section">
+    <h4 class="team__section-title">Membri attivi</h4>
+
+    <div class="team__list">
+
+      <!-- Current user (always first, cannot be removed) -->
+      <div class="team__row">
+        <app-avatar [name]="currentUser().name" [imageUrl]="currentUser().avatarUrl" size="md" />
+        <div class="team__row-info">
+          <span class="team__row-name">
+            {{ currentUser().name }}
+            <span class="team__you-badge">Tu</span>
+          </span>
+          <span class="team__row-email">{{ currentUser().email }}</span>
+        </div>
+        <app-badge label="Amministratore" variant="info" size="sm" />
+      </div>
+
+      <!-- Other active members -->
+      @for (member of teamService.active(); track member.id) {
+        <div class="team__row">
+          <app-avatar [name]="member.firstName + ' ' + member.lastName" [imageUrl]="member.avatarUrl" size="md" />
+          <div class="team__row-info">
+            <span class="team__row-name">{{ member.email }}</span>
+          </div>
+          <app-badge
+            [label]="roleBadge(member.role).label"
+            [variant]="roleBadge(member.role).variant"
+            size="sm"
+          />
+          <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" aria-label="Rimuovi membro">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      }
+
+      @if (teamService.active().length === 0) {
+        <p class="team__list-empty">Nessun altro membro attivo.</p>
+      }
+
+    </div>
+  </section>
+
+  <!-- Pending invites -->
+  @if (teamService.pending().length > 0) {
+    <section class="team__section">
+      <h4 class="team__section-title">Inviti in sospeso</h4>
+
+      <div class="team__list team__list--pending">
+        @for (member of teamService.pending(); track member.id) {
+          <div class="team__row team__row--pending">
+            <div class="team__pending-avatar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div class="team__row-info">
+              <span class="team__row-name">{{ member.email }}</span>
+              <span class="team__row-email">Invito in attesa di accettazione</span>
+            </div>
+            <app-badge
+              [label]="roleBadge(member.role).label"
+              [variant]="roleBadge(member.role).variant"
+              size="sm"
+            />
+            <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" aria-label="Annulla invito">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        }
+      </div>
+    </section>
+  }
+
+</div>
+
+<!-- Modal invito -->
+<app-modal [open]="modalOpen()" title="Invita un membro" size="sm" (closed)="modalOpen.set(false)">
+  <form class="invite-form" [formGroup]="form" (ngSubmit)="onInvite()">
+
+    <app-input
+      label="Indirizzo email"
+      type="email"
+      placeholder="collega@email.it"
+      formControlName="email"
+      [error]="!!fieldError('email')"
+      [errorMessage]="fieldError('email')"
+    />
+
+    <app-select
+      label="Ruolo"
+      formControlName="role"
+      [options]="roleOptions"
+    />
+
+    <div class="invite-form__roles">
+      <div class="invite-form__role-info">
+        <strong>Amministratore</strong>
+        <span>Accesso completo a tutte le impostazioni e i dati.</span>
+      </div>
+      <div class="invite-form__role-info">
+        <strong>Membro</strong>
+        <span>Può creare e gestire progetti e task.</span>
+      </div>
+      <div class="invite-form__role-info">
+        <strong>Osservatore</strong>
+        <span>Solo lettura, non può modificare nulla.</span>
+      </div>
+    </div>
+
+  </form>
+
+  <div modal-footer>
+    <app-button label="Annulla"        variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
+    <app-button label="Invia invito"                   size="sm" (clicked)="onInvite()" />
+  </div>
+</app-modal>

@@ -1,5 +1,5 @@
-import { Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { RouterLink, RouterLinkActive }        from '@angular/router';
 
 import { AuthService } from '../../../services/auth.service';
 
@@ -32,6 +32,11 @@ export class SidebarComponent {
     return [u?.firstName, u?.lastName].filter(Boolean).join(' ') || '';
   });
   protected readonly avatarUrl   = computed(() => this.user()?.imageUrl ?? null);
+
+  readonly mobileOpen = signal(false);
+
+  open():  void { this.mobileOpen.set(true);  }
+  close(): void { this.mobileOpen.set(false); }
 
   protected readonly navItems: NavItem[] = [
     { label: 'Home',        path: '/home',     icon: 'home'      },

@@ -1,0 +1,13 @@
+<div class="toggle" [class.toggle--disabled]="disabled()" (click)="toggle()">
+  <div class="toggle__track" [class.toggle__track--on]="checked()">
+    <span class="toggle__thumb" [class.toggle__thumb--on]="checked()"></span>
+  </div>
+  @if (label()) {
+    <div class="toggle__text">
+      <span class="toggle__label">{{ label() }}</span>
+      @if (hint()) {
+        <small class="toggle__hint">{{ hint() }}</small>
+      }
+    </div>
+  }
+</div>

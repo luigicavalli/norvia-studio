@@ -1,4 +1,8 @@
-<aside class="sidebar">
+@if (mobileOpen()) {
+  <div class="sidebar__backdrop" (click)="close()"></div>
+}
+
+<aside class="sidebar" [class.sidebar--open]="mobileOpen()">
 
   <!-- Logo -->
   <a class="sidebar__brand" routerLink="/home">
@@ -20,6 +24,7 @@
         [routerLink]="item.path"
         routerLinkActive="sidebar__nav-item--active"
         [routerLinkActiveOptions]="{ exact: item.path === '/home' }"
+        (click)="close()"
       >
         <!-- Home -->
         @if (item.icon === 'home') {
@@ -62,7 +67,7 @@
   <!-- Bottom -->
   <div class="sidebar__bottom">
 
-    <a class="sidebar__nav-item" routerLink="/settings" routerLinkActive="sidebar__nav-item--active">
+    <a class="sidebar__nav-item" routerLink="/settings" routerLinkActive="sidebar__nav-item--active" (click)="close()">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/>
@@ -79,7 +84,7 @@
 
     <div class="sidebar__divider"></div>
 
-    <a class="sidebar__user" routerLink="/account" routerLinkActive="sidebar__user--active">
+    <a class="sidebar__user" routerLink="/account" routerLinkActive="sidebar__user--active" (click)="close()">
       @if (avatarUrl()) {
         <img class="sidebar__avatar" [src]="avatarUrl()!" [alt]="displayName()" />
       } @else {
