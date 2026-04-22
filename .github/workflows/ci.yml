@@ -23,6 +23,22 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - name: Install deps
         run: npm ci
+      - name: Create environment files
+        run: |
+          cat > src/environments/environment.ts <<EOF
+          export const environment = {
+            production:          false,
+            clerkPublishableKey: '${{ secrets.CLERK_PUBLISHABLE_KEY }}',
+            apiUrl:              '${{ secrets.API_URL }}',
+          };
+          EOF
+          cat > src/environments/environment.prod.ts <<EOF
+          export const environment = {
+            production:          true,
+            clerkPublishableKey: '${{ secrets.CLERK_PUBLISHABLE_KEY }}',
+            apiUrl:              '${{ secrets.API_URL }}',
+          };
+          EOF
       - name: Lint
         run: npm run lint
       - name: Test
