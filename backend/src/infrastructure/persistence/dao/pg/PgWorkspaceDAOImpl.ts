@@ -64,14 +64,15 @@ export class PgWorkspaceDAOImpl implements WorkspaceDAO {
     public async save(entity: WorkspacePO): Promise<WorkspacePO> {
 
         const { rows } = await this.pool.query(
-            `INSERT INTO workspaces (id, name, slug, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5)
+            `INSERT INTO workspaces (id, name, slug, description, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6)
             ON CONFLICT (id) DO UPDATE SET
-                name       = EXCLUDED.name,
-                slug       = EXCLUDED.slug,
-                updated_at = EXCLUDED.updated_at
+                name        = EXCLUDED.name,
+                slug        = EXCLUDED.slug,
+                description = EXCLUDED.description,
+                updated_at  = EXCLUDED.updated_at
             RETURNING *`,
-            [ entity.id, entity.name, entity.slug, entity.created_at, entity.updated_at ]
+            [ entity.id, entity.name, entity.slug, entity.description ?? null, entity.created_at, entity.updated_at ]
         );
 
         return rows[0];
