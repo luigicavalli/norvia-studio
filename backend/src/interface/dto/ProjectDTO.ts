@@ -3,6 +3,7 @@ import type { ClientDTO } from "./ClientDTO.js";
 export interface ProjectDTO {
 
     id:             string;
+    workspaceId:    string;
     name:           string;
     description:    string;
     client:         ClientDTO;

@@ -1,9 +1,10 @@
 export interface WorkspaceDTO {
 
-    id:        string;
-    name:      string;
-    slug:      string;
-    createdAt: Date;
-    updatedAt: Date;
+    id:          string;
+    name:        string;
+    slug:        string;
+    description: string | null;
+    createdAt:   Date;
+    updatedAt:   Date;
 
 };

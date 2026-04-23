@@ -6,7 +6,7 @@ export class ClientPO {
     private _last_name:    string;
     private _email:        string;
     private _phone:        number;
-    private _company_id:   string;
+    private _company_id:   string | null;
     private _vat_number:   string;
     private _status:       string;
     private _notes:        string;
@@ -65,11 +65,11 @@ export class ClientPO {
         this._phone = value;
     }
 
-    public get company_id(): string {
+    public get company_id(): string | null {
         return this._company_id;
     }
 
-    public set company_id(value: string) {
+    public set company_id(value: string | null) {
         this._company_id = value;
     }
 
