@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AuthService }  from '../../../services/auth.service';
@@ -30,11 +30,8 @@ export class AccountComponent implements OnInit {
     this.user()?.primaryEmailAddress?.emailAddress ?? '',
   );
 
-  protected readonly profileLoading  = false;
-  protected readonly passwordLoading = false;
-
-  protected profileSaving  = false;
-  protected passwordSaving = false;
+  protected readonly profileSaving  = signal(false);
+  protected readonly passwordSaving = signal(false);
 
   protected readonly profileForm = this.fb.group({
     firstName: ['', Validators.required],
@@ -58,7 +55,7 @@ export class AccountComponent implements OnInit {
   protected async onSaveProfile(): Promise<void> {
     if (this.profileForm.invalid) { this.profileForm.markAllAsTouched(); return; }
 
-    this.profileSaving = true;
+    this.profileSaving.set(true);
     try {
       const { firstName, lastName } = this.profileForm.value;
       await this.auth.updateProfile(firstName!, lastName!);
@@ -66,7 +63,7 @@ export class AccountComponent implements OnInit {
     } catch {
       this.toast.danger('Errore durante l\'aggiornamento del profilo.');
     } finally {
-      this.profileSaving = false;
+      this.profileSaving.set(false);
     }
   }
 
@@ -79,7 +76,7 @@ export class AccountComponent implements OnInit {
       return;
     }
 
-    this.passwordSaving = true;
+    this.passwordSaving.set(true);
     try {
       await this.auth.updatePassword(currentPassword!, newPassword!);
       this.toast.success('Password aggiornata con successo.');
@@ -87,7 +84,7 @@ export class AccountComponent implements OnInit {
     } catch {
       this.toast.danger('Password attuale non corretta.');
     } finally {
-      this.passwordSaving = false;
+      this.passwordSaving.set(false);
     }
   }
 

@@ -132,11 +132,8 @@
 // Dropdown
 
 .sel-dropdown {
-  position:   absolute;
-  top:        100%;
-  left:       -1px;
-  right:      -1px;
-  z-index:    100;
+  position: fixed;
+  z-index:  9000;
 
   background-color: var(--color-surface);
   border:           1px solid var(--sel-focus);

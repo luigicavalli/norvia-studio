@@ -35,7 +35,7 @@
       </div>
 
       <div class="account__form-footer">
-        <app-button label="Salva modifiche" type="submit" size="sm" [loading]="profileSaving" />
+        <app-button label="Salva modifiche" type="submit" size="sm" [loading]="profileSaving()" />
       </div>
     </form>
   </section>
@@ -76,7 +76,7 @@
       </div>
 
       <div class="account__form-footer">
-        <app-button label="Aggiorna password" type="submit" size="sm" [loading]="passwordSaving" />
+        <app-button label="Aggiorna password" type="submit" size="sm" [loading]="passwordSaving()" />
       </div>
     </form>
   </section>

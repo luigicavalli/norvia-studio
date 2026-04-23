@@ -8,7 +8,7 @@
       <line x1="3" y1="18" x2="21" y2="18"/>
     </svg>
   </button>
-  <span class="mobile-bar__logo">FlowDesk</span>
+  <span class="mobile-bar__logo">Norvia Studio</span>
 </header>
 
 <app-sidebar #sidebar />
@@ -18,3 +18,40 @@
 </main>
 
 <app-toast />
+
+<!-- Workspace onboarding overlay -->
+@if (workspaceService.needsSetup()) {
+  <div class="workspace-setup">
+    <div class="workspace-setup__card">
+
+      <div class="workspace-setup__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/>
+          <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+          <line x1="12" y1="12" x2="12" y2="16"/>
+          <line x1="10" y1="14" x2="14" y2="14"/>
+        </svg>
+      </div>
+
+      <h2 class="workspace-setup__title">Benvenuto in Norvia Studio</h2>
+      <p class="workspace-setup__subtitle">Crea il tuo primo workspace per iniziare a gestire progetti e clienti.</p>
+
+      <form class="workspace-setup__form" [formGroup]="setupForm" (ngSubmit)="onCreateWorkspace()">
+        <app-input
+          label="Nome workspace"
+          placeholder="Es. Studio Rossi, My Agency…"
+          formControlName="name"
+          [error]="!!setupForm.get('name')?.invalid && !!setupForm.get('name')?.touched"
+          [errorMessage]="setupForm.get('name')?.touched && setupForm.get('name')?.hasError('required') ? 'Campo obbligatorio' : ''"
+        />
+        <app-button
+          label="Crea workspace"
+          [loading]="saving()"
+          (clicked)="onCreateWorkspace()"
+        />
+      </form>
+
+    </div>
+  </div>
+}

@@ -219,3 +219,17 @@
 
   @media (max-width: 480px) { grid-template-columns: 1fr; }
 }
+
+.project-form__no-clients {
+  font-size:  0.8125rem;
+  color:      var(--color-text-muted);
+  background: var(--color-bg);
+  border:     1px solid var(--color-border);
+  border-radius: 8px;
+  padding:    0.75rem 1rem;
+
+  a {
+    color:           var(--color-accent);
+    text-decoration: underline;
+  }
+}

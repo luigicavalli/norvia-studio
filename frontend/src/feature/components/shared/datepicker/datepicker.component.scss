@@ -113,11 +113,9 @@
 // Calendar popup
 
 .dp-calendar {
-  position:   absolute;
-  top:        100%;
-  left:       -1px;
-  z-index:    100;
-  width:      280px;
+  position: fixed;
+  z-index:  9000;
+  width:    280px;
 
   background-color: var(--color-surface);
   border:           1px solid var(--dp-focus);

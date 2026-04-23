@@ -12,6 +12,7 @@ import {
   inject,
   input,
   signal,
+  NgZone,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -52,6 +53,15 @@ export class SelectComponent implements ControlValueAccessor {
   protected readonly isOpen       = signal<boolean>(false);
   protected readonly focusedIndex = signal<number>(-1);
 
+  private readonly _popupRect = signal<{ top: number; left: number; width: number } | null>(null);
+  protected readonly dropdownStyle = computed(() => {
+    const r = this._popupRect();
+    if (!r) return {};
+    return { top: `${r.top}px`, left: `${r.left}px`, width: `${r.width + 2}px` };
+  });
+
+  private _scrollCleanup: (() => void) | null = null;
+
   protected readonly selectedLabel = computed(() =>
     this.options().find(o => o.value === this.value())?.label ?? null
   );
@@ -65,6 +75,7 @@ export class SelectComponent implements ControlValueAccessor {
   ].filter(Boolean).join(' '));
 
   private readonly elementRef = inject(ElementRef);
+  private readonly zone       = inject(NgZone);
   private _onChange: (v: string | number | null) => void = () => {};
   protected onTouched: () => void = () => {};
 
@@ -81,14 +92,27 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   protected open(): void {
+    const container = (this.elementRef.nativeElement as HTMLElement).querySelector('.sel-container');
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      this._popupRect.set({ top: rect.bottom, left: rect.left, width: rect.width });
+    }
     this.isOpen.set(true);
     const currentIndex = this.options().findIndex(o => o.value === this.value());
     this.focusedIndex.set(currentIndex);
+
+    this.zone.runOutsideAngular(() => {
+      const handler = () => this.zone.run(() => this.close());
+      document.addEventListener('scroll', handler, { capture: true, passive: true });
+      this._scrollCleanup = () => document.removeEventListener('scroll', handler, { capture: true });
+    });
   }
 
   protected close(): void {
     this.isOpen.set(false);
     this.focusedIndex.set(-1);
+    this._scrollCleanup?.();
+    this._scrollCleanup = null;
   }
 
   protected selectOption(option: SelectOption): void {

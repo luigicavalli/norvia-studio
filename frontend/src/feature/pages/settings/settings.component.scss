@@ -78,6 +78,20 @@
   strong { font-size: 1rem; color: var(--color-text-strong); }
 }
 
+.settings__plan-upgrade {
+  display:        flex;
+  flex-direction: column;
+  align-items:    flex-end;
+  gap:            0.5rem;
+
+  @media (max-width: 480px) { align-items: flex-start; }
+}
+
+.settings__plan-coming-soon {
+  font-size: 0.75rem;
+  color:     var(--color-muted);
+}
+
 .settings__plan-features {
   list-style: none;
   display:    flex;
