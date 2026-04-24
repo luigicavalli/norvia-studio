@@ -6,6 +6,8 @@ import { environment }    from '../environments/environment';
 import type { ApiResponse } from '../types/api.types';
 import type { Workspace }   from '../models/workspace.model';
 
+export type { Workspace };
+
 @Injectable({ providedIn: 'root' })
 export class WorkspaceService {
 
