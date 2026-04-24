@@ -124,7 +124,7 @@ describe('IndexComponent', () => {
   it('should render brand panel', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(el.querySelector('.auth-brand')).toBeTruthy();
-    expect(el.querySelector('.auth-brand__logo span')?.textContent).toBe('FlowDesk');
+    expect(el.querySelector('.auth-brand__logo span')?.textContent).toBe('Norvia Studio');
   });
 
   it('should render two tab buttons', () => {

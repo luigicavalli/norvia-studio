@@ -1,10 +1,11 @@
 export class WorkspacePO {
 
-    private _id:         string;
-    private _name:       string;
-    private _slug:       string;
-    private _created_at: Date;
-    private _updated_at: Date;
+    private _id:          string;
+    private _name:        string;
+    private _slug:        string;
+    private _description: string | null = null;
+    private _created_at:  Date;
+    private _updated_at:  Date;
 
     /* ***************
      * Getter & Setter
@@ -40,6 +41,14 @@ export class WorkspacePO {
 
     public set created_at(value: Date) {
         this._created_at = value;
+    }
+
+    public get description(): string | null {
+        return this._description;
+    }
+
+    public set description(value: string | null) {
+        this._description = value;
     }
 
     public get updated_at(): Date {

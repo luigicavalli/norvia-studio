@@ -2,6 +2,7 @@ import { errorHandler }    from './http/errorHandler.js';
 import { configDotenv }    from 'dotenv';
 import { createApiRouter } from './http/routes.js';
 import { clerkMiddleware, requireAuth } from '@clerk/express';
+import cors from 'cors';
 
 import express, { type NextFunction, type Request, type Response } from 'express';
 
@@ -13,6 +14,13 @@ const port: number | undefined = Number(process.env.EXPRESS_PORT);
 if (!port) throw new Error('Missing Express port');
 
 const app = express();
+
+app.use(cors({
+    origin:      process.env.CORS_ORIGIN ?? 'http://localhost:4200',
+    credentials: true,
+    methods:     ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use(clerkMiddleware());
 

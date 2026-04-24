@@ -12,6 +12,7 @@ import {
   inject,
   input,
   signal,
+  NgZone,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -89,8 +90,18 @@ export class DatepickerComponent implements ControlValueAccessor {
   ].filter(Boolean).join(' '));
 
   private readonly elementRef = inject(ElementRef);
+  private readonly zone       = inject(NgZone);
   private  _onChange:  (v: Date | null) => void = () => {};
   protected onTouched: ()               => void = () => {};
+
+  private readonly _popupRect = signal<{ top: number; left: number } | null>(null);
+  protected readonly calendarStyle = computed(() => {
+    const r = this._popupRect();
+    if (!r) return {};
+    return { top: `${r.top}px`, left: `${r.left}px` };
+  });
+
+  private _scrollCleanup: (() => void) | null = null;
 
   // --- Click outside ---
 
@@ -152,6 +163,11 @@ export class DatepickerComponent implements ControlValueAccessor {
   }
 
   protected open(): void {
+    const container = (this.elementRef.nativeElement as HTMLElement).querySelector('.dp-container');
+    if (container) {
+      const rect = container.getBoundingClientRect();
+      this._popupRect.set({ top: rect.bottom, left: rect.left });
+    }
     const sel = this.selectedDate();
     if (sel) {
       this.viewDate.set(new Date(sel.getFullYear(), sel.getMonth(), 1));
@@ -159,10 +175,18 @@ export class DatepickerComponent implements ControlValueAccessor {
     }
     this.calendarView.set('day');
     this.isOpen.set(true);
+
+    this.zone.runOutsideAngular(() => {
+      const handler = () => this.zone.run(() => this.close());
+      document.addEventListener('scroll', handler, { capture: true, passive: true });
+      this._scrollCleanup = () => document.removeEventListener('scroll', handler, { capture: true });
+    });
   }
 
   protected close(): void {
     this.isOpen.set(false);
+    this._scrollCleanup?.();
+    this._scrollCleanup = null;
   }
 
   protected setView(view: CalendarView): void {

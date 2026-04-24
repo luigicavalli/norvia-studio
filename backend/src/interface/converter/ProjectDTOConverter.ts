@@ -13,9 +13,10 @@ import type { ProjectPriorities } from "../../domain/enums/ProjectPriorities.js"
  * BO
  * --
  */
-import { Client }  from "../../domain/model/Client.js";
-import { Company } from "../../domain/model/Company.js";
-import { Project } from "../../domain/model/Project.js";
+import { Client }    from "../../domain/model/Client.js";
+import { Company }   from "../../domain/model/Company.js";
+import { Project }   from "../../domain/model/Project.js";
+import { Workspace } from "../../domain/model/Workspace.js";
 
 /**
  * ---
@@ -44,6 +45,9 @@ export class ProjectDTOConverter implements IDTOConverter<ProjectDTO, Project> {
         projectBO.id          = dto.id;
         projectBO.name        = dto.name;
         projectBO.description = dto.description;
+
+        projectBO.workspace    = new Workspace();
+        projectBO.workspace.id = dto.workspaceId;
 
         projectBO.client = new Client();
         projectBO.client.id        = dto.client.id;

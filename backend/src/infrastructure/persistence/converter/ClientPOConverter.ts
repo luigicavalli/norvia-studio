@@ -56,17 +56,18 @@ export class ClientPOConverter implements IPersistenceConverter<ClientPO, Client
 
         const clientPO: ClientPO = new ClientPO();
 
-            clientPO.id         = bo.id;
-            clientPO.first_name = bo.firstName;
-            clientPO.last_name  = bo.lastName;
-            clientPO.email      = bo.email;
-            clientPO.phone      = bo.phone;
-            clientPO.company_id = bo.company.id;
-            clientPO.vat_number = bo.vatNumber;
-            clientPO.status     = bo.status;
-            clientPO.notes      = bo.notes;
-            clientPO.created_at = bo.createdAt;
-            clientPO.updated_at = bo.updatedAt;
+            clientPO.id           = bo.id;
+            clientPO.workspace_id = bo.workspace.id;
+            clientPO.first_name   = bo.firstName;
+            clientPO.last_name    = bo.lastName;
+            clientPO.email        = bo.email;
+            clientPO.phone        = bo.phone;
+            clientPO.company_id   = bo.company?.id || null;
+            clientPO.vat_number   = bo.vatNumber;
+            clientPO.status       = bo.status;
+            clientPO.notes        = bo.notes;
+            clientPO.created_at   = bo.createdAt;
+            clientPO.updated_at   = bo.updatedAt;
 
         return clientPO;
 

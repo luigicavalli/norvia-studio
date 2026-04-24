@@ -10,8 +10,9 @@ import type { ClientStatuses } from "../../domain/enums/ClientStatuses.js";
  * BO
  * --
  */
-import { Client }  from "../../domain/model/Client.js";
-import { Company } from "../../domain/model/Company.js";
+import { Client }    from "../../domain/model/Client.js";
+import { Company }   from "../../domain/model/Company.js";
+import { Workspace } from "../../domain/model/Workspace.js";
 
 /**
  * ---
@@ -41,19 +42,24 @@ export class ClientDTOConverter implements IDTOConverter<ClientDTO, Client> {
         clientBO.email     = dto.email;
         clientBO.phone     = dto.phone;
 
+        clientBO.workspace    = new Workspace();
+        clientBO.workspace.id = dto.workspaceId;
+
         clientBO.company = new Company();
-        clientBO.company.id        = dto.company.id;
-        clientBO.company.name      = dto.company.name;
-        clientBO.company.taxCode   = dto.company.taxCode;
-        clientBO.company.email     = dto.company.email;
-        clientBO.company.phone     = dto.company.phone;
-        clientBO.company.address   = dto.company.address;
-        clientBO.company.city      = dto.company.city;
-        clientBO.company.zipCode   = dto.company.zipCode;
-        clientBO.company.country   = dto.company.country;
-        clientBO.company.website   = dto.company.website;
-        clientBO.company.createdAt = dto.company.createdAt;
-        clientBO.company.updatedAt = dto.company.updatedAt;
+        if (dto.company?.id) {
+            clientBO.company.id        = dto.company.id;
+            clientBO.company.name      = dto.company.name;
+            clientBO.company.taxCode   = dto.company.taxCode;
+            clientBO.company.email     = dto.company.email;
+            clientBO.company.phone     = dto.company.phone;
+            clientBO.company.address   = dto.company.address;
+            clientBO.company.city      = dto.company.city;
+            clientBO.company.zipCode   = dto.company.zipCode;
+            clientBO.company.country   = dto.company.country;
+            clientBO.company.website   = dto.company.website;
+            clientBO.company.createdAt = dto.company.createdAt;
+            clientBO.company.updatedAt = dto.company.updatedAt;
+        }
 
         clientBO.vatNumber = dto.vatNumber;
         clientBO.status    = dto.status as ClientStatuses;

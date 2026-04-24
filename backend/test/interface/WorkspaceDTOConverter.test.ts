@@ -9,11 +9,12 @@ describe('WorkspaceDTOConverter', () => {
     const now = new Date('2024-06-15T10:00:00Z');
 
     const dto: WorkspaceDTO = {
-        id:        'ws-uuid-1',
-        name:      'My Workspace',
-        slug:      'my-workspace',
-        createdAt: now,
-        updatedAt: now,
+        id:          'ws-uuid-1',
+        name:        'My Workspace',
+        slug:        'my-workspace',
+        description: null,
+        createdAt:   now,
+        updatedAt:   now,
     };
 
     describe('toBO', () => {

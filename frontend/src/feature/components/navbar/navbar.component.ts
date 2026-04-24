@@ -40,7 +40,7 @@ export class NavbarComponent {
   protected readonly avatarUrl = computed(() => this.user()?.imageUrl ?? null);
 
   protected readonly notifications = signal<Notification[]>([
-    { id: 1, text: 'Benvenuto su FlowDesk!', time: 'adesso',    unread: true  },
+    { id: 1, text: 'Benvenuto su Norvia Studio!', time: 'adesso',    unread: true  },
     { id: 2, text: 'Il tuo account è pronto.', time: '1 min fa', unread: true  },
   ]);
 

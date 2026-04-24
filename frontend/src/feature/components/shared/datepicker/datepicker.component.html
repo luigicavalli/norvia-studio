@@ -29,7 +29,7 @@
     </button>
 
     @if (isOpen()) {
-      <div class="dp-calendar">
+      <div class="dp-calendar" [style]="calendarStyle()">
 
         @switch (calendarView()) {
 

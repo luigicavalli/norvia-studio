@@ -23,6 +23,14 @@ import { environment } from '../environments/environment';
 
 export type SignInResult = 'complete' | 'needs_second_factor';
 
+export interface UserPreferences {
+  language:     string;
+  taskAssigned: boolean;
+  deadlines:    boolean;
+  comments:     boolean;
+  weeklyDigest: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
 
@@ -120,6 +128,25 @@ export class AuthService {
 
   async updateProfile(firstName: string, lastName: string): Promise<void> {
     await this.clerk.user!.update({ firstName, lastName });
+    this.syncState();
+  }
+
+  getPreferences(): UserPreferences {
+    const meta = (this.clerk.user?.unsafeMetadata ?? {}) as Partial<UserPreferences>;
+    return {
+      language:      meta.language      ?? 'it',
+      taskAssigned:  meta.taskAssigned  ?? true,
+      deadlines:     meta.deadlines     ?? true,
+      comments:      meta.comments      ?? false,
+      weeklyDigest:  meta.weeklyDigest  ?? true,
+    };
+  }
+
+  async savePreferences(prefs: Partial<UserPreferences>): Promise<void> {
+    const current = this.getPreferences();
+    await this.clerk.user!.update({
+      unsafeMetadata: { ...current, ...prefs },
+    });
     this.syncState();
   }
 

@@ -19,7 +19,7 @@
         </svg>
       </div>
       <div class="stat-card__body">
-        <span class="stat-card__value">0</span>
+        <span class="stat-card__value">{{ activeProjects() }}</span>
         <span class="stat-card__label">Progetti attivi</span>
       </div>
     </div>
@@ -33,8 +33,8 @@
         </svg>
       </div>
       <div class="stat-card__body">
-        <span class="stat-card__value">0</span>
-        <span class="stat-card__label">Task in scadenza</span>
+        <span class="stat-card__value">{{ onHoldProjects() }}</span>
+        <span class="stat-card__label">Progetti in pausa</span>
       </div>
     </div>
 
@@ -47,12 +47,12 @@
         </svg>
       </div>
       <div class="stat-card__body">
-        <span class="stat-card__value">0</span>
+        <span class="stat-card__value">{{ totalClients() }}</span>
         <span class="stat-card__label">Clienti</span>
       </div>
     </div>
 
-    <div class="stat-card stat-card--danger">
+    <div class="stat-card stat-card--accent">
       <div class="stat-card__icon">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -63,8 +63,8 @@
         </svg>
       </div>
       <div class="stat-card__body">
-        <span class="stat-card__value">1</span>
-        <span class="stat-card__label">Membri del team</span>
+        <span class="stat-card__value">{{ completedCount() }}</span>
+        <span class="stat-card__label">Progetti completati</span>
       </div>
     </div>
 

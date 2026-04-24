@@ -9,11 +9,12 @@ export class WorkspacePOConverter implements IPersistenceConverter<WorkspacePO, 
         
         const workspaceBo: Workspace = new Workspace();
 
-            workspaceBo.id        = po.id;
-            workspaceBo.name      = po.name;
-            workspaceBo.slug      = po.slug;
-            workspaceBo.createdAt = po.created_at;
-            workspaceBo.updatedAt = po.updated_at;
+            workspaceBo.id          = po.id;
+            workspaceBo.name        = po.name;
+            workspaceBo.slug        = po.slug;
+            workspaceBo.description = po.description ?? null;
+            workspaceBo.createdAt   = po.created_at;
+            workspaceBo.updatedAt   = po.updated_at;
 
         return workspaceBo;
 
@@ -23,11 +24,12 @@ export class WorkspacePOConverter implements IPersistenceConverter<WorkspacePO, 
         
         const workspacePo: WorkspacePO = new WorkspacePO();
 
-            workspacePo.id         = bo.id;
-            workspacePo.name       = bo.name;
-            workspacePo.slug       = bo.slug;
-            workspacePo.created_at = bo.createdAt;
-            workspacePo.updated_at = bo.updatedAt;
+            workspacePo.id          = bo.id;
+            workspacePo.name        = bo.name;
+            workspacePo.slug        = bo.slug;
+            workspacePo.description = bo.description;
+            workspacePo.created_at  = bo.createdAt;
+            workspacePo.updated_at  = bo.updatedAt;
 
         return workspacePo;
 

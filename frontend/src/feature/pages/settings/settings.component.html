@@ -23,7 +23,7 @@
         formControlName="description"
       />
       <div class="settings__form-footer">
-        <app-button label="Salva" type="submit" size="sm" [loading]="workspaceSaving" />
+        <app-button label="Salva" type="submit" size="sm" [loading]="workspaceSaving()" />
       </div>
     </form>
   </section>
@@ -58,7 +58,7 @@
         />
       </div>
       <div class="settings__form-footer">
-        <app-button label="Salva preferenze" type="button" size="sm" (clicked)="onSaveNotifications()" />
+        <app-button label="Salva preferenze" type="button" size="sm" [loading]="notifSaving()" (clicked)="onSaveNotifications()" />
       </div>
     </form>
   </section>
@@ -75,6 +75,9 @@
         formControlName="language"
         [options]="languageOptions"
       />
+      <div class="settings__form-footer">
+        <app-button label="Salva lingua" type="button" size="sm" [loading]="notifSaving()" (clicked)="onSaveNotifications()" />
+      </div>
     </div>
   </section>
 
@@ -96,7 +99,10 @@
           <li>Storage 1 GB</li>
         </ul>
       </div>
-      <app-button label="Passa a Pro" size="sm" color="primary" />
+      <div class="settings__plan-upgrade">
+        <app-button label="Passa a Pro" size="sm" [disabled]="true" />
+        <p class="settings__plan-coming-soon">I piani a pagamento sono in arrivo.</p>
+      </div>
     </div>
   </section>
 

@@ -1,20 +1,22 @@
 export interface IWorkspace {
 
-    id:        string;
-    name:      string;
-    slug:      string;
-    createdAt: Date;
-    updatedAt: Date;
-    
+    id:          string;
+    name:        string;
+    slug:        string;
+    description: string | null;
+    createdAt:   Date;
+    updatedAt:   Date;
+
 };
 
 export class Workspace implements IWorkspace {
 
-    private _id:        string;
-    private _name:      string;
-    private _slug:      string;
-    private _createdAt: Date;
-    private _updatedAt: Date;
+    private _id:          string;
+    private _name:        string;
+    private _slug:        string;
+    private _description: string | null = null;
+    private _createdAt:   Date;
+    private _updatedAt:   Date;
 
     /* ***************
      * Getter & Setter
@@ -52,6 +54,14 @@ export class Workspace implements IWorkspace {
         this._createdAt = value;
     }
 
+    public get description(): string | null {
+        return this._description;
+    }
+
+    public set description(value: string | null) {
+        this._description = value;
+    }
+
     public get updatedAt(): Date {
         return this._updatedAt;
     }
@@ -59,5 +69,5 @@ export class Workspace implements IWorkspace {
     public set updatedAt(value: Date) {
         this._updatedAt = value;
     }
-    
+
 };

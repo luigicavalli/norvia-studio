@@ -29,7 +29,7 @@
     </span>
 
     @if (isOpen()) {
-      <div class="sel-dropdown" role="listbox">
+      <div class="sel-dropdown" role="listbox" [style]="dropdownStyle()">
         @for (option of options(); track option.value; let i = $index) {
           <div
             class="sel-option"
