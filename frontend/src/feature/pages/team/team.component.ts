@@ -2,7 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { AuthService }     from '../../../services/auth.service';
-import { TeamService, MemberRole } from '../../../services/team.service';
+import { TeamService }      from '../../../services/team.service';
+import type { MemberRole }  from '../../../models/team.model';
 import { ToastService }    from '../../components/shared/toast/toast.service';
 import { AvatarComponent } from '../../components/shared/avatar/avatar.component';
 import { BadgeComponent, BadgeVariant }  from '../../components/shared/badge/badge.component';

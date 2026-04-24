@@ -2,18 +2,11 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
-import { environment }                    from '../environments/environment';
-import type { ApiResponse }               from '../types/api.types';
+import { environment }    from '../environments/environment';
+import type { ApiResponse } from '../types/api.types';
+import type { Workspace }   from '../models/workspace.model';
 
-
-export interface Workspace {
-  id:          string;
-  name:        string;
-  slug:        string;
-  description: string | null;
-  createdAt:   Date;
-  updatedAt:   Date;
-}
+export type { Workspace };
 
 @Injectable({ providedIn: 'root' })
 export class WorkspaceService {
