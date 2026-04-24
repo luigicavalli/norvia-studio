@@ -1,6 +1,6 @@
 # Norvia Studio — Backend
 
-Node.js / Express REST API for Norvia Studio, built with TypeScript and PostgreSQL.
+Node.js / Express REST API for Norvia Studio, built with TypeScript and Supabase.
 
 ---
 
@@ -11,7 +11,7 @@ Node.js / Express REST API for Norvia Studio, built with TypeScript and PostgreS
 | **Runtime** | Node.js 20+ |
 | **Language** | TypeScript 5.9 (ES modules) |
 | **Framework** | Express 5 |
-| **Database** | PostgreSQL 14+ via `pg` |
+| **Database** | Supabase (PostgreSQL) via `@supabase/supabase-js` |
 | **Auth** | Clerk (`@clerk/express`) |
 | **Testing** | Jest 29 + ts-jest |
 | **Linting** | ESLint 9 |
@@ -22,7 +22,7 @@ Node.js / Express REST API for Norvia Studio, built with TypeScript and PostgreS
 
 - Node.js ≥ 20
 - npm ≥ 10
-- A running PostgreSQL instance
+- A [Supabase](https://supabase.com) project
 - A [Clerk](https://clerk.com) application (for auth keys)
 
 ---
@@ -42,36 +42,33 @@ Copy `.env.example` (located at the repository root) to `.env` in the same root 
 ```env
 EXPRESS_PORT=3000
 
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB_NAME=norvia_studio
-POSTGRES_PORT=5432
+SUPABASE_URL=https://<project-ref>.supabase.co
+SUPABASE_ANON_KEY=<your-anon-key>
+SUPABASE_SCHEMA=public
 
 CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 ```
 
 > `CORS_ORIGIN` defaults to `http://localhost:4200` if not set.
+> `SUPABASE_URL` and `SUPABASE_ANON_KEY` are found in your Supabase project under **Settings → API**.
 
 ### 3. Set up the database
 
-Create the database and run the migration scripts in order:
+The SQL migration scripts in `src/infrastructure/persistence/sql/` define the full schema. Run them in order in the **Supabase SQL Editor** (or via the Supabase CLI):
 
-```bash
-psql -U postgres -c "CREATE DATABASE norvia_studio;"
-
-# Run migrations in order
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/001_create_enums.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/002_create_workspaces.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/003_create_companies.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/004_create_team_members.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/005_create_clients.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/006_create_quotes.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/007_create_projects.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/008_create_assignments.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/009_create_quote_items.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/010_create_invoices.sql
-psql -U postgres -d norvia_studio -f src/infrastructure/persistence/sql/011_create_invoice_items.sql
+```
+001_create_enums.sql
+002_create_workspaces.sql
+003_create_companies.sql
+004_create_team_members.sql
+005_create_clients.sql
+006_create_quotes.sql
+007_create_projects.sql
+008_create_assignments.sql
+009_create_quote_items.sql
+010_create_invoices.sql
+011_create_invoice_items.sql
 ```
 
 ### 4. Start the development server
@@ -125,7 +122,9 @@ src/
 │   └── errorHandler.ts           # Global error-handling middleware
 └── infrastructure/
     └── persistence/
-        ├── dao/pg/               # PostgreSQL Data Access Objects
+        ├── dao/
+        │   ├── supabase/         # Active — Supabase Data Access Objects (current implementation)
+        │   └── pg/               # Inactive — raw PostgreSQL DAOs (kept for future use)
         ├── repository/           # IRepository implementations
         ├── po/                   # Persistence Objects (typed DB row shapes)
         ├── converter/            # PO ↔ domain model converters
@@ -140,7 +139,25 @@ src/
 
 **Interface** — Translates HTTP requests into domain calls and domain results into HTTP responses. Controllers call use cases; DTOs define the public API shape; converters handle the mapping.
 
-**Infrastructure** — PostgreSQL-backed implementations of repository interfaces. DAOs execute raw SQL; converters map rows to domain objects.
+**Infrastructure** — Supabase-backed implementations of repository interfaces. DAOs use the Supabase JS client to query the database; converters map rows to domain objects.
+
+---
+
+## Database Layer
+
+### Why Supabase
+
+The original design targeted **Cloud SQL** (managed PostgreSQL on GCP), but that turned out to be overkill for the current stage of the project — provisioning a full Cloud SQL instance, configuring VPC networking, and managing IAM just to run a handful of tables adds unnecessary operational overhead before the product has found its footing.
+
+**Supabase** solves the same problem with near-zero configuration: it provides a managed PostgreSQL database, a typed JS client, and a web console for running migrations — all accessible with three environment variables. The schema itself is identical (the same SQL migration scripts run on both), so the switch is purely at the DAO layer.
+
+### Why the PostgreSQL layer is still there
+
+The ten DAO implementations in `dao/pg/` have been kept intentionally. The DAO pattern abstracts the database behind an interface (`IGenericDAO` + entity-specific interfaces), so swapping the active implementation requires changing only `wiring.ts` — nothing in the application or domain layers is aware of the underlying driver.
+
+Keeping `dao/pg/` means:
+- migrating back to a self-managed PostgreSQL instance (or Cloud SQL) in the future is a one-line change per DAO in `wiring.ts`
+- the raw SQL implementations serve as a reference for the exact queries being executed
 
 ---
 
@@ -211,10 +228,9 @@ npm run test:coverage     # generate HTML coverage report in coverage/
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `EXPRESS_PORT` | No | `3000` | Port the Express server listens on |
-| `POSTGRES_USER` | Yes | — | PostgreSQL user |
-| `POSTGRES_PASSWORD` | Yes | — | PostgreSQL password |
-| `POSTGRES_DB_NAME` | Yes | — | Database name |
-| `POSTGRES_PORT` | No | `5432` | PostgreSQL port |
+| `SUPABASE_URL` | Yes | — | Supabase project URL (Settings → API) |
+| `SUPABASE_ANON_KEY` | Yes | — | Supabase anonymous/public key |
+| `SUPABASE_SCHEMA` | Yes | — | PostgreSQL schema to target (usually `public`) |
 | `CLERK_PUBLISHABLE_KEY` | Yes | — | Clerk publishable key |
 | `CLERK_SECRET_KEY` | Yes | — | Clerk secret key |
 | `CORS_ORIGIN` | No | `http://localhost:4200` | Allowed CORS origin |
