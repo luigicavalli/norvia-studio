@@ -1,6 +1,8 @@
 {
-  "name": "frontend",
-  "version": "0.0.0",
+  "name": "norvia-studio-frontend",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "author": "Luigi Cavalli",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -19,12 +21,13 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
-    "@clerk/clerk-js": "^6.7.4",
+    "@clerk/clerk-js": "^5.114.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "overrides": {
-    "vite": "^7.3.2"
+    "vite": "^7.3.2",
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@angular/build": "^21.2.0",
