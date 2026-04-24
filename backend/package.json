@@ -1,7 +1,6 @@
 {
-  "name": "flow-desk-backend",
-  "version": "0.0.0",
-  "description": "",
+  "name": "norvia-studio-backend",
+  "version": "1.0.0",
   "license": "UNLICENSED",
   "author": "Luigi Cavalli",
   "type": "module",
@@ -41,7 +40,6 @@
     "express": "^5.2.1",
     "helmet": "^8.1.0",
     "morgan": "^1.10.1",
-    "pg": "^8.20.0",
-    "zod": "^4.3.6"
+    "pg": "^8.20.0"
   }
 }
