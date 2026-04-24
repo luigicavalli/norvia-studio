@@ -1,24 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
+import type { TeamMember, MemberRole, MemberStatus, InviteMemberData } from '../models/team.model';
 
-
-export type MemberRole   = 'admin' | 'member' | 'viewer';
-export type MemberStatus = 'active' | 'pending';
-
-export interface TeamMember {
-  id:        string;
-  firstName: string;
-  lastName:  string;
-  email:     string;
-  role:      MemberRole;
-  status:    MemberStatus;
-  avatarUrl: string | null;
-  joinedAt:  Date;
-}
-
-export interface InviteMemberData {
-  email: string;
-  role:  MemberRole;
-}
+export type { TeamMember, MemberRole, MemberStatus, InviteMemberData };
 
 
 @Injectable({ providedIn: 'root' })

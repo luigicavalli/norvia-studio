@@ -2,36 +2,12 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
-import { environment }                    from '../environments/environment';
-import { WorkspaceService }               from './workspace.service';
-import type { ApiPaginatedResponse }      from '../types/api.types';
+import { environment }               from '../environments/environment';
+import { WorkspaceService }          from './workspace.service';
+import type { ApiPaginatedResponse } from '../types/api.types';
+import type { Client, ClientStatus, CreateClientData } from '../models/client.model';
 
-
-export type ClientStatus = 'ACTIVE' | 'INACTIVE' | 'PROSPECT' | 'UNKNOWN';
-
-export interface Client {
-  id:          string;
-  firstName:   string;
-  lastName:    string;
-  fullName:    string;
-  email:       string;
-  phone:       string;
-  companyId:   string | null;
-  companyName: string | null;
-  vatNumber:   string;
-  status:      ClientStatus;
-  notes:       string;
-  createdAt:   Date;
-  updatedAt:   Date;
-}
-
-export interface CreateClientData {
-  firstName: string;
-  lastName:  string;
-  email:     string;
-  phone:     string;
-  notes:     string;
-}
+export type { Client, ClientStatus, CreateClientData };
 
 
 @Injectable({ providedIn: 'root' })

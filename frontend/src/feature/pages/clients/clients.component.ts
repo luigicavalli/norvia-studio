@@ -1,7 +1,8 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators }      from '@angular/forms';
 
-import { ClientService, Client }  from '../../../services/client.service';
+import { ClientService }    from '../../../services/client.service';
+import type { Client }      from '../../../models/client.model';
 import { ToastService }    from '../../components/shared/toast/toast.service';
 import { ButtonComponent } from '../../components/shared/button/button.component';
 import { InputComponent }  from '../../components/shared/input/input.component';

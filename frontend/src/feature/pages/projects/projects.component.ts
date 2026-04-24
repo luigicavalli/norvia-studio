@@ -3,7 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators }      from '@angular/form
 import { RouterLink }                                        from '@angular/router';
 import { DecimalPipe }                                       from '@angular/common';
 
-import { ProjectService, Project, ProjectStatus, ProjectPriority, SaveProjectData } from '../../../services/project.service';
+import { ProjectService }                                          from '../../../services/project.service';
+import type { Project, ProjectStatus, ProjectPriority, SaveProjectData } from '../../../models/project.model';
 import { ClientService }      from '../../../services/client.service';
 import { ToastService }       from '../../components/shared/toast/toast.service';
 import { ButtonComponent }    from '../../components/shared/button/button.component';
