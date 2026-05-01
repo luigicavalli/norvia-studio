@@ -4,4 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-[unreleased]: https://github.com/luigicavalli/custom-logger-js/releases
+## [1.0.0]
+
+### Added
+
+- First release.
+
+[unreleased]: https://github.com/luigicavalli/norvia-studio/releases
+[1.0.0]: https://github.com/luigicavalli/norvia-studio/releases/1.0.0
