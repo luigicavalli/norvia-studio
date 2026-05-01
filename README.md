@@ -30,27 +30,29 @@ Each sub-project is self-contained with its own `package.json`, TypeScript confi
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────┐
-│              Angular SPA                │
-│         (frontend — port 4200)          │
-│                                         │
-│  AuthService → Clerk → JWT token        │
-│  HTTP interceptor attaches token        │
-└────────────────────┬────────────────────┘
-                     │ HTTPS / REST
-                     ▼
-┌─────────────────────────────────────────┐
-│           Express REST API              │
-│         (backend — port 3000)           │
-│                                         │
-│  Clerk middleware validates token       │
-│  Clean Architecture layers:             │
-│    Interface → Application → Domain     │
-│               ↕                         │
-│          Infrastructure                 │
-│    (Supabase PostgreSQL via pg pool)    │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────┐
+│          Firebase Hosting (CDN)          │
+│         Angular SPA — prod build         │
+│                                          │
+│  AuthService → Clerk → JWT token         │
+│  HTTP interceptor attaches token         │
+└─────────────────┬────────────────────────┘
+                  │ HTTPS / REST
+                  ▼
+┌──────────────────────────────────────────┐
+│          Google Cloud Run                │
+│         Express REST API                 │
+│                                          │
+│  Clerk middleware validates token        │
+│  Clean Architecture layers:              │
+│    Interface → Application → Domain      │
+│               ↕                          │
+│          Infrastructure                  │
+│    (Supabase PostgreSQL via pg pool)     │
+└──────────────────────────────────────────┘
 ```
+
+**Local development:** Angular dev server on port `4200`, Express on port `3000`.
 
 ### Backend — Clean / Hexagonal Architecture
 
@@ -103,7 +105,9 @@ Authentication is handled by **[Clerk](https://clerk.com)** across both ends:
 
 ## API
 
-Base URL: `http://localhost:3000` (development)
+Base URL:
+- **Development:** `http://localhost:3000`
+- **Production:** `https://<cloud-run-service-url>` (set in `frontend/src/environments/environment.prod.ts`)
 
 All endpoints are prefixed with `/api` and require a valid Clerk session token.
 
@@ -160,6 +164,6 @@ npm install && npm start
 
 Open [http://localhost:4200](http://localhost:4200) in your browser.
 
-For detailed setup, database migration instructions, and environment variable reference see the sub-project READMEs:
-- [Backend →](./backend/README.md)
-- [Frontend →](./frontend/README.md)
+For detailed setup, database migration instructions, environment variable reference, and deployment commands see the sub-project READMEs:
+- [Backend →](./backend/README.md) — includes Cloud Run deployment steps
+- [Frontend →](./frontend/README.md) — includes Firebase Hosting deployment steps

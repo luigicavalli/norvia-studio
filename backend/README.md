@@ -214,6 +214,78 @@ Both follow the same CRUD pattern as Projects/Clients.
 
 ---
 
+## Deployment (Cloud Run)
+
+The backend is containerized and deployed to **Google Cloud Run** via **Artifact Registry**. A `Dockerfile` in the `backend/` directory handles the multi-stage build.
+
+### Prerequisites
+
+- [Docker](https://www.docker.com) (Desktop or CLI)
+- [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (`gcloud` CLI, authenticated)
+- An Artifact Registry repository created in your GCP project
+- All required secrets stored in **GCP Secret Manager**
+
+### Secrets in Secret Manager
+
+Cloud Run injects secrets as environment variables at runtime. The mapping below shows how Secret Manager key names map to the env vars the app expects:
+
+| Secret Manager key | Env var in app | Description |
+|---|---|---|
+| `SUPABASE_URL` | `SUPABASE_DB_URL` | Supavisor Transaction pooler connection string |
+| `SUPABASE_SCHEMA` | `SUPABASE_SCHEMA` | PostgreSQL schema name |
+| `CLERK_SECRET_KEY` | `CLERK_SECRET_KEY` | Clerk secret key |
+| `CORS_ORIGIN` | `CORS_ORIGIN` | Allowed CORS origin (frontend URL or `*`) |
+
+> Cloud Run also injects `PORT` automatically; the app reads it via `process.env.PORT ?? process.env.EXPRESS_PORT`.
+
+### Deploy steps
+
+```bash
+# 1. Authenticate Docker with Artifact Registry
+gcloud auth configure-docker <REGION>-docker.pkg.dev
+
+# 2. Build the image
+# --platform linux/amd64 is required when building on Apple Silicon (ARM64)
+docker build --platform linux/amd64 \
+  -t <REGION>-docker.pkg.dev/<PROJECT_ID>/<REPO>/<IMAGE_NAME>:latest \
+  .
+
+# 3. Push to Artifact Registry
+docker push <REGION>-docker.pkg.dev/<PROJECT_ID>/<REPO>/<IMAGE_NAME>:latest
+
+# 4. Deploy to Cloud Run
+gcloud run deploy <SERVICE_NAME> \
+  --image <REGION>-docker.pkg.dev/<PROJECT_ID>/<REPO>/<IMAGE_NAME>:latest \
+  --region <REGION> \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets \
+    SUPABASE_DB_URL=SUPABASE_URL:latest,\
+    SUPABASE_SCHEMA=SUPABASE_SCHEMA:latest,\
+    CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,\
+    CORS_ORIGIN=CORS_ORIGIN:latest
+```
+
+**Placeholder reference:**
+
+| Placeholder | Example value |
+|---|---|
+| `<REGION>` | `europe-west8` |
+| `<PROJECT_ID>` | GCP project ID |
+| `<REPO>` | Artifact Registry repository name |
+| `<IMAGE_NAME>` | `norvia-backend` |
+| `<SERVICE_NAME>` | Cloud Run service name |
+
+### Verify the deployment
+
+```bash
+curl https://<SERVICE_URL>/health
+```
+
+A successful response returns a timestamp string: `2024-01-01T00:00:00.000Z - Health ok`.
+
+---
+
 ## Testing
 
 Tests live in `test/` and cover DTO converters, use cases, and application logic. Jest is configured in `jest.config.cjs`.

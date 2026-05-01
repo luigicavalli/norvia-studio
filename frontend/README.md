@@ -168,6 +168,44 @@ All authenticated routes are rendered inside the `ShellComponent`, which provide
 
 ---
 
+## Deployment (Firebase Hosting)
+
+The frontend is deployed to **Firebase Hosting**. The `firebase.json` and `.firebaserc` files are already committed; no additional configuration is needed.
+
+### Prerequisites
+
+```bash
+npm install -g firebase-tools
+firebase login
+```
+
+### Deploy steps
+
+```bash
+# 1. Build for production
+#    Angular swaps environment.ts → environment.prod.ts automatically
+npm run build
+
+# 2. Deploy to Firebase Hosting
+firebase deploy --only hosting
+```
+
+### Production environment file
+
+`src/environments/environment.prod.ts` must be configured before building (it is git-ignored):
+
+```typescript
+export const environment = {
+  production:          true,
+  clerkPublishableKey: 'pk_live_...',
+  apiUrl:              'https://<cloud-run-service-url>',
+};
+```
+
+> In CI, generate this file from secrets before the build step (see the existing GitHub Actions workflow for reference).
+
+---
+
 ## Testing
 
 Tests use **Vitest 4** via `@angular/build:unit-test`. Test files live next to the source they test (`*.spec.ts`).
