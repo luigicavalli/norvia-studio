@@ -122,15 +122,38 @@ All endpoints are prefixed with `/api` and require a valid Clerk session token.
 
 ---
 
-## CI Pipeline
+## CI/CD Pipelines
 
-The GitHub Actions workflow (`.github/workflows/ci.yml`) triggers on pushes to `develop` and `feature/**` branches and on pull requests to `develop`. It runs the following jobs in parallel:
+### CI (`.github/workflows/ci.yml`)
 
-**Frontend job:** install → lint → test → build (environment files are injected from GitHub secrets)
+Triggers on pushes to `develop` and `feature/**` branches and on pull requests to `develop`.
 
-**Backend job:** install → lint → test
+| Job | Steps |
+|---|---|
+| **frontend** | install → lint → test → build (environment injected from secrets) |
+| **backend** | install → lint → test |
+| **semgrep** | security scan |
 
-A separate Semgrep security scan runs on every push.
+### CD (`.github/workflows/cd.yml`)
+
+Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys both services in parallel.
+
+| Job | Steps |
+|---|---|
+| **deploy-backend** | auth → build Docker image (`--platform linux/amd64`) → push to Artifact Registry → `gcloud run deploy` |
+| **deploy-frontend** | install → inject `environment.prod.ts` from secrets → `ng build` → `firebase deploy --only hosting` |
+
+#### Required GitHub secrets
+
+| Secret | Used by | Description |
+|---|---|---|
+| `GCP_SA_KEY` | both | Service account JSON key (roles: Artifact Registry Writer, Cloud Run Admin, IAM Service Account User, Firebase Hosting Admin) |
+| `GCP_PROJECT_ID` | both | GCP / Firebase project ID |
+| `GCP_REGION` | backend | GCP region (e.g. `europe-west8`) |
+| `GCP_AR_REPO` | backend | Artifact Registry repository name |
+| `GCP_CLOUD_RUN_SERVICE` | backend | Cloud Run service name |
+| `CLERK_PUBLISHABLE_KEY` | frontend | Clerk publishable key |
+| `API_URL` | frontend | Production Cloud Run base URL |
 
 ---
 
