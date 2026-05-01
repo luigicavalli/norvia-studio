@@ -1,0 +1,134 @@
+<div class="dp-wrapper">
+
+  @if (label()) {
+    <label class="dp-label" [for]="datepickerId">{{ label() }}</label>
+  }
+
+  <div class="dp-container" [class]="containerClasses()">
+
+    <input
+      class="dp-input"
+      type="text"
+      inputmode="numeric"
+      [id]="datepickerId"
+      [placeholder]="placeholder()"
+      [disabled]="isDisabled()"
+      [value]="inputValue()"
+      (input)="onInput($event)"
+      (keydown)="onInputKeydown($event)"
+      (blur)="onTouched()"
+    />
+
+    <button class="dp-icon-btn" type="button" [disabled]="isDisabled()" (click)="toggle()" tabindex="-1" aria-label="Apri calendario">
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8"  y1="2" x2="8"  y2="6"/>
+        <line x1="3"  y1="10" x2="21" y2="10"/>
+      </svg>
+    </button>
+
+    @if (isOpen()) {
+      <div class="dp-calendar" [style]="calendarStyle()">
+
+        @switch (calendarView()) {
+
+          @case ('day') {
+            <div class="dp-header">
+              <button class="dp-nav" type="button" (click)="prevMonth()" aria-label="Mese precedente">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <div class="dp-header__center">
+                <button class="dp-header__btn" type="button" (click)="setView('month')">{{ viewMonthName() }}</button>
+                <button class="dp-header__btn" type="button" (click)="setView('year')">{{ viewYear() }}</button>
+              </div>
+              <button class="dp-nav" type="button" (click)="nextMonth()" aria-label="Mese successivo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+
+            <div class="dp-weekdays">
+              @for (d of WEEKDAYS; track d) {
+                <span>{{ d }}</span>
+              }
+            </div>
+
+            <div class="dp-days">
+              @for (day of calendarDays(); track $index) {
+                @if (day !== null) {
+                  <button
+                    class="dp-day"
+                    type="button"
+                    [class.dp-day--today]="isToday(day)"
+                    [class.dp-day--selected]="isSelected(day)"
+                    (click)="selectDay(day)"
+                  >{{ day }}</button>
+                } @else {
+                  <span></span>
+                }
+              }
+            </div>
+          }
+
+          @case ('month') {
+            <div class="dp-header">
+              <button class="dp-nav" type="button" (click)="prevYear()" aria-label="Anno precedente">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="dp-header__btn" type="button" (click)="setView('year')">{{ viewYear() }}</button>
+              <button class="dp-nav" type="button" (click)="nextYear()" aria-label="Anno successivo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+
+            <div class="dp-month-grid">
+              @for (month of MONTHS; track $index; let i = $index) {
+                <button
+                  class="dp-month"
+                  type="button"
+                  [class.dp-month--selected]="isSelectedMonth(i)"
+                  [class.dp-month--current]="isCurrentMonth(i)"
+                  (click)="selectMonth(i)"
+                >{{ month }}</button>
+              }
+            </div>
+          }
+
+          @case ('year') {
+            <div class="dp-header">
+              <button class="dp-nav" type="button" (click)="prevYearRange()" aria-label="Range precedente">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span class="dp-header__range">{{ yearRange()[0] }} — {{ yearRange()[11] }}</span>
+              <button class="dp-nav" type="button" (click)="nextYearRange()" aria-label="Range successivo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+
+            <div class="dp-year-grid">
+              @for (year of yearRange(); track year) {
+                <button
+                  class="dp-year"
+                  type="button"
+                  [class.dp-year--selected]="isSelectedYear(year)"
+                  [class.dp-year--current]="isCurrentYear(year)"
+                  (click)="selectYear(year)"
+                >{{ year }}</button>
+              }
+            </div>
+          }
+
+        }
+
+      </div>
+    }
+
+  </div>
+
+  @if (error() && errorMessage()) {
+    <span class="dp-message dp-message--error">{{ errorMessage() }}</span>
+  } @else if (hint()) {
+    <span class="dp-message">{{ hint() }}</span>
+  }
+
+</div>

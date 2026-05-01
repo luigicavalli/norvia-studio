@@ -1,0 +1,109 @@
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
+import { WorkspaceService }            from '../../../services/workspace.service';
+import { AuthService }                 from '../../../services/auth.service';
+import { ToastService }                from '../../components/shared/toast/toast.service';
+import { InputComponent }              from '../../components/shared/input/input.component';
+import { ButtonComponent }             from '../../components/shared/button/button.component';
+import { SelectComponent }             from '../../components/shared/select/select.component';
+import { ToggleComponent }             from '../../components/shared/toggle/toggle.component';
+import { BadgeComponent }              from '../../components/shared/badge/badge.component';
+import { SelectOption }                from '../../components/shared/select/select.types';
+
+
+@Component({
+  selector:    'app-settings',
+  standalone:  true,
+  imports:     [ReactiveFormsModule, InputComponent, ButtonComponent, SelectComponent, ToggleComponent, BadgeComponent],
+  templateUrl: './settings.component.html',
+  styleUrl:    './settings.component.scss',
+})
+export class SettingsComponent implements OnInit {
+
+  protected readonly workspaceService = inject(WorkspaceService);
+  private readonly  auth              = inject(AuthService);
+  private readonly  toast             = inject(ToastService);
+  private readonly  fb                = inject(FormBuilder);
+
+  protected readonly workspaceSaving = signal(false);
+  protected readonly notifSaving     = signal(false);
+
+  protected readonly workspaceForm = this.fb.group({
+    name:        ['', Validators.required],
+    description: [''],
+  });
+
+  protected readonly notifForm = this.fb.group({
+    taskAssigned:  [true],
+    deadlines:     [true],
+    comments:      [false],
+    weeklyDigest:  [true],
+  });
+
+  protected readonly appearanceForm = this.fb.group({
+    language: ['it'],
+  });
+
+  protected readonly languageOptions: SelectOption[] = [
+    { value: 'it', label: 'Italiano' },
+    { value: 'en', label: 'English'  },
+  ];
+
+  ngOnInit(): void {
+    const ws = this.workspaceService.activeWorkspace();
+    if (ws) {
+      this.workspaceForm.patchValue({
+        name:        ws.name,
+        description: ws.description ?? '',
+      });
+    }
+
+    const prefs = this.auth.getPreferences();
+    this.notifForm.patchValue({
+      taskAssigned: prefs.taskAssigned,
+      deadlines:    prefs.deadlines,
+      comments:     prefs.comments,
+      weeklyDigest: prefs.weeklyDigest,
+    });
+    this.appearanceForm.patchValue({ language: prefs.language });
+  }
+
+  protected async onSaveWorkspace(): Promise<void> {
+    if (this.workspaceForm.invalid) { this.workspaceForm.markAllAsTouched(); return; }
+
+    const id = this.workspaceService.activeId();
+    if (!id) return;
+
+    this.workspaceSaving.set(true);
+    try {
+      const { name, description } = this.workspaceForm.value;
+      await this.workspaceService.update(id, name!, description ?? undefined);
+      this.toast.success('Impostazioni workspace salvate.');
+    } catch {
+      this.toast.danger('Errore durante il salvataggio.');
+    } finally {
+      this.workspaceSaving.set(false);
+    }
+  }
+
+  protected async onSaveNotifications(): Promise<void> {
+    this.notifSaving.set(true);
+    try {
+      const v = this.notifForm.value;
+      await this.auth.savePreferences({
+        taskAssigned: v.taskAssigned ?? true,
+        deadlines:    v.deadlines    ?? true,
+        comments:     v.comments     ?? false,
+        weeklyDigest: v.weeklyDigest ?? true,
+        language:     this.appearanceForm.value.language ?? 'it',
+      });
+      this.toast.success('Preferenze aggiornate.');
+    } catch {
+      this.toast.danger('Errore durante il salvataggio delle preferenze.');
+    } finally {
+      this.notifSaving.set(false);
+    }
+  }
+
+}

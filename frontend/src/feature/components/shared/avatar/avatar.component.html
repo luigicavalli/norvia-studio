@@ -1,0 +1,7 @@
+@if (imageUrl()) {
+  <img class="avatar avatar--{{ size() }}" [src]="imageUrl()!" [alt]="name()" />
+} @else {
+  <span class="avatar avatar--{{ size() }} avatar--initials" [attr.aria-label]="name()">
+    {{ initials() }}
+  </span>
+}

@@ -1,0 +1,106 @@
+// ── Mobile top bar ─────────────────────────────────────────────────────────
+
+.mobile-bar {
+  display: none;
+
+  @media (max-width: 768px) {
+    display:       flex;
+    align-items:   center;
+    gap:           0.75rem;
+    position:      fixed;
+    top:           0;
+    left:          0;
+    right:         0;
+    z-index:       98;
+    height:        52px;
+    padding:       0 1rem;
+    background:    var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+}
+
+.mobile-bar__hamburger {
+  all:         unset;
+  cursor:      pointer;
+  display:     flex;
+  align-items: center;
+  padding:     6px;
+  border-radius: 8px;
+  color:       var(--color-text);
+  transition:  background 150ms;
+
+  &:hover { background: var(--color-bg); }
+}
+
+.mobile-bar__logo {
+  font-weight:  600;
+  font-size:    0.9375rem;
+  color:        var(--color-text-strong);
+}
+
+// ── Content ────────────────────────────────────────────────────────────────
+
+.shell-content {
+  margin-left: 220px;
+  min-height:  100vh;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    padding-top: 52px;
+  }
+}
+
+// ── Workspace setup overlay ─────────────────────────────────────────────────
+
+.workspace-setup {
+  position:   fixed;
+  inset:      0;
+  z-index:    200;
+  background: rgba(0, 0, 0, 0.55);
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  padding:    1.5rem;
+}
+
+.workspace-setup__card {
+  background:    var(--color-surface);
+  border:        1px solid var(--color-border);
+  border-radius: 16px;
+  padding:       2.5rem 2rem;
+  width:         100%;
+  max-width:     420px;
+  text-align:    center;
+}
+
+.workspace-setup__icon {
+  width:           64px;
+  height:          64px;
+  background:      var(--color-accent-subtle, rgba(99, 102, 241, 0.1));
+  border-radius:   16px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  margin:          0 auto 1.25rem;
+  color:           var(--color-accent);
+}
+
+.workspace-setup__title {
+  font-size:     1.25rem;
+  font-weight:   700;
+  color:         var(--color-text-strong);
+  margin-bottom: 0.5rem;
+}
+
+.workspace-setup__subtitle {
+  font-size:     0.875rem;
+  color:         var(--color-text-muted);
+  margin-bottom: 1.75rem;
+  line-height:   1.6;
+}
+
+.workspace-setup__form {
+  display:        flex;
+  flex-direction: column;
+  gap:            1rem;
+}

@@ -1,0 +1,95 @@
+.table-wrap {
+  width:        100%;
+  overflow-x:   auto;
+  border:       1px solid var(--color-border);
+  border-radius: 12px;
+  background:   var(--color-surface);
+}
+
+.table {
+  width:           100%;
+  border-collapse: collapse;
+  font-size:       0.875rem;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+
+.table__th {
+  padding:      0.75rem 1rem;
+  text-align:   left;
+  font-size:    0.75rem;
+  font-weight:  500;
+  color:        var(--color-muted);
+  border-bottom: 1px solid var(--color-border);
+  white-space:  nowrap;
+  user-select:  none;
+
+  &--sortable {
+    cursor: pointer;
+    &:hover .table__sort-icon { opacity: 1; }
+  }
+}
+
+.table__th-inner {
+  display:     flex;
+  align-items: center;
+  gap:         0.375rem;
+}
+
+.table__sort-icon {
+  opacity:    0.35;
+  display:    flex;
+  transition: opacity 150ms, color 150ms;
+  color:      var(--color-muted);
+
+  &--asc,
+  &--desc {
+    opacity: 1;
+    color:   var(--color-accent);
+  }
+
+  &--desc { transform: scaleY(-1); }
+}
+
+// ── Rows ───────────────────────────────────────────────────────────────────
+
+.table__row {
+  transition: background 120ms;
+
+  &:not(:last-child) td { border-bottom: 1px solid var(--color-border); }
+  &:hover td            { background: var(--color-bg); }
+}
+
+.table__td {
+  padding:     0.75rem 1rem;
+  color:       var(--color-text);
+  white-space: nowrap;
+}
+
+// ── Empty ──────────────────────────────────────────────────────────────────
+
+.table__empty {
+  padding:    3rem 1rem;
+  text-align: center;
+  color:      var(--color-muted);
+
+  svg { opacity: 0.35; margin: 0 auto 0.75rem; display: block; }
+  p   { font-size: 0.875rem; color: var(--color-text); font-weight: 500; }
+}
+
+// ── Skeleton ───────────────────────────────────────────────────────────────
+
+.table__skeleton {
+  display:       block;
+  height:        14px;
+  border-radius: 6px;
+  background:    linear-gradient(90deg, var(--color-border) 25%, color-mix(in srgb, var(--color-border) 50%, transparent) 50%, var(--color-border) 75%);
+  background-size: 200% 100%;
+  animation:     shimmer 1.4s infinite;
+  width:         70%;
+}
+
+@keyframes shimmer {
+  from { background-position:  200% 0; }
+  to   { background-position: -200% 0; }
+}

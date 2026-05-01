@@ -1,0 +1,194 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+
+.sel-wrapper {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.375rem;
+  width:          100%;
+}
+
+// Label
+
+.sel-label {
+  font-size:   0.75rem;
+  font-weight: 500;
+  color:       var(--color-text);
+}
+
+// Container
+
+.sel-container {
+  --sel-focus: var(--color-accent);
+
+  position: relative;
+  display:  flex;
+  width:    100%;
+
+  background-color: var(--color-surface);
+  border:           1px solid var(--color-border);
+  border-radius:    0.25rem;
+
+  transition:
+    border-color 120ms ease,
+    box-shadow   120ms ease;
+
+  &:focus-within {
+    border-color: var(--sel-focus);
+    box-shadow:   0 0 0 3px color-mix(in srgb, var(--sel-focus) 18%, transparent);
+  }
+
+  // Colors
+
+  &.sel--primary   { --sel-focus: var(--color-accent);  }
+  &.sel--secondary { --sel-focus: #71717a;               }
+  &.sel--success   { --sel-focus: var(--color-success);  }
+  &.sel--warning   { --sel-focus: var(--color-warning);  }
+  &.sel--danger    { --sel-focus: var(--color-danger);   }
+
+  // Sizes
+
+  &.sel--sm {
+    height:    1.875rem;
+    font-size: 0.75rem;
+  }
+
+  &.sel--md {
+    height:    2.25rem;
+    font-size: 0.875rem;
+  }
+
+  &.sel--lg {
+    height:    2.75rem;
+    font-size: 0.9375rem;
+  }
+
+  // Error
+
+  &.sel--error {
+    --sel-focus:  var(--color-danger);
+    border-color: var(--color-danger);
+  }
+
+  // Disabled
+
+  &.sel--disabled {
+    opacity:        0.4;
+    cursor:         not-allowed;
+    pointer-events: none;
+  }
+
+  // Open — bordo inferiore squadrato per raccordarsi col dropdown
+  &.sel--open {
+    border-bottom-left-radius:  0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+// Trigger (bottone invisibile che riempie il container)
+
+.sel-trigger {
+  all:     unset;
+  flex:    1;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem 0 0.75rem;
+  cursor:  pointer;
+  color:   var(--color-text-strong);
+  font-family: inherit;
+  font-size:   inherit;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
+
+  &:disabled { cursor: not-allowed; }
+}
+
+.sel-trigger__placeholder {
+  color: var(--color-muted);
+}
+
+// Chevron
+
+.sel-chevron {
+  position:       absolute;
+  right:          0.625rem;
+  top:            50%;
+  transform:      translateY(-50%) rotate(0deg);
+  display:        flex;
+  align-items:    center;
+  pointer-events: none;
+  color:          var(--color-muted);
+  transition:     transform 200ms ease;
+
+  &--open {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+// Dropdown
+
+.sel-dropdown {
+  position: fixed;
+  z-index:  9000;
+
+  background-color: var(--color-surface);
+  border:           1px solid var(--sel-focus);
+  border-top:       none;
+  border-bottom-left-radius:  0.25rem;
+  border-bottom-right-radius: 0.25rem;
+  box-shadow: 0 4px 12px color-mix(in srgb, #000 8%, transparent);
+
+  max-height:  220px;
+  overflow-y:  auto;
+  overscroll-behavior: contain;
+}
+
+// Option
+
+.sel-option {
+  display:     flex;
+  align-items: center;
+  padding:     0.5rem 0.75rem;
+  font-size:   inherit;
+  cursor:      pointer;
+  color:       var(--color-text);
+  transition:  background-color 80ms ease, color 80ms ease;
+
+  &:hover,
+  &--focused {
+    background-color: var(--color-border);
+  }
+
+  &--selected {
+    background-color: color-mix(in srgb, var(--sel-focus) 12%, transparent);
+    color:            var(--sel-focus);
+    font-weight:      500;
+
+    &:hover,
+    &.sel-option--focused {
+      background-color: color-mix(in srgb, var(--sel-focus) 20%, transparent);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.4;
+    cursor:  not-allowed;
+    pointer-events: none;
+  }
+}
+
+// Hint / error message
+
+.sel-message {
+  font-size:   0.75rem;
+  line-height: 1.4;
+  color:       var(--color-muted);
+
+  &--error {
+    color: var(--color-danger);
+  }
+}

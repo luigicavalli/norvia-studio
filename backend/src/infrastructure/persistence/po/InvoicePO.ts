@@ -1,0 +1,116 @@
+export class InvoicePO {
+
+    private _id:           string;
+    private _workspace_id: string;
+    private _client_id:    string;
+    private _project_id:   string | null;
+    private _number:       number;
+    private _status:       string;
+    private _issue_date:   Date;
+    private _due_date:     Date;
+    private _paid_at:      Date | null;
+    private _notes:        string;
+    private _created_at:   Date;
+    private _updated_at:   Date;
+
+    /* ***************
+     * Getter & Setter
+     */
+
+    public get id(): string {
+        return this._id;
+    }
+
+    public set id(value: string) {
+        this._id = value;
+    }
+
+    public get workspace_id(): string {
+        return this._workspace_id;
+    }
+
+    public set workspace_id(value: string) {
+        this._workspace_id = value;
+    }
+
+    public get client_id(): string {
+        return this._client_id;
+    }
+
+    public set client_id(value: string) {
+        this._client_id = value;
+    }
+
+    public get project_id(): string | null {
+        return this._project_id;
+    }
+
+    public set project_id(value: string | null) {
+        this._project_id = value;
+    }
+
+    public get number(): number {
+        return this._number;
+    }
+
+    public set number(value: number) {
+        this._number = value;
+    }
+
+    public get status(): string {
+        return this._status;
+    }
+
+    public set status(value: string) {
+        this._status = value;
+    }
+
+    public get issue_date(): Date {
+        return this._issue_date;
+    }
+
+    public set issue_date(value: Date) {
+        this._issue_date = value;
+    }
+
+    public get due_date(): Date {
+        return this._due_date;
+    }
+
+    public set due_date(value: Date) {
+        this._due_date = value;
+    }
+
+    public get paid_at(): Date | null {
+        return this._paid_at;
+    }
+
+    public set paid_at(value: Date | null) {
+        this._paid_at = value;
+    }
+
+    public get notes(): string {
+        return this._notes;
+    }
+
+    public set notes(value: string) {
+        this._notes = value;
+    }
+
+    public get created_at(): Date {
+        return this._created_at;
+    }
+
+    public set created_at(value: Date) {
+        this._created_at = value;
+    }
+
+    public get updated_at(): Date {
+        return this._updated_at;
+    }
+
+    public set updated_at(value: Date) {
+        this._updated_at = value;
+    }
+
+};
