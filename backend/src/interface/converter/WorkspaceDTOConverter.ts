@@ -15,6 +15,7 @@ export class WorkspaceDTOConverter implements IDTOConverter<WorkspaceDTO, Worksp
             workspaceBo.description = dto.description ?? null;
             workspaceBo.createdAt   = dto.createdAt;
             workspaceBo.updatedAt   = dto.updatedAt;
+            console.log("🚀 ~ WorkspaceDTOConverter ~ toBO ~ workspaceBo:", workspaceBo)
 
         return workspaceBo;
 

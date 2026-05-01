@@ -48,7 +48,7 @@ Each sub-project is self-contained with its own `package.json`, TypeScript confi
 │    Interface → Application → Domain     │
 │               ↕                         │
 │          Infrastructure                 │
-│           (Supabase)                    │
+│    (Supabase PostgreSQL via pg pool)    │
 └─────────────────────────────────────────┘
 ```
 
@@ -61,7 +61,7 @@ The backend is organized in four concentric layers, each with a strict dependenc
 | **Domain** | Core business entities, enums, and repository interfaces |
 | **Application** | Use cases orchestrating domain logic; `AppResponse` / `AppError` helpers |
 | **Interface** | Express controllers, DTOs, and converters that translate HTTP ↔ domain |
-| **Infrastructure** | Supabase DAOs, repository implementations, and SQL migration scripts |
+| **Infrastructure** | PostgreSQL DAOs (via `pg` + Supavisor pooler), repository implementations, and SQL migration scripts |
 
 Dependency injection is bootstrapped in `src/http/wiring.ts`, which instantiates all layers and wires them together at startup.
 

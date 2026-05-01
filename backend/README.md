@@ -11,7 +11,7 @@ Node.js / Express REST API for Norvia Studio, built with TypeScript and Supabase
 | **Runtime** | Node.js 20+ |
 | **Language** | TypeScript 5.9 (ES modules) |
 | **Framework** | Express 5 |
-| **Database** | Supabase (PostgreSQL) via `@supabase/supabase-js` |
+| **Database** | Supabase (PostgreSQL) via `pg` (node-postgres) — direct connection through Supavisor pooler |
 | **Auth** | Clerk (`@clerk/express`) |
 | **Testing** | Jest 29 + ts-jest |
 | **Linting** | ESLint 9 |
@@ -42,16 +42,15 @@ Copy `.env.example` (located at the repository root) to `.env` in the same root 
 ```env
 EXPRESS_PORT=3000
 
-SUPABASE_URL=https://<project-ref>.supabase.co
-SUPABASE_ANON_KEY=<your-anon-key>
-SUPABASE_SCHEMA=public
+SUPABASE_DB_URL=postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres
+SUPABASE_SCHEMA=dev
 
 CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 ```
 
 > `CORS_ORIGIN` defaults to `http://localhost:4200` if not set.
-> `SUPABASE_URL` and `SUPABASE_ANON_KEY` are found in your Supabase project under **Settings → API**.
+> `SUPABASE_DB_URL` is the **Transaction pooler** connection string found in your Supabase project under **Settings → Database → Connection pooling** (port `6543`).
 
 ### 3. Set up the database
 
@@ -123,8 +122,8 @@ src/
 └── infrastructure/
     └── persistence/
         ├── dao/
-        │   ├── supabase/         # Active — Supabase Data Access Objects (current implementation)
-        │   └── pg/               # Inactive — raw PostgreSQL DAOs (kept for future use)
+        │   ├── pg/               # Active — raw PostgreSQL DAOs (current implementation via Supavisor)
+        │   └── supabase/         # Inactive — Supabase JS client DAOs (kept for reference)
         ├── repository/           # IRepository implementations
         ├── po/                   # Persistence Objects (typed DB row shapes)
         ├── converter/            # PO ↔ domain model converters
@@ -139,7 +138,7 @@ src/
 
 **Interface** — Translates HTTP requests into domain calls and domain results into HTTP responses. Controllers call use cases; DTOs define the public API shape; converters handle the mapping.
 
-**Infrastructure** — Supabase-backed implementations of repository interfaces. DAOs use the Supabase JS client to query the database; converters map rows to domain objects.
+**Infrastructure** — PostgreSQL-backed implementations of repository interfaces. DAOs use `pg` (node-postgres) to query Supabase directly via the Supavisor connection pooler; converters map rows to domain objects.
 
 ---
 
@@ -149,15 +148,19 @@ src/
 
 The original design targeted **Cloud SQL** (managed PostgreSQL on GCP), but that turned out to be overkill for the current stage of the project — provisioning a full Cloud SQL instance, configuring VPC networking, and managing IAM just to run a handful of tables adds unnecessary operational overhead before the product has found its footing.
 
-**Supabase** solves the same problem with near-zero configuration: it provides a managed PostgreSQL database, a typed JS client, and a web console for running migrations — all accessible with three environment variables. The schema itself is identical (the same SQL migration scripts run on both), so the switch is purely at the DAO layer.
+**Supabase** solves the same problem with near-zero configuration: it provides a managed PostgreSQL database and a web console for running migrations. The schema itself is identical (the same SQL migration scripts run on both), so any future migration to a self-managed instance is purely at the DAO layer.
 
-### Why the PostgreSQL layer is still there
+### How the database connection works
 
-The ten DAO implementations in `dao/pg/` have been kept intentionally. The DAO pattern abstracts the database behind an interface (`IGenericDAO` + entity-specific interfaces), so swapping the active implementation requires changing only `wiring.ts` — nothing in the application or domain layers is aware of the underlying driver.
+The backend connects to Supabase using **`pg` (node-postgres)** through the **Supavisor Transaction pooler** (port `6543`). This bypasses PostgREST entirely and talks directly to PostgreSQL, which means:
 
-Keeping `dao/pg/` means:
-- migrating back to a self-managed PostgreSQL instance (or Cloud SQL) in the future is a one-line change per DAO in `wiring.ts`
-- the raw SQL implementations serve as a reference for the exact queries being executed
+- standard parameterized queries (`$1`, `$2`, …) work without any serialization constraints
+- transactions are fully supported — the pooler holds the connection for the duration of each transaction
+- the `search_path` is set to the target schema via PostgreSQL startup options (`--search_path=<schema>`), so it survives connection recycling
+
+### Why the Supabase JS client DAOs are still there
+
+The implementations in `dao/supabase/` have been kept for reference. The DAO pattern abstracts the database behind a stable interface (`IGenericDAO` + entity-specific interfaces), so switching the active driver requires changing only `wiring.ts`. Nothing in the application or domain layers is aware of the underlying driver.
 
 ---
 
@@ -228,9 +231,8 @@ npm run test:coverage     # generate HTML coverage report in coverage/
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `EXPRESS_PORT` | No | `3000` | Port the Express server listens on |
-| `SUPABASE_URL` | Yes | — | Supabase project URL (Settings → API) |
-| `SUPABASE_ANON_KEY` | Yes | — | Supabase anonymous/public key |
-| `SUPABASE_SCHEMA` | Yes | — | PostgreSQL schema to target (usually `public`) |
+| `SUPABASE_DB_URL` | Yes | — | Supavisor Transaction pooler connection string (Settings → Database → Connection pooling, port `6543`) |
+| `SUPABASE_SCHEMA` | Yes | — | PostgreSQL schema to target (e.g. `dev`) |
 | `CLERK_PUBLISHABLE_KEY` | Yes | — | Clerk publishable key |
 | `CLERK_SECRET_KEY` | Yes | — | Clerk secret key |
 | `CORS_ORIGIN` | No | `http://localhost:4200` | Allowed CORS origin |
