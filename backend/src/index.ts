@@ -1,15 +1,15 @@
-import { errorHandler }    from './http/errorHandler.js';
-import { configDotenv }    from 'dotenv';
-import { createApiRouter } from './http/routes.js';
+import cors                             from 'cors';
+import { errorHandler }                 from './http/errorHandler.js';
+import { configDotenv }                 from 'dotenv';
+import { createApiRouter }              from './http/routes.js';
 import { clerkMiddleware, requireAuth } from '@clerk/express';
-import cors from 'cors';
 
 import express, { type NextFunction, type Request, type Response } from 'express';
 
 
 configDotenv({ path: '../.env', quiet: true });
 
-const port: number | undefined = Number(process.env.EXPRESS_PORT);
+const port = Number(process.env.PORT ?? process.env.EXPRESS_PORT);
 
 if (!port) throw new Error('Missing Express port');
 
