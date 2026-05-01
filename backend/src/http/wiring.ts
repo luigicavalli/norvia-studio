@@ -1,12 +1,12 @@
 import { ClientController }            from "../interface/controller/ClientController.js";
-import { getSupabaseClient }           from "../infrastructure/persistence/dao/supabase/SupabaseConnection.js";
+import { getPoolInstance }             from "../infrastructure/persistence/dao/pg/PgConnectionPool.js";
 import { ProjectController }           from "../interface/controller/ProjectController.js";
 import { CompanyController }           from "../interface/controller/CompanyController.js";
 import { CreateClientUseCase }         from "../application/use-case/CreateClientUseCase.js";
 import { UpdateClientUseCase }         from "../application/use-case/UpdateClientUseCase.js";
 import { DeleteClientUseCase }         from "../application/use-case/DeleteClientUseCase.js";
 import { WorkspaceController }         from "../interface/controller/WorkspaceController.js";
-import { SupabaseQuoteDAOImpl }        from "../infrastructure/persistence/dao/supabase/SupabaseQuoteDAOImpl.js";
+import { PgQuoteDAOImpl }              from "../infrastructure/persistence/dao/pg/PgQuoteDAOImpl.js";
 import { ClientRepositoryImpl }        from "../infrastructure/persistence/repository/ClientRepositoryImpl.js";
 import { CreateCompanyUseCase }        from "../application/use-case/CreateCompanyUseCase.js";
 import { CreateProjectUseCase }        from "../application/use-case/CreateProjectUseCase.js";
@@ -18,14 +18,14 @@ import { GetAllClientsUseCase }        from "../application/use-case/GetAllClien
 import { GetClientByIdUseCase }        from "../application/use-case/GetClientByIdUseCase.js";
 import { TeamMemberController }        from "../interface/controller/TeamMemberController.js";
 import { AddTeamMemberUseCase }        from "../application/use-case/AddTeamMemberUseCase.js";
-import { SupabaseClientDAOImpl }       from "../infrastructure/persistence/dao/supabase/SupabaseClientDAOImpl.js";
+import { PgClientDAOImpl }             from "../infrastructure/persistence/dao/pg/PgClientDAOImpl.js";
 import { GetAllProjectsUseCase }       from "../application/use-case/GetAllProjectsUseCase.js";
 import { GetProjectByIdUseCase }       from "../application/use-case/GetProjectByIdUseCase.js";
 import { GetCompanyByIdUseCase }       from "../application/use-case/GetCompanyByIdUseCase.js";
 import { ProjectRepositoryImpl }       from "../infrastructure/persistence/repository/ProjectRepositoryImpl.js";
 import { CompanyRepositoryImpl }       from "../infrastructure/persistence/repository/CompanyRepositoryImpl.js";
-import { SupabaseProjectDAOImpl }      from "../infrastructure/persistence/dao/supabase/SupabaseProjectDAOImpl.js";
-import { SupabaseCompanyDAOImpl }      from "../infrastructure/persistence/dao/supabase/SupabaseCompanyDAOImpl.js";
+import { PgProjectDAOImpl }            from "../infrastructure/persistence/dao/pg/PgProjectDAOImpl.js";
+import { PgCompanyDAOImpl }            from "../infrastructure/persistence/dao/pg/PgCompanyDAOImpl.js";
 import { GetAllCompaniesUseCase }      from "../application/use-case/GetAllCompaniesUseCase.js";
 import { CreateWorkspaceUseCase }      from "../application/use-case/CreateWorkspaceUseCase.js";
 import { UpdateWorkspaceUseCase }      from "../application/use-case/UpdateWorkspaceUseCase.js";
@@ -34,11 +34,11 @@ import { WorkspaceRepositoryImpl }     from "../infrastructure/persistence/repos
 import { GetAllWorkspacesUseCase }     from "../application/use-case/GetAllWorkspacesUseCase.js";
 import { GetWorkspaceByIdUseCase }     from "../application/use-case/GetWorkspaceByIdUseCase.js";
 import { RemoveTeamMemberUseCase }     from "../application/use-case/RemoveTeamMemberUseCase.js";
-import { SupabaseWorkspaceDAOImpl }    from "../infrastructure/persistence/dao/supabase/SupabaseWorkspaceDAOImpl.js";
+import { PgWorkspaceDAOImpl }          from "../infrastructure/persistence/dao/pg/PgWorkspaceDAOImpl.js";
 import { TeamMemberRepositoryImpl }    from "../infrastructure/persistence/repository/TeamMemberRepositoryImpl.js";
 import { GetWorkspaceBySlugUseCase }   from "../application/use-case/GetWorkspaceBySlugUseCase.js";
-import { SupabaseAssignmentDAOImpl }   from "../infrastructure/persistence/dao/supabase/SupabaseAssignmentDAOImpl.js";
-import { SupabaseTeamMemberDAOImpl }   from "../infrastructure/persistence/dao/supabase/SupabaseTeamMemberDAOImpl.js";
+import { PgAssignmentDAOImpl }         from "../infrastructure/persistence/dao/pg/PgAssignmentDAOImpl.js";
+import { PgTeamMemberDAOImpl }         from "../infrastructure/persistence/dao/pg/PgTeamMemberDAOImpl.js";
 import { GetProjectsByClientUseCase }  from "../application/use-case/GetProjectsByClientUseCase.js";
 import { UpdateProjectStatusUseCase }  from "../application/use-case/UpdateProjectStatusUseCase.js";
 import { GetClientsByCompanyUseCase }  from "../application/use-case/GetClientsByCompanyUseCase.js";
@@ -53,15 +53,15 @@ import { UpdateTeamMemberRoleUseCase } from "../application/use-case/UpdateTeamM
 //                           PERSISTENCE LAYER
 // =========================================================================
 
-const supabaseClient        = getSupabaseClient();
+const pool                  = getPoolInstance();
 
-const projectDAO            = new SupabaseProjectDAOImpl(supabaseClient);
-const companyDAO            = new SupabaseCompanyDAOImpl(supabaseClient);
-const clientDAO             = new SupabaseClientDAOImpl(supabaseClient);
-const workspaceDAO          = new SupabaseWorkspaceDAOImpl(supabaseClient);
-const assignmentDAO         = new SupabaseAssignmentDAOImpl(supabaseClient);
-const teamMemberDAO         = new SupabaseTeamMemberDAOImpl(supabaseClient);
-const quoteDAO              = new SupabaseQuoteDAOImpl(supabaseClient);
+const projectDAO            = new PgProjectDAOImpl(pool);
+const companyDAO            = new PgCompanyDAOImpl(pool);
+const clientDAO             = new PgClientDAOImpl(pool);
+const workspaceDAO          = new PgWorkspaceDAOImpl(pool);
+const assignmentDAO         = new PgAssignmentDAOImpl(pool);
+const teamMemberDAO         = new PgTeamMemberDAOImpl(pool);
+const quoteDAO              = new PgQuoteDAOImpl(pool);
 
 const projectRepo           = new ProjectRepositoryImpl(projectDAO, workspaceDAO, assignmentDAO, teamMemberDAO, clientDAO, quoteDAO);
 const companyRepo           = new CompanyRepositoryImpl(companyDAO, workspaceDAO);

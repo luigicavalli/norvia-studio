@@ -30,6 +30,7 @@ export class WorkspacePOConverter implements IPersistenceConverter<WorkspacePO, 
             workspacePo.description = bo.description;
             workspacePo.created_at  = bo.createdAt;
             workspacePo.updated_at  = bo.updatedAt;
+            console.log("🚀 ~ WorkspacePOConverter ~ toPO ~ workspacePo:", workspacePo)
 
         return workspacePo;
 
