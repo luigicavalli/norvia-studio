@@ -1,3 +1,4 @@
+import * as Sentry                              from '@sentry/node';
 import { AppError }                             from "../application/error/AppError.js";
 import type { NextFunction, Request, Response } from "express";
 
@@ -58,6 +59,7 @@ const errorHandler = (error: HttpError, _req: Request, res: Response, _next: Nex
 
     if (status >= 500) {
         console.error(error);
+        Sentry.captureException(error);
     }
 
     return res.status(status).json({ status, error: message, code, details });

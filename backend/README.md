@@ -13,6 +13,7 @@ Node.js / Express REST API for Norvia Studio, built with TypeScript and Supabase
 | **Framework** | Express 5 |
 | **Database** | Supabase (PostgreSQL) via `pg` (node-postgres) — direct connection through Supavisor pooler |
 | **Auth** | Clerk (`@clerk/express`) |
+| **Error tracking** | Sentry (`@sentry/node`) |
 | **Testing** | Jest 29 + ts-jest |
 | **Linting** | ESLint 9 |
 
@@ -100,7 +101,7 @@ The backend follows **Clean Architecture** (also known as Hexagonal Architecture
 
 ```
 src/
-├── index.ts                      # Entry point — bootstraps Express and Clerk
+├── index.ts                      # Entry point — bootstraps Sentry, Express and Clerk
 ├── domain/
 │   ├── model/                    # Core business entities (pure TypeScript classes)
 │   ├── enums/                    # Domain enumerations (statuses, priorities, roles)
@@ -115,15 +116,14 @@ src/
 │   ├── dto/                      # Data Transfer Objects for HTTP boundary
 │   └── converter/                # DTO ↔ domain model converters
 ├── http/
-│   ├── index.ts                  # Express app factory
+│   ├── sentry.ts                 # Sentry initialisation (imported first in index.ts)
 │   ├── routes.ts                 # All route definitions
 │   ├── wiring.ts                 # Dependency injection — wires all layers at startup
-│   └── errorHandler.ts           # Global error-handling middleware
+│   └── errorHandler.ts           # Global error-handling middleware + Sentry capture
 └── infrastructure/
     └── persistence/
         ├── dao/
-        │   ├── pg/               # Active — raw PostgreSQL DAOs (current implementation via Supavisor)
-        │   └── supabase/         # Inactive — Supabase JS client DAOs (kept for reference)
+        │   └── pg/               # Active — raw PostgreSQL DAOs (current implementation via Supavisor)
         ├── repository/           # IRepository implementations
         ├── po/                   # Persistence Objects (typed DB row shapes)
         ├── converter/            # PO ↔ domain model converters
@@ -157,10 +157,6 @@ The backend connects to Supabase using **`pg` (node-postgres)** through the **Su
 - standard parameterized queries (`$1`, `$2`, …) work without any serialization constraints
 - transactions are fully supported — the pooler holds the connection for the duration of each transaction
 - the `search_path` is set to the target schema via PostgreSQL startup options (`--search_path=<schema>`), so it survives connection recycling
-
-### Why the Supabase JS client DAOs are still there
-
-The implementations in `dao/supabase/` have been kept for reference. The DAO pattern abstracts the database behind a stable interface (`IGenericDAO` + entity-specific interfaces), so switching the active driver requires changing only `wiring.ts`. Nothing in the application or domain layers is aware of the underlying driver.
 
 ---
 
@@ -235,6 +231,7 @@ Cloud Run injects secrets as environment variables at runtime. The mapping below
 | `SUPABASE_SCHEMA` | `SUPABASE_SCHEMA` | PostgreSQL schema name |
 | `CLERK_SECRET_KEY` | `CLERK_SECRET_KEY` | Clerk secret key |
 | `CORS_ORIGIN` | `CORS_ORIGIN` | Allowed CORS origin (frontend URL or `*`) |
+| `SENTRY_DSN_BACKEND` | `SENTRY_DSN` | Sentry DSN for error tracking and performance monitoring |
 
 > Cloud Run also injects `PORT` automatically; the app reads it via `process.env.PORT ?? process.env.EXPRESS_PORT`.
 
@@ -263,7 +260,8 @@ gcloud run deploy <SERVICE_NAME> \
     SUPABASE_DB_URL=SUPABASE_URL:latest,\
     SUPABASE_SCHEMA=SUPABASE_SCHEMA:latest,\
     CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,\
-    CORS_ORIGIN=CORS_ORIGIN:latest
+    CORS_ORIGIN=CORS_ORIGIN:latest,\
+    SENTRY_DSN=SENTRY_DSN_BACKEND:latest
 ```
 
 **Placeholder reference:**
@@ -305,6 +303,6 @@ npm run test:coverage     # generate HTML coverage report in coverage/
 | `EXPRESS_PORT` | No | `3000` | Port the Express server listens on |
 | `SUPABASE_DB_URL` | Yes | — | Supavisor Transaction pooler connection string (Settings → Database → Connection pooling, port `6543`) |
 | `SUPABASE_SCHEMA` | Yes | — | PostgreSQL schema to target (e.g. `dev`) |
-| `CLERK_PUBLISHABLE_KEY` | Yes | — | Clerk publishable key |
+| `CLERK_PUBLISHABLE_KEY` | Yes | — | Clerk publishable key |S
 | `CLERK_SECRET_KEY` | Yes | — | Clerk secret key |
 | `CORS_ORIGIN` | No | `http://localhost:4200` | Allowed CORS origin |

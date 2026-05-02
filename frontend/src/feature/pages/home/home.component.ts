@@ -27,6 +27,10 @@ export class HomeComponent {
     year:    'numeric',
   }).format(new Date());
 
+  protected readonly loading = computed(() =>
+    !this.projectService.loaded() || !this.clientService.loaded(),
+  );
+
   protected readonly activeProjects = computed(() => this.projectService.activeCount());
   protected readonly totalClients   = computed(() => this.clientService.total());
   protected readonly onHoldProjects = computed(() => this.projectService.onHoldCount());

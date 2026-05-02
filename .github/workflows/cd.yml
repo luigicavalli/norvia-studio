@@ -47,7 +47,7 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --quiet \
-            --set-secrets "SUPABASE_DB_URL=SUPABASE_URL:latest,SUPABASE_SCHEMA=SUPABASE_SCHEMA:latest,CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,CORS_ORIGIN=CORS_ORIGIN:latest"
+            --set-secrets "SUPABASE_DB_URL=SUPABASE_URL:latest,SUPABASE_SCHEMA=SUPABASE_SCHEMA:latest,CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,CORS_ORIGIN=CORS_ORIGIN:latest,SENTRY_DSN=SENTRY_DSN_BACKEND:latest"
 
   deploy-frontend:
     name: Deploy Frontend → Firebase Hosting
@@ -75,6 +75,7 @@ jobs:
             production:          false,
             clerkPublishableKey: '${{ secrets.CLERK_PUBLISHABLE_KEY }}',
             apiUrl:              '${{ secrets.API_URL }}',
+            sentryDsn:           '',
           };
           EOF
           cat > src/environments/environment.prod.ts <<EOF
@@ -82,6 +83,7 @@ jobs:
             production:          true,
             clerkPublishableKey: '${{ secrets.CLERK_PUBLISHABLE_KEY }}',
             apiUrl:              '${{ secrets.API_URL }}',
+            sentryDsn:           '${{ secrets.SENTRY_DSN_FRONTEND }}',
           };
           EOF
 

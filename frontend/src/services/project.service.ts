@@ -18,9 +18,11 @@ export class ProjectService {
 
   private readonly _projects = signal<Project[]>([]);
   private readonly _loading  = signal(false);
+  private readonly _loaded   = signal(false);
 
   readonly projects = this._projects.asReadonly();
   readonly loading  = this._loading.asReadonly();
+  readonly loaded   = this._loaded.asReadonly();
 
   readonly activeCount    = computed(() => this._projects().filter(p => p.status === 'ACTIVE').length);
   readonly onHoldCount    = computed(() => this._projects().filter(p => p.status === 'ON_HOLD').length);
@@ -40,6 +42,7 @@ export class ProjectService {
       this._projects.set((res.data ?? []).map(dto => this.mapDto(dto)));
     } finally {
       this._loading.set(false);
+      this._loaded.set(true);
     }
   }
 
