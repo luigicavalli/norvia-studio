@@ -1,6 +1,6 @@
 {
   "name": "norvia-studio-backend",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "UNLICENSED",
   "author": "Luigi Cavalli",
   "type": "module",
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@clerk/express": "^2.0.8",
+    "@sentry/node": "^10.51.0",
     "@supabase/supabase-js": "^2.104.1",
     "@types/pg": "^8.18.0",
     "cors": "^2.8.6",

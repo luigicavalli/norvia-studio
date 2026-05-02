@@ -7,9 +7,10 @@ import { signal }                   from '@angular/core';
 import { ProjectService, Project, SaveProjectData } from './project.service';
 import { WorkspaceService }                         from './workspace.service';
 import type { Client }                              from './client.service';
+import { environment }                             from '../environments/environment';
 
 
-const BASE = 'http://localhost:3000';
+const BASE = environment.apiUrl;
 
 const MOCK_CLIENT: Client = {
   id:          'c-1',

@@ -12,6 +12,7 @@ Angular 21 single-page application for Norvia Studio.
 | **Language** | TypeScript 5.9 |
 | **Build tool** | Angular CLI 21 / Vite 7 |
 | **Auth** | Clerk (`@clerk/clerk-js`) |
+| **Error tracking** | Sentry (`@sentry/angular`) |
 | **HTTP** | Angular `HttpClient` |
 | **Reactive state** | Angular Signals + RxJS 7 |
 | **Testing** | Vitest 4 + Angular testing utilities |
@@ -51,6 +52,7 @@ export const environment = {
   production:          false,
   clerkPublishableKey: 'pk_test_...',
   apiUrl:              'http://localhost:3000',
+  sentryDsn:           '',             // leave empty for local dev
 };
 ```
 
@@ -101,7 +103,8 @@ src/
 │   ├── app.config.ts                # provideRouter, provideHttpClient, APP_INITIALIZER
 │   ├── app.routes.ts                # Route definitions
 │   ├── guards/
-│   │   └── auth.guard.ts            # Redirects unauthenticated users to /
+│   │   ├── auth.guard.ts            # Redirects unauthenticated users to /
+│   │   └── guest.guard.ts           # Redirects authenticated users away from /
 │   └── interceptors/
 │       └── auth.interceptor.ts      # Attaches Clerk JWT to every request
 └── feature/
@@ -147,9 +150,10 @@ Each service has a `load()` method that fetches from the API and updates the sig
 
 ### Authentication flow
 
-1. `app.config.ts` registers `AuthService.init()` as an `APP_INITIALIZER` — Clerk is fully loaded before the app renders.
+1. `app.config.ts` registers `AuthService.init()` via `provideAppInitializer` — Clerk is fully loaded before the app renders.
 2. `authGuard` checks `authService.isSignedIn()` on every protected navigation; unauthenticated users are redirected to `/`.
-3. `authInterceptor` calls `authService.getToken()` and injects `Authorization: Bearer <token>` into every outgoing HTTP request.
+3. `guestGuard` on the `/` route redirects already-authenticated users to `/home`.
+4. `authInterceptor` calls `authService.getToken()` and injects `Authorization: Bearer <token>` into every outgoing HTTP request.
 
 ### Routing
 
@@ -199,6 +203,7 @@ export const environment = {
   production:          true,
   clerkPublishableKey: 'pk_live_...',
   apiUrl:              'https://<cloud-run-service-url>',
+  sentryDsn:           'https://...@sentry.io/...',
 };
 ```
 
@@ -231,5 +236,6 @@ Both values are set inside `src/environments/environment.ts` (not in `.env`):
 | `production` | `true` for production builds, `false` for development |
 | `clerkPublishableKey` | Clerk publishable key (`pk_test_...` or `pk_live_...`) |
 | `apiUrl` | Base URL of the backend API (e.g. `http://localhost:3000`) |
+| `sentryDsn` | Sentry DSN for the Angular project — leave empty string for local dev |
 
 In CI, the environment file is generated from GitHub secrets before the build step.

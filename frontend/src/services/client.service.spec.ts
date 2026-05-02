@@ -6,9 +6,10 @@ import { signal }                   from '@angular/core';
 
 import { ClientService, Client, CreateClientData } from './client.service';
 import { WorkspaceService }                        from './workspace.service';
+import { environment }                             from '../environments/environment';
 
 
-const BASE = 'http://localhost:3000';
+const BASE = environment.apiUrl;
 
 const MOCK_DTO = {
   id:        'c-1',
