@@ -4,9 +4,10 @@ import { provideHttpClientTesting }   from '@angular/common/http/testing';
 import { HttpTestingController }      from '@angular/common/http/testing';
 
 import { WorkspaceService, Workspace } from './workspace.service';
+import { environment }                from '../environments/environment';
 
 
-const BASE = 'http://localhost:3000';
+const BASE = environment.apiUrl;
 
 const MOCK_WS: Workspace = {
   id:          'ws-1',
