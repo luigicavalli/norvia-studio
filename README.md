@@ -18,7 +18,8 @@ norvia-studio/
 ├── frontend/       # Angular 21 SPA
 ├── .github/
 │   └── workflows/
-│       └── ci.yml  # GitHub Actions CI pipeline
+│       ├── ci.yml  # GitHub Actions CI pipeline
+│       └── cd.yml  # GitHub Actions CD pipeline
 ├── .env.example    # Root environment variable template
 └── README.md
 ```
@@ -72,7 +73,7 @@ Dependency injection is bootstrapped in `src/http/wiring.ts`, which instantiates
 The frontend follows standard Angular patterns with no NgModules:
 
 - **Services** — thin wrappers around `HttpClient`, exposing Angular signals for reactive state
-- **Guards** — `authGuard` protects all authenticated routes via Clerk session state
+- **Guards** — `authGuard` protects all authenticated routes; `guestGuard` redirects already-authenticated users away from the login page
 - **Interceptors** — `authInterceptor` attaches the Clerk JWT to every outgoing request
 - **Shared components** — a small design-system library (`Button`, `Input`, `Badge`, `Modal`, `Toast`, etc.) used throughout the feature pages
 
@@ -98,7 +99,7 @@ The frontend follows standard Angular patterns with no NgModules:
 
 Authentication is handled by **[Clerk](https://clerk.com)** across both ends:
 
-- The **frontend** uses `@clerk/clerk-js` to manage sign-in, sign-up, MFA, and session state; the `AuthService` initializes Clerk as an `APP_INITIALIZER`.
+- The **frontend** uses `@clerk/clerk-js` to manage sign-in, sign-up, MFA, and session state; the `AuthService` initializes Clerk via `provideAppInitializer`.
 - The **backend** uses `@clerk/express` middleware; every protected route requires a valid session token in the `Authorization: Bearer <token>` header.
 
 ---
@@ -113,12 +114,22 @@ All endpoints are prefixed with `/api` and require a valid Clerk session token.
 
 | Resource | Endpoints |
 |---|---|
-| Workspaces | `GET /workspaces`, `POST /workspaces`, `GET|PUT|DELETE /workspaces/:id` |
-| Projects | `GET /projects?workspaceId=`, `POST /projects`, `GET|PUT|DELETE /projects/:id` |
-| Clients | `GET /clients?workspaceId=`, `POST /clients`, `GET|PUT|DELETE /clients/:id` |
-| Team members | `GET|POST /workspaces/:id/members`, `PUT|DELETE /workspaces/:id/members/:memberId` |
-| Quotes | `GET|POST /quotes`, `GET|PUT|DELETE /quotes/:id` |
-| Invoices | `GET|POST /invoices`, `GET|PUT|DELETE /invoices/:id` |
+| Workspaces | `GET /workspaces`, `POST /workspaces`, `GET\|PUT\|DELETE /workspaces/:id` |
+| Projects | `GET /projects?workspaceId=`, `POST /projects`, `GET\|PUT\|DELETE /projects/:id` |
+| Clients | `GET /clients?workspaceId=`, `POST /clients`, `GET\|PUT\|DELETE /clients/:id` |
+| Team members | `GET\|POST /workspaces/:id/members`, `PUT\|DELETE /workspaces/:id/members/:memberId` |
+| Quotes | `GET\|POST /quotes`, `GET\|PUT\|DELETE /quotes/:id` |
+| Invoices | `GET\|POST /invoices`, `GET\|PUT\|DELETE /invoices/:id` |
+
+---
+
+## Monitoring & Error Tracking
+
+Both services are instrumented with **[Sentry](https://sentry.io)** for error tracking and performance monitoring.
+
+- **Backend** (`@sentry/node`) — initialised before Express boots; captures all unhandled exceptions and 5xx errors with `captureException`. DSN injected at runtime via the `SENTRY_DSN` Cloud Run secret.
+- **Frontend** (`@sentry/angular`) — initialised in `main.ts` before `bootstrapApplication`; uses `SentryErrorHandler` and `TraceService` for router-level tracing. DSN injected at build time via `environment.sentryDsn`. Disabled in local development (empty string).
+- **User context** — `AuthService.syncState()` calls `Sentry.setUser()` on every session change, attaching the user's email and Clerk ID to each event. Cleared automatically on logout.
 
 ---
 
@@ -126,13 +137,14 @@ All endpoints are prefixed with `/api` and require a valid Clerk session token.
 
 ### CI (`.github/workflows/ci.yml`)
 
-Triggers on pushes to `develop` and `feature/**` branches and on pull requests to `develop`.
+Triggers on pushes to `develop` and `feature/**` branches and on pull requests to `develop` or `main`.
 
 | Job | Steps |
 |---|---|
 | **frontend** | install → lint → test → build (environment injected from secrets) |
 | **backend** | install → lint → test |
-| **semgrep** | security scan |
+| **semgrep** | static security scan |
+| **owasp** | OWASP Dependency-Check against NVD; fails on CVSS ≥ 7 (HIGH/CRITICAL); always uploads HTML report as artifact |
 
 ### CD (`.github/workflows/cd.yml`)
 
@@ -141,7 +153,7 @@ Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys 
 | Job | Steps |
 |---|---|
 | **deploy-backend** | auth → build Docker image (`--platform linux/amd64`) → push to Artifact Registry → `gcloud run deploy` |
-| **deploy-frontend** | install → inject `environment.prod.ts` from secrets → `ng build` → `firebase deploy --only hosting` |
+| **deploy-frontend** | install → inject `environment.prod.ts` from secrets → `ng build --configuration production` → `firebase deploy --only hosting` |
 
 #### Required GitHub secrets
 
@@ -154,6 +166,18 @@ Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys 
 | `GCP_CLOUD_RUN_SERVICE` | backend | Cloud Run service name |
 | `CLERK_PUBLISHABLE_KEY` | frontend | Clerk publishable key |
 | `API_URL` | frontend | Production Cloud Run base URL |
+| `SENTRY_DSN_FRONTEND` | frontend | Sentry DSN for the Angular project |
+| `NVD_API_KEY` | CI (owasp) | NVD API key for faster CVE database downloads |
+
+#### Required GCP Secret Manager secrets
+
+| Secret | Used by | Description |
+|---|---|---|
+| `SENTRY_DSN_BACKEND` | backend | Sentry DSN for the Node.js project |
+| `SUPABASE_URL` | backend | Supabase database connection URL |
+| `SUPABASE_SCHEMA` | backend | Supabase schema name |
+| `CLERK_SECRET_KEY` | backend | Clerk secret key |
+| `CORS_ORIGIN` | backend | Allowed CORS origin |
 
 ---
 
@@ -171,7 +195,7 @@ Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys 
 
 ```bash
 # 1. Clone
-git clone <repo-url>
+git clone https://github.com/luigicavalli/norvia-studio.git
 cd norvia-studio
 
 # 2. Set up backend
