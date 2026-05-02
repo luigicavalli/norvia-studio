@@ -17,7 +17,7 @@ export function getPoolInstance(): Pool {
     if (!poolInstance) {
         poolInstance = new Pool({
             connectionString: SUPABASE_DB_URL,
-            ssl: { rejectUnauthorized: false },
+            ssl: true,
             options: `--search_path=${SUPABASE_SCHEMA}`,
         });
     }
