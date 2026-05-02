@@ -9,11 +9,12 @@ import { ProjectsComponent }  from '../feature/pages/projects/projects.component
 import { ClientsComponent }   from '../feature/pages/clients/clients.component';
 import { TeamComponent }      from '../feature/pages/team/team.component';
 
-import { authGuard } from './guards/auth.guard';
+import { authGuard }  from './guards/auth.guard';
+import { guestGuard } from './guards/guest.guard';
 
 
 export const routes: Routes = [
-  { path: '', component: IndexComponent, pathMatch: 'full' },
+  { path: '', component: IndexComponent, pathMatch: 'full', canActivate: [guestGuard] },
   {
     path:        '',
     component:   ShellComponent,

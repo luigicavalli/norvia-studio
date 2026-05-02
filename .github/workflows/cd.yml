@@ -86,7 +86,7 @@ jobs:
           EOF
 
       - name: Build
-        run: npm run build
+        run: npm run build -- --configuration production
 
       - uses: google-github-actions/auth@v2
         with:
