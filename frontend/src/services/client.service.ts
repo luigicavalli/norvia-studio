@@ -18,10 +18,12 @@ export class ClientService {
 
   private readonly _clients = signal<Client[]>([]);
   private readonly _loading = signal(false);
+  private readonly _loaded  = signal(false);
 
   readonly clients = this._clients.asReadonly();
   readonly total   = computed(() => this._clients().length);
   readonly loading = this._loading.asReadonly();
+  readonly loaded  = this._loaded.asReadonly();
 
   async load(): Promise<void> {
     const workspaceId = this.workspace.activeId();
@@ -37,6 +39,7 @@ export class ClientService {
       this._clients.set((res.data ?? []).map(dto => this.mapDto(dto)));
     } finally {
       this._loading.set(false);
+      this._loaded.set(true);
     }
   }
 

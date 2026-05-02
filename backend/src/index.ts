@@ -1,3 +1,6 @@
+import './http/sentry.js';
+
+import * as Sentry                      from '@sentry/node';
 import cors                             from 'cors';
 import { errorHandler }                 from './http/errorHandler.js';
 import { configDotenv }                 from 'dotenv';
@@ -38,6 +41,7 @@ app.use('/health', (_req: Request, res: Response) => res.send(`${new Date().toIS
 
 app.use('/api', requireAuth(), createApiRouter());
 
+Sentry.setupExpressErrorHandler(app);
 app.use(errorHandler);
 
 app.listen(port, (error: Error | undefined): void => {

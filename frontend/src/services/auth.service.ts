@@ -19,6 +19,7 @@ import { Clerk } from '@clerk/clerk-js';
  * -----------
  */
 import { environment } from '../environments/environment';
+import * as Sentry     from '@sentry/angular';
 
 
 export type SignInResult = 'complete' | 'needs_second_factor';
@@ -56,6 +57,15 @@ export class AuthService {
   private syncState(): void {
     this.isSignedIn.set(!!this.clerk.session);
     this.user.set(this.clerk.user);
+
+    if (this.clerk.user) {
+      Sentry.setUser({
+        id:    this.clerk.user.id,
+        email: this.clerk.user.primaryEmailAddress?.emailAddress,
+      });
+    } else {
+      Sentry.setUser(null);
+    }
   }
 
   // --- Auth ---
