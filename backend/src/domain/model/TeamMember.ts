@@ -10,15 +10,18 @@ import type { IWorkspace, Workspace } from "./Workspace.js";
  * ENUM
  * ----
  */
-import type { TeamMemberRoles } from "../enums/TeamMemberRoles.js";
+import type { TeamMemberRoles }   from "../enums/TeamMemberRoles.js";
+import type { TeamMemberStatuses } from "../enums/TeamMemberStatuses.js";
 
 
 export interface ITeamMember {
 
     id:        string;
     workspace: IWorkspace;
-    userId:    string;
+    userId:    string | null;
+    email:     string | null;
     role:      TeamMemberRoles;
+    status:    TeamMemberStatuses;
     createdAt: Date;
     updatedAt: Date;
 
@@ -28,8 +31,10 @@ export class TeamMember implements ITeamMember {
 
     private _id:        string;
     private _workspace: Workspace;
-    private _userId:    string;
+    private _userId:    string | null;
+    private _email:     string | null;
     private _role:      TeamMemberRoles;
+    private _status:    TeamMemberStatuses;
     private _createdAt: Date;
     private _updatedAt: Date;
     
@@ -53,12 +58,20 @@ export class TeamMember implements ITeamMember {
         this._workspace = value;
     }
 
-    public get userId(): string {
+    public get userId(): string | null {
         return this._userId;
     }
 
-    public set userId(value: string) {
+    public set userId(value: string | null) {
         this._userId = value;
+    }
+
+    public get email(): string | null {
+        return this._email;
+    }
+
+    public set email(value: string | null) {
+        this._email = value;
     }
 
     public get role(): TeamMemberRoles {
@@ -75,6 +88,14 @@ export class TeamMember implements ITeamMember {
 
     public set createdAt(value: Date) {
         this._createdAt = value;
+    }
+
+    public get status(): TeamMemberStatuses {
+        return this._status;
+    }
+
+    public set status(value: TeamMemberStatuses) {
+        this._status = value;
     }
 
     public get updatedAt(): Date {

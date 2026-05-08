@@ -2,6 +2,7 @@ import { TeamMember }              from "../../domain/model/TeamMember.js";
 import { Workspace }               from "../../domain/model/Workspace.js";
 import type { TeamMemberDTO }      from "../dto/TeamMemberDTO.js";
 import type { TeamMemberRoles }    from "../../domain/enums/TeamMemberRoles.js";
+import type { TeamMemberStatuses } from "../../domain/enums/TeamMemberStatuses.js";
 import type { IDTOConverter }      from "./IDTOConverter.js";
 
 
@@ -15,8 +16,10 @@ export class TeamMemberDTOConverter implements IDTOConverter<TeamMemberDTO, Team
         const member = new TeamMember();
         member.id        = dto.id;
         member.workspace = workspace;
-        member.userId    = dto.userId;
+        member.userId    = dto.userId ?? null;
+        member.email     = dto.email  ?? null;
         member.role      = dto.role as TeamMemberRoles;
+        member.status    = dto.status as TeamMemberStatuses;
         member.createdAt = dto.createdAt;
         member.updatedAt = dto.updatedAt;
 
@@ -29,8 +32,10 @@ export class TeamMemberDTOConverter implements IDTOConverter<TeamMemberDTO, Team
         return {
             id:          bo.id,
             workspaceId: bo.workspace?.id,
-            userId:      bo.userId,
+            userId:      bo.userId ?? null,
+            email:       bo.email  ?? null,
             role:        bo.role,
+            status:      bo.status,
             createdAt:   bo.createdAt,
             updatedAt:   bo.updatedAt,
         };

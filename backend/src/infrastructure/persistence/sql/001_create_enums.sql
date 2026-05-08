@@ -45,6 +45,11 @@ CREATE TYPE team_member_role AS ENUM (
     'MEMBER'
 );
 
+CREATE TYPE team_member_status AS ENUM (
+    'ACTIVE',
+    'PENDING'
+);
+
 CREATE TYPE currency AS ENUM (
     'USD',
     'EUR',

@@ -6,6 +6,8 @@ export interface TeamMemberRepository {
 
     findByWorkspaceAndUser(workspaceId: string, userId: string): Promise<TeamMember | null>;
 
+    findByWorkspaceAndEmail(workspaceId: string, email: string): Promise<TeamMember | null>;
+
     findById(id: string): Promise<TeamMember | null>;
 
     save(entity: TeamMember): Promise<TeamMember>;

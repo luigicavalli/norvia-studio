@@ -59,16 +59,30 @@ export class PgTeamMemberDAOImpl implements TeamMemberDAO {
 
     };
 
+    public async findByEmail(workspaceId: string, email: string): Promise<TeamMemberPO | null> {
+
+        const { rows } = await this.pool.query(
+            'SELECT * FROM team_members WHERE workspace_id = $1 AND email = $2',
+            [ workspaceId, email ]
+        );
+
+        return rows[0] ?? null;
+
+    };
+
     public async save(entity: TeamMemberPO): Promise<TeamMemberPO> {
 
         const { rows } = await this.pool.query(
-            `INSERT INTO team_members (id, workspace_id, user_id, role, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6)
+            `INSERT INTO team_members (id, workspace_id, user_id, email, role, status, created_at, updated_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             ON CONFLICT (id) DO UPDATE SET
+                user_id    = EXCLUDED.user_id,
+                email      = EXCLUDED.email,
                 role       = EXCLUDED.role,
+                status     = EXCLUDED.status,
                 updated_at = EXCLUDED.updated_at
             RETURNING *`,
-            [ entity.id, entity.workspace_id, entity.user_id, entity.role, entity.created_at, entity.updated_at ]
+            [ entity.id, entity.workspace_id, entity.user_id, entity.email, entity.role, entity.status, entity.created_at, entity.updated_at ]
         );
 
         return rows[0];
