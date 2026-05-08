@@ -17,8 +17,10 @@ export class TeamMemberPOConverter implements IPersistenceConverter<TeamMemberPO
             teamMemberBo.workspace    = new Workspace();
             teamMemberBo.workspace.id = po.workspace_id;
 
-            teamMemberBo.userId       = po.user_id ?? null;
-            teamMemberBo.email        = po.email   ?? null;
+            teamMemberBo.userId       = po.user_id    ?? null;
+            teamMemberBo.email        = po.email      ?? null;
+            teamMemberBo.firstName    = po.first_name ?? null;
+            teamMemberBo.lastName     = po.last_name  ?? null;
             teamMemberBo.role         = po.role as TeamMemberRoles;
             teamMemberBo.status       = po.status as TeamMemberStatuses;
             teamMemberBo.createdAt    = po.created_at;
@@ -36,6 +38,8 @@ export class TeamMemberPOConverter implements IPersistenceConverter<TeamMemberPO
             teamMemberPo.workspace_id = bo.workspace.id;
             teamMemberPo.user_id      = bo.userId;
             teamMemberPo.email        = bo.email;
+            teamMemberPo.first_name   = bo.firstName;
+            teamMemberPo.last_name    = bo.lastName;
             teamMemberPo.role         = bo.role;
             teamMemberPo.status       = bo.status;
             teamMemberPo.created_at   = bo.createdAt;

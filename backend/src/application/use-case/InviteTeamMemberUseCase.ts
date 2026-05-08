@@ -1,11 +1,12 @@
-import { randomUUID }                 from "crypto";
-import { Workspace }                  from "../../domain/model/Workspace.js";
-import { TeamMember }                 from "../../domain/model/TeamMember.js";
-import { TeamMemberRoles }            from "../../domain/enums/TeamMemberRoles.js";
-import { TeamMemberStatuses }         from "../../domain/enums/TeamMemberStatuses.js";
-import { AppErrors }                  from "../error/AppError.js";
-import type { IUseCase }              from "./IUseCase.js";
-import type { TeamMemberRepository }  from "../../domain/repositories/TeamMemberRepository.js";
+import { randomUUID }                    from "crypto";
+import { Workspace }                     from "../../domain/model/Workspace.js";
+import { TeamMember }                    from "../../domain/model/TeamMember.js";
+import { TeamMemberRoles }               from "../../domain/enums/TeamMemberRoles.js";
+import { TeamMemberStatuses }            from "../../domain/enums/TeamMemberStatuses.js";
+import { AppErrors }                     from "../error/AppError.js";
+import type { IUseCase }                 from "./IUseCase.js";
+import type { TeamMemberRepository }     from "../../domain/repositories/TeamMemberRepository.js";
+import type { ClerkInvitationService }   from "../../infrastructure/clerk/ClerkInvitationService.js";
 
 
 interface InviteTeamMemberInput {
@@ -17,7 +18,10 @@ interface InviteTeamMemberInput {
 
 export class InviteTeamMemberUseCase implements IUseCase<InviteTeamMemberInput, TeamMember> {
 
-    public constructor(private readonly teamMemberRepository: TeamMemberRepository) {}
+    public constructor(
+        private readonly teamMemberRepository:  TeamMemberRepository,
+        private readonly clerkInvitationService: ClerkInvitationService,
+    ) {}
 
     public async execute(input: InviteTeamMemberInput): Promise<TeamMember> {
 
@@ -32,6 +36,8 @@ export class InviteTeamMemberUseCase implements IUseCase<InviteTeamMemberInput, 
         if (existing) {
             throw AppErrors.conflict('User is already a member or has a pending invite', 'TEAM_MEMBER_ALREADY_EXISTS');
         }
+
+        await this.clerkInvitationService.createInvitation(input.email);
 
         const workspace = new Workspace();
         workspace.id = input.workspaceId;

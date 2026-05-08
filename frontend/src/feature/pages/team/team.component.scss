@@ -131,6 +131,49 @@
   }
 }
 
+// ── Skeleton ───────────────────────────────────────────────────────────────
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.team__skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border)     25%,
+    color-mix(in srgb, var(--color-border) 50%, var(--color-bg)) 50%,
+    var(--color-border)     75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.6s infinite linear;
+
+  &--avatar {
+    flex-shrink:   0;
+    width:         36px;
+    height:        36px;
+    border-radius: 50%;
+  }
+
+  &--name {
+    height:        13px;
+    width:         140px;
+    border-radius: 4px;
+  }
+
+  &--email {
+    height:        12px;
+    width:         200px;
+    border-radius: 4px;
+  }
+
+  &--badge {
+    height:        22px;
+    width:         88px;
+    border-radius: 999px;
+  }
+}
+
 // ── Invite form ────────────────────────────────────────────────────────────
 
 .invite-form {

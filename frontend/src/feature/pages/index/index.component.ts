@@ -11,7 +11,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
  * SERVICES
  * --------
  */
-import { AuthService } from '../../../services/auth.service';
+import { AuthService, SignUpResult } from '../../../services/auth.service';
 
 /**
  * ----------
@@ -23,7 +23,7 @@ import { ButtonComponent }     from '../../components/shared/button/button.compo
 import { DatepickerComponent } from '../../components/shared/datepicker/datepicker.component';
 
 
-type AuthMode = 'login' | 'register' | 'mfa';
+type AuthMode = 'login' | 'register' | 'mfa' | 'verify-email';
 
 @Component({
   selector:    'app-index',
@@ -57,11 +57,16 @@ export class IndexComponent {
     code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(8)]],
   });
 
+  protected readonly verifyEmailForm = this.fb.group({
+    code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
+  });
+
   protected setMode(mode: 'login' | 'register'): void {
     this.mode.set(mode);
     this.authError.set('');
     this.loginForm.reset();
     this.registerForm.reset();
+    this.verifyEmailForm.reset();
   }
 
   protected async onLogin(): Promise<void> {
@@ -108,13 +113,17 @@ export class IndexComponent {
 
     try {
       const v = this.registerForm.value;
-      await this.auth.signUp({
+      const result: SignUpResult = await this.auth.signUp({
         firstName: v.firstName!,
         lastName:  v.lastName!,
         birthDate: v.birthDate ?? null,
         email:     v.email!,
         password:  v.password!,
       });
+
+      if (result === 'needs_verification') {
+        this.mode.set('verify-email');
+      }
     } catch (err: unknown) {
       this.authError.set(this.parseClerkError(err));
     } finally {
@@ -122,10 +131,26 @@ export class IndexComponent {
     }
   }
 
-  protected fieldError(form: 'login' | 'register' | 'mfa', field: string): string {
+  protected async onVerifyEmail(): Promise<void> {
+    if (this.verifyEmailForm.invalid) { this.verifyEmailForm.markAllAsTouched(); return; }
+
+    this.loading.set(true);
+    this.authError.set('');
+
+    try {
+      await this.auth.verifyEmail(this.verifyEmailForm.value.code!);
+    } catch (err: unknown) {
+      this.authError.set(this.parseClerkError(err));
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
+  protected fieldError(form: 'login' | 'register' | 'mfa' | 'verify-email', field: string): string {
     const group = (
-      form === 'login'    ? this.loginForm    :
-      form === 'register' ? this.registerForm :
+      form === 'login'         ? this.loginForm       :
+      form === 'register'      ? this.registerForm    :
+      form === 'verify-email'  ? this.verifyEmailForm :
       this.mfaForm
     ) as FormGroup;
 

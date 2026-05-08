@@ -18,6 +18,9 @@ import { GetAllClientsUseCase }        from "../application/use-case/GetAllClien
 import { GetClientByIdUseCase }        from "../application/use-case/GetClientByIdUseCase.js";
 import { TeamMemberController }        from "../interface/controller/TeamMemberController.js";
 import { AddTeamMemberUseCase }        from "../application/use-case/AddTeamMemberUseCase.js";
+import { InviteTeamMemberUseCase }     from "../application/use-case/InviteTeamMemberUseCase.js";
+import { ActivateTeamMemberUseCase }   from "../application/use-case/ActivateTeamMemberUseCase.js";
+import { ClerkInvitationService }      from "../infrastructure/clerk/ClerkInvitationService.js";
 import { PgClientDAOImpl }             from "../infrastructure/persistence/dao/pg/PgClientDAOImpl.js";
 import { GetAllProjectsUseCase }       from "../application/use-case/GetAllProjectsUseCase.js";
 import { GetProjectByIdUseCase }       from "../application/use-case/GetProjectByIdUseCase.js";
@@ -73,6 +76,8 @@ const teamMemberRepo        = new TeamMemberRepositoryImpl(teamMemberDAO);
 //                           APPLICATION LAYER
 // =========================================================================
 
+const clerkInvitationService = new ClerkInvitationService();
+
 const getAllProjectsUC      = new GetAllProjectsUseCase(projectRepo, teamMemberRepo);
 const getProjectsByClientUC = new GetProjectsByClientUseCase(projectRepo, teamMemberRepo);
 const getProjectByIdUC      = new GetProjectByIdUseCase(projectRepo);
@@ -90,7 +95,7 @@ const deleteCompanyUC       = new DeleteCompanyUseCase(companyRepo);
 const getAllWorkspacesUC    = new GetAllWorkspacesUseCase(workspaceRepo);
 const getWorkspaceByIdUC    = new GetWorkspaceByIdUseCase(workspaceRepo);
 const getWorkspaceBySlugUC  = new GetWorkspaceBySlugUseCase(workspaceRepo);
-const createWorkspaceUC     = new CreateWorkspaceUseCase(workspaceRepo, teamMemberRepo);
+const createWorkspaceUC     = new CreateWorkspaceUseCase(workspaceRepo, teamMemberRepo, clerkInvitationService);
 const updateWorkspaceUC     = new UpdateWorkspaceUseCase(workspaceRepo, teamMemberRepo);
 const deleteWorkspaceUC     = new DeleteWorkspaceUseCase(workspaceRepo, teamMemberRepo);
 
@@ -106,7 +111,9 @@ const deleteClientUC        = new DeleteClientUseCase(clientRepo);
 // =========================================================================
 
 const getWorkspaceMembersUC  = new GetWorkspaceMembersUseCase(teamMemberRepo);
-const addTeamMemberUC        = new AddTeamMemberUseCase(teamMemberRepo);
+const addTeamMemberUC        = new AddTeamMemberUseCase(teamMemberRepo, clerkInvitationService);
+const inviteTeamMemberUC     = new InviteTeamMemberUseCase(teamMemberRepo, clerkInvitationService);
+const activateTeamMemberUC   = new ActivateTeamMemberUseCase(teamMemberRepo);
 const updateTeamMemberRoleUC = new UpdateTeamMemberRoleUseCase(teamMemberRepo);
 const removeTeamMemberUC     = new RemoveTeamMemberUseCase(teamMemberRepo);
 
@@ -115,12 +122,13 @@ const projectCtrl           = new ProjectController(getAllProjectsUC, getProject
 const companyCtrl           = new CompanyController(getAllCompaniesUC, getCompanyByIdUC, createCompanyUC, updateCompanyUC, deleteCompanyUC);
 const clientCtrl            = new ClientController(getAllClientsUC, getClientsByCompanyUC, getClientByIdUC, createClientUC, updateClientUC, deleteClientUC);
 
-const teamMemberCtrl        = new TeamMemberController(getWorkspaceMembersUC, addTeamMemberUC, updateTeamMemberRoleUC, removeTeamMemberUC);
+const teamMemberCtrl        = new TeamMemberController(getWorkspaceMembersUC, addTeamMemberUC, inviteTeamMemberUC, updateTeamMemberRoleUC, removeTeamMemberUC);
 
 export const wiring = {
     workspaceCtrl,
     projectCtrl,
     companyCtrl,
     clientCtrl,
-    teamMemberCtrl
+    teamMemberCtrl,
+    activateTeamMemberUC,
 };

@@ -4,6 +4,8 @@ export class TeamMemberPO {
     private _workspace_id: string;
     private _user_id:      string | null;
     private _email:        string | null;
+    private _first_name:   string | null;
+    private _last_name:    string | null;
     private _role:         string;
     private _status:       string;
     private _created_at:   Date;
@@ -43,6 +45,22 @@ export class TeamMemberPO {
 
     public set email(value: string | null) {
         this._email = value;
+    }
+
+    public get first_name(): string | null {
+        return this._first_name;
+    }
+
+    public set first_name(value: string | null) {
+        this._first_name = value;
+    }
+
+    public get last_name(): string | null {
+        return this._last_name;
+    }
+
+    public set last_name(value: string | null) {
+        this._last_name = value;
     }
 
     public get role(): string {

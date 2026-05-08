@@ -120,6 +120,21 @@ export const createApiRouter = (deps = wiring) => {
         }
     });
 
+    // Invite a member to a workspace by email
+    router.post('/workspaces/:id/members/invite', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const workspaceId = req.params["id"] as string;
+            const { email, role } = req.body as { email: string; role: TeamMemberRoles };
+
+            const member: TeamMemberDTO = await teamMemberCtrl.invite(workspaceId, email, role, userId!);
+
+            AppResponse.created(res, member, 'Invite sent');
+        } catch (error) {
+            next(error);
+        }
+    });
+
     // Add a member to a workspace
     router.post('/workspaces/:id/members', async (req: Request, res: Response, next: NextFunction) => {
         try {

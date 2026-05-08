@@ -16,8 +16,10 @@ export class TeamMemberDTOConverter implements IDTOConverter<TeamMemberDTO, Team
         const member = new TeamMember();
         member.id        = dto.id;
         member.workspace = workspace;
-        member.userId    = dto.userId ?? null;
-        member.email     = dto.email  ?? null;
+        member.userId    = dto.userId    ?? null;
+        member.email     = dto.email     ?? null;
+        member.firstName = dto.firstName ?? null;
+        member.lastName  = dto.lastName  ?? null;
         member.role      = dto.role as TeamMemberRoles;
         member.status    = dto.status as TeamMemberStatuses;
         member.createdAt = dto.createdAt;
@@ -32,8 +34,10 @@ export class TeamMemberDTOConverter implements IDTOConverter<TeamMemberDTO, Team
         return {
             id:          bo.id,
             workspaceId: bo.workspace?.id,
-            userId:      bo.userId ?? null,
-            email:       bo.email  ?? null,
+            userId:      bo.userId    ?? null,
+            email:       bo.email     ?? null,
+            firstName:   bo.firstName ?? null,
+            lastName:    bo.lastName  ?? null,
             role:        bo.role,
             status:      bo.status,
             createdAt:   bo.createdAt,

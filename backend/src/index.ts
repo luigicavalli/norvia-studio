@@ -5,6 +5,7 @@ import cors                             from 'cors';
 import { errorHandler }                 from './http/errorHandler.js';
 import { configDotenv }                 from 'dotenv';
 import { createApiRouter }              from './http/routes.js';
+import { createWebhookRouter }          from './http/webhookRoutes.js';
 import { clerkMiddleware, requireAuth } from '@clerk/express';
 
 import express, { type NextFunction, type Request, type Response } from 'express';
@@ -39,6 +40,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use('/health', (_req: Request, res: Response) => res.send(`${new Date().toISOString()} - Health ok`));
 
+app.use('/webhooks', createWebhookRouter());
 app.use('/api', requireAuth(), createApiRouter());
 
 Sentry.setupExpressErrorHandler(app);

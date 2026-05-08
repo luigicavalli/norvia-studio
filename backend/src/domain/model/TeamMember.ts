@@ -20,6 +20,8 @@ export interface ITeamMember {
     workspace: IWorkspace;
     userId:    string | null;
     email:     string | null;
+    firstName: string | null;
+    lastName:  string | null;
     role:      TeamMemberRoles;
     status:    TeamMemberStatuses;
     createdAt: Date;
@@ -33,6 +35,8 @@ export class TeamMember implements ITeamMember {
     private _workspace: Workspace;
     private _userId:    string | null;
     private _email:     string | null;
+    private _firstName: string | null;
+    private _lastName:  string | null;
     private _role:      TeamMemberRoles;
     private _status:    TeamMemberStatuses;
     private _createdAt: Date;
@@ -72,6 +76,22 @@ export class TeamMember implements ITeamMember {
 
     public set email(value: string | null) {
         this._email = value;
+    }
+
+    public get firstName(): string | null {
+        return this._firstName;
+    }
+
+    public set firstName(value: string | null) {
+        this._firstName = value;
+    }
+
+    public get lastName(): string | null {
+        return this._lastName;
+    }
+
+    public set lastName(value: string | null) {
+        this._lastName = value;
     }
 
     public get role(): TeamMemberRoles {

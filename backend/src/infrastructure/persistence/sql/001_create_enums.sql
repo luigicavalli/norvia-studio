@@ -42,7 +42,8 @@ CREATE TYPE team_member_role AS ENUM (
     'SUPERADMIN',
     'ADMIN',
     'OWNER',
-    'MEMBER'
+    'MEMBER',
+    'VIEWER'
 );
 
 CREATE TYPE team_member_status AS ENUM (
