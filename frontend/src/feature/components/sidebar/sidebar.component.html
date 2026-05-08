@@ -16,6 +16,47 @@
     <span>Norvia Studio</span>
   </a>
 
+  <!-- Workspace switcher -->
+  @if (workspaceService.hasWorkspace()) {
+    <div class="sidebar__workspace">
+      <button
+        class="sidebar__workspace-btn"
+        [class.sidebar__workspace-btn--open]="switcherOpen()"
+        (click)="switcherOpen.set(!switcherOpen())"
+      >
+        <span class="sidebar__workspace-name">{{ workspaceService.activeWorkspace()?.name }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+
+      @if (switcherOpen()) {
+        <div class="sidebar__workspace-dropdown">
+          @for (ws of workspaceService.workspaces(); track ws.id) {
+            <button
+              class="sidebar__workspace-option"
+              [class.sidebar__workspace-option--active]="ws.id === workspaceService.activeId()"
+              (click)="switchWorkspace(ws.id)"
+            >
+              <span class="sidebar__workspace-option-dot"></span>
+              {{ ws.name }}
+            </button>
+          }
+          <div class="sidebar__workspace-divider"></div>
+          <button class="sidebar__workspace-option sidebar__workspace-option--create"
+                  (click)="openCreateModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Crea workspace
+          </button>
+        </div>
+      }
+    </div>
+  }
+
   <!-- Nav -->
   <nav class="sidebar__nav">
     @for (item of navItems; track item.path) {
@@ -106,3 +147,25 @@
   </div>
 
 </aside>
+
+<!-- Modale crea workspace -->
+<app-modal [open]="createOpen()" title="Nuovo workspace" size="sm" (closed)="createOpen.set(false)">
+  <form [formGroup]="createForm" (ngSubmit)="onCreateWorkspace()">
+    <app-input
+      label="Nome workspace"
+      placeholder="Es. Studio Rossi, My Agency…"
+      formControlName="name"
+      [error]="!!createForm.get('name')?.invalid && !!createForm.get('name')?.touched"
+      [errorMessage]="createForm.get('name')?.touched && createForm.get('name')?.hasError('required') ? 'Campo obbligatorio' : ''"
+    />
+    <app-input
+      label="Descrizione"
+      placeholder="Una breve descrizione del workspace (opzionale)"
+      formControlName="description"
+    />
+  </form>
+  <div modal-footer>
+    <app-button label="Annulla" variant="ghost" size="sm" (clicked)="createOpen.set(false)" />
+    <app-button label="Crea workspace" size="sm" [loading]="saving()" (clicked)="onCreateWorkspace()" />
+  </div>
+</app-modal>

@@ -72,6 +72,7 @@ export class TeamService {
   private mapDto(dto: any): TeamMember {
     return {
       id:        dto.id,
+      userId:    dto.userId     ?? '',
       firstName: dto.firstName  ?? '',
       lastName:  dto.lastName   ?? '',
       email:     dto.email      ?? '',

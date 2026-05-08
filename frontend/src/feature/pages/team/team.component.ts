@@ -34,6 +34,7 @@ export class TeamComponent {
   protected readonly currentUser = computed(() => {
     const u = this.auth.user();
     return {
+      id:        u?.id ?? '',
       name:      [u?.firstName, u?.lastName].filter(Boolean).join(' ') || 'Tu',
       email:     u?.primaryEmailAddress?.emailAddress ?? '',
       avatarUrl: u?.imageUrl ?? null,
@@ -41,15 +42,15 @@ export class TeamComponent {
   });
 
   protected readonly activeMembers = computed(() =>
-    this.teamService.active().filter(m => m.email !== this.currentUser().email),
+    this.teamService.active().filter(m => m.userId !== this.currentUser().id),
   );
 
   protected readonly currentUserRole = computed(() =>
-    this.teamService.members().find(m => m.email === this.currentUser().email)?.role ?? 'owner',
+    this.teamService.members().find(m => m.userId === this.currentUser().id)?.role ?? 'owner',
   );
 
   protected readonly totalCount = computed(() =>
-    1 + this.teamService.members().length,
+    this.teamService.members().length,
   );
 
   protected readonly roleOptions: SelectOption[] = [

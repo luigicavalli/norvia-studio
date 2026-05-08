@@ -3,6 +3,7 @@ export type MemberStatus = 'active' | 'pending';
 
 export interface TeamMember {
   id:        string;
+  userId:    string;
   firstName: string;
   lastName:  string;
   email:     string;
