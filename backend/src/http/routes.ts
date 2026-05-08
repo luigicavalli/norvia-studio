@@ -13,9 +13,29 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
 
     const router = Router();
+
+    // -------------------------------------------------------------------------
+    // Self-activation (existing users accepting an invite)
+    // -------------------------------------------------------------------------
+
+    router.post('/members/activate-self', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+
+            const { email, firstName, lastName } = await clerkInvitationService.getUser(userId!);
+
+            if (email) {
+                await activateTeamMemberUC.execute({ email, userId: userId!, firstName, lastName });
+            }
+
+            AppResponse.ok(res, null);
+        } catch (error) {
+            next(error);
+        }
+    });
 
     // -------------------------------------------------------------------------
     // Workspaces

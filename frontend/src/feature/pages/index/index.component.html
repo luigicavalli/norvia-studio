@@ -53,7 +53,7 @@
     <div class="auth-card">
 
       <!-- Tab (nascosto durante MFA) -->
-      @if (mode() !== 'mfa') {
+      @if (mode() !== 'mfa' && mode() !== 'verify-email') {
         <div class="auth-tabs">
           <button
             class="auth-tab"

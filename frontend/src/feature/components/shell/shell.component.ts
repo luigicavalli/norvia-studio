@@ -37,7 +37,10 @@ export class ShellComponent implements OnInit {
   protected readonly saving = signal(false);
 
   async ngOnInit(): Promise<void> {
-    await this.workspaceService.load();
+    await Promise.all([
+      this.workspaceService.load(),
+      this.teamService.activateSelf(),
+    ]);
     if (this.workspaceService.hasWorkspace()) {
       await Promise.all([
         this.clientService.load(),

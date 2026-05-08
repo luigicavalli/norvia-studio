@@ -54,6 +54,12 @@ export class TeamService {
     await this.load();
   }
 
+  async activateSelf(): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${environment.apiUrl}/api/members/activate-self`, {}),
+    );
+  }
+
   async remove(id: string): Promise<void> {
     const workspaceId = this.workspace.activeId()!;
     await firstValueFrom(

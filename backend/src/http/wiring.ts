@@ -131,4 +131,5 @@ export const wiring = {
     clientCtrl,
     teamMemberCtrl,
     activateTeamMemberUC,
+    clerkInvitationService,
 };

@@ -16,9 +16,10 @@ export class ClerkInvitationService {
         });
     };
 
-    public async getUser(userId: string): Promise<{ firstName: string | null; lastName: string | null }> {
+    public async getUser(userId: string): Promise<{ email: string | null; firstName: string | null; lastName: string | null }> {
         const user = await this.clerk.users.getUser(userId);
         return {
+            email:     user.emailAddresses?.[0]?.emailAddress ?? null,
             firstName: user.firstName ?? null,
             lastName:  user.lastName  ?? null,
         };
