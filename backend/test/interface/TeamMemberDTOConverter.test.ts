@@ -2,6 +2,7 @@ import { TeamMemberDTOConverter } from '../../src/interface/converter/TeamMember
 import { TeamMember }             from '../../src/domain/model/TeamMember.js';
 import { Workspace }              from '../../src/domain/model/Workspace.js';
 import { TeamMemberRoles }        from '../../src/domain/enums/TeamMemberRoles.js';
+import { TeamMemberStatuses }     from '../../src/domain/enums/TeamMemberStatuses.js';
 import type { TeamMemberDTO }     from '../../src/interface/dto/TeamMemberDTO.js';
 
 describe('TeamMemberDTOConverter', () => {
@@ -14,7 +15,11 @@ describe('TeamMemberDTOConverter', () => {
         id:          'tm-uuid-1',
         workspaceId: 'ws-uuid-1',
         userId:      'clerk-user-1',
+        email:       null,
+        firstName:   null,
+        lastName:    null,
         role:        TeamMemberRoles.ADMIN,
+        status:      TeamMemberStatuses.ACTIVE,
         createdAt:   now,
         updatedAt:   now,
     };

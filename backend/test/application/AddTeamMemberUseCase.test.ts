@@ -4,14 +4,16 @@ import { assertAppError }       from '../helpers/assertAppError.js';
 import {
     makeTeamMember,
     makeMockTeamMemberRepository,
+    makeMockClerkService,
 } from '../helpers/factories.js';
 
 describe('AddTeamMemberUseCase', () => {
 
     function makeUseCase() {
         const teamMemberRepo = makeMockTeamMemberRepository();
-        const useCase        = new AddTeamMemberUseCase(teamMemberRepo as any);
-        return { useCase, teamMemberRepo };
+        const clerkService   = makeMockClerkService();
+        const useCase        = new AddTeamMemberUseCase(teamMemberRepo as any, clerkService as any);
+        return { useCase, teamMemberRepo, clerkService };
     }
 
     const workspaceId      = 'ws-1';

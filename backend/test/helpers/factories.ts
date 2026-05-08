@@ -1,9 +1,10 @@
-import { Workspace }        from '../../src/domain/model/Workspace.js';
-import { TeamMember }       from '../../src/domain/model/TeamMember.js';
-import { Project }          from '../../src/domain/model/Project.js';
-import { Client }           from '../../src/domain/model/Client.js';
-import { Company }          from '../../src/domain/model/Company.js';
-import { TeamMemberRoles }  from '../../src/domain/enums/TeamMemberRoles.js';
+import { Workspace }           from '../../src/domain/model/Workspace.js';
+import { TeamMember }          from '../../src/domain/model/TeamMember.js';
+import { Project }             from '../../src/domain/model/Project.js';
+import { Client }              from '../../src/domain/model/Client.js';
+import { Company }             from '../../src/domain/model/Company.js';
+import { TeamMemberRoles }     from '../../src/domain/enums/TeamMemberRoles.js';
+import { TeamMemberStatuses }  from '../../src/domain/enums/TeamMemberStatuses.js';
 
 // ----- Domain object factories -----
 
@@ -21,7 +22,11 @@ export function makeTeamMember(overrides: Partial<{
     id:        string;
     workspace: Workspace;
     userId:    string;
+    email:     string | null;
+    firstName: string | null;
+    lastName:  string | null;
     role:      TeamMemberRoles;
+    status:    TeamMemberStatuses;
     createdAt: Date;
     updatedAt: Date;
 }> = {}): TeamMember {
@@ -29,10 +34,21 @@ export function makeTeamMember(overrides: Partial<{
     tm.id        = overrides.id        ?? 'tm-uuid-1';
     tm.workspace = overrides.workspace ?? makeWorkspace();
     tm.userId    = overrides.userId    ?? 'user-uuid-1';
+    tm.email     = overrides.email     ?? null;
+    tm.firstName = overrides.firstName ?? null;
+    tm.lastName  = overrides.lastName  ?? null;
     tm.role      = overrides.role      ?? TeamMemberRoles.MEMBER;
+    tm.status    = overrides.status    ?? TeamMemberStatuses.ACTIVE;
     tm.createdAt = overrides.createdAt ?? new Date('2024-01-01T00:00:00Z');
     tm.updatedAt = overrides.updatedAt ?? new Date('2024-01-01T00:00:00Z');
     return tm;
+}
+
+export function makeMockClerkService() {
+    return {
+        createInvitation: jest.fn(),
+        getUser: jest.fn().mockResolvedValue({ email: null, firstName: null, lastName: null }),
+    };
 }
 
 export function makeProject(overrides: Partial<{ id: string; workspace: Workspace }> = {}): Project {
