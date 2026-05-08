@@ -1,11 +1,12 @@
 import './http/sentry.js';
 
-import * as Sentry                      from '@sentry/node';
-import cors                             from 'cors';
-import { errorHandler }                 from './http/errorHandler.js';
-import { configDotenv }                 from 'dotenv';
-import { createApiRouter }              from './http/routes.js';
-import { clerkMiddleware, requireAuth } from '@clerk/express';
+import * as Sentry                  from '@sentry/node';
+import cors                         from 'cors';
+import { errorHandler }             from './http/errorHandler.js';
+import { configDotenv }             from 'dotenv';
+import { createApiRouter }          from './http/routes.js';
+import { createWebhookRouter }      from './http/webhookRoutes.js';
+import { clerkMiddleware, getAuth } from '@clerk/express';
 
 import express, { type NextFunction, type Request, type Response } from 'express';
 
@@ -39,7 +40,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use('/health', (_req: Request, res: Response) => res.send(`${new Date().toISOString()} - Health ok`));
 
-app.use('/api', requireAuth(), createApiRouter());
+const authGuard = (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = getAuth(req);
+    if (!userId) { res.status(401).json({ error: 'Unauthorized' }); return; }
+    next();
+};
+
+app.use('/webhooks', createWebhookRouter());
+app.use('/api', authGuard, createApiRouter());
 
 Sentry.setupExpressErrorHandler(app);
 app.use(errorHandler);

@@ -2,8 +2,12 @@ export class TeamMemberPO {
 
     private _id:           string;
     private _workspace_id: string;
-    private _user_id:      string;
+    private _user_id:      string | null;
+    private _email:        string | null;
+    private _first_name:   string | null;
+    private _last_name:    string | null;
     private _role:         string;
+    private _status:       string;
     private _created_at:   Date;
     private _updated_at:   Date;
 
@@ -27,12 +31,36 @@ export class TeamMemberPO {
         this._workspace_id = value;
     }
 
-    public get user_id(): string {
+    public get user_id(): string | null {
         return this._user_id;
     }
 
-    public set user_id(value: string) {
+    public set user_id(value: string | null) {
         this._user_id = value;
+    }
+
+    public get email(): string | null {
+        return this._email;
+    }
+
+    public set email(value: string | null) {
+        this._email = value;
+    }
+
+    public get first_name(): string | null {
+        return this._first_name;
+    }
+
+    public set first_name(value: string | null) {
+        this._first_name = value;
+    }
+
+    public get last_name(): string | null {
+        return this._last_name;
+    }
+
+    public set last_name(value: string | null) {
+        this._last_name = value;
     }
 
     public get role(): string {
@@ -41,6 +69,14 @@ export class TeamMemberPO {
 
     public set role(value: string) {
         this._role = value;
+    }
+
+    public get status(): string {
+        return this._status;
+    }
+
+    public set status(value: string) {
+        this._status = value;
     }
 
     public get created_at(): Date {

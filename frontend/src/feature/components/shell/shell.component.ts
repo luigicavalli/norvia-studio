@@ -9,6 +9,7 @@ import { InputComponent }     from '../shared/input/input.component';
 import { WorkspaceService }   from '../../../services/workspace.service';
 import { ClientService }      from '../../../services/client.service';
 import { ProjectService }     from '../../../services/project.service';
+import { TeamService }        from '../../../services/team.service';
 import { ToastService }       from '../shared/toast/toast.service';
 
 
@@ -25,6 +26,7 @@ export class ShellComponent implements OnInit {
   protected readonly workspaceService = inject(WorkspaceService);
   private   readonly clientService    = inject(ClientService);
   private   readonly projectService   = inject(ProjectService);
+  private   readonly teamService      = inject(TeamService);
   private   readonly toast            = inject(ToastService);
   private   readonly fb               = inject(FormBuilder);
 
@@ -35,11 +37,15 @@ export class ShellComponent implements OnInit {
   protected readonly saving = signal(false);
 
   async ngOnInit(): Promise<void> {
-    await this.workspaceService.load();
+    await Promise.all([
+      this.workspaceService.load(),
+      this.teamService.activateSelf(),
+    ]);
     if (this.workspaceService.hasWorkspace()) {
       await Promise.all([
         this.clientService.load(),
         this.projectService.load(),
+        this.teamService.load(),
       ]);
     }
   }
@@ -53,6 +59,7 @@ export class ShellComponent implements OnInit {
       await Promise.all([
         this.clientService.load(),
         this.projectService.load(),
+        this.teamService.load(),
       ]);
       this.toast.success('Workspace creato con successo!');
     } catch {

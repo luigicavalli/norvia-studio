@@ -40,6 +40,14 @@ export class TeamComponent {
     };
   });
 
+  protected readonly activeMembers = computed(() =>
+    this.teamService.active().filter(m => m.email !== this.currentUser().email),
+  );
+
+  protected readonly currentUserRole = computed(() =>
+    this.teamService.members().find(m => m.email === this.currentUser().email)?.role ?? 'owner',
+  );
+
   protected readonly totalCount = computed(() =>
     1 + this.teamService.members().length,
   );
@@ -82,12 +90,14 @@ export class TeamComponent {
   }
 
   protected roleBadge(role: MemberRole): { label: string; variant: BadgeVariant } {
-    const map: Record<MemberRole, { label: string; variant: BadgeVariant }> = {
-      admin:  { label: 'Amministratore', variant: 'info'    },
-      member: { label: 'Membro',         variant: 'default' },
-      viewer: { label: 'Osservatore',    variant: 'default' },
+    const map: Record<string, { label: string; variant: BadgeVariant }> = {
+      admin:      { label: 'Amministratore', variant: 'info'    },
+      owner:      { label: 'Proprietario',   variant: 'info'    },
+      superadmin: { label: 'Super Admin',    variant: 'info'    },
+      member:     { label: 'Membro',         variant: 'default' },
+      viewer:     { label: 'Osservatore',    variant: 'default' },
     };
-    return map[role];
+    return map[role] ?? { label: role, variant: 'default' };
   }
 
   protected fieldError(field: string): string {

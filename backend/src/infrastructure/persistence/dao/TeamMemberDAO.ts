@@ -10,6 +10,10 @@ export interface TeamMemberDAO extends IGenericDAO<string, TeamMemberPO> {
 
     findByUserId(workspaceId: string, userId: string): Promise<TeamMemberPO | null>;
 
+    findByEmail(workspaceId: string, email: string): Promise<TeamMemberPO | null>;
+
+    findAllByEmail(email: string): Promise<TeamMemberPO[]>;
+
     findByIds(ids: string[]): Promise<TeamMemberPO[]>;
 
     save(entity: TeamMemberPO): Promise<TeamMemberPO>;

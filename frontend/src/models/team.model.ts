@@ -1,4 +1,4 @@
-export type MemberRole   = 'admin' | 'member' | 'viewer';
+export type MemberRole   = 'superadmin' | 'owner' | 'admin' | 'member' | 'viewer';
 export type MemberStatus = 'active' | 'pending';
 
 export interface TeamMember {
