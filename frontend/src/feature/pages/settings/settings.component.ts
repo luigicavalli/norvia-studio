@@ -6,8 +6,8 @@ import { AuthService }                 from '../../../services/auth.service';
 import { ToastService }                from '../../components/shared/toast/toast.service';
 import { InputComponent }              from '../../components/shared/input/input.component';
 import { ButtonComponent }             from '../../components/shared/button/button.component';
-import { SelectComponent }             from '../../components/shared/select/select.component';
-import { ToggleComponent }             from '../../components/shared/toggle/toggle.component';
+// import { SelectComponent }             from '../../components/shared/select/select.component';
+// import { ToggleComponent }             from '../../components/shared/toggle/toggle.component';
 import { BadgeComponent }              from '../../components/shared/badge/badge.component';
 import { SelectOption }                from '../../components/shared/select/select.types';
 
@@ -15,7 +15,7 @@ import { SelectOption }                from '../../components/shared/select/sele
 @Component({
   selector:    'app-settings',
   standalone:  true,
-  imports:     [ReactiveFormsModule, InputComponent, ButtonComponent, SelectComponent, ToggleComponent, BadgeComponent],
+  imports:     [ReactiveFormsModule, InputComponent, ButtonComponent, /*SelectComponent, ToggleComponent,*/ BadgeComponent],
   templateUrl: './settings.component.html',
   styleUrl:    './settings.component.scss',
 })
