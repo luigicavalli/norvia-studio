@@ -30,7 +30,7 @@ export class CreateWorkspaceUseCase implements IUseCase<CreateWorkspaceInput, Wo
 
         const saved: Workspace = await this.workspaceRepository.save(input.workspace);
 
-        const { firstName, lastName } = await this.clerkService.getUser(input.userId);
+        const { email, firstName, lastName } = await this.clerkService.getUser(input.userId);
 
         const owner = new TeamMember();
         owner.id        = randomUUID();
@@ -38,7 +38,7 @@ export class CreateWorkspaceUseCase implements IUseCase<CreateWorkspaceInput, Wo
         owner.userId    = input.userId;
         owner.firstName = firstName;
         owner.lastName  = lastName;
-        owner.email     = null;
+        owner.email     = email;
         owner.status    = TeamMemberStatuses.ACTIVE;
         owner.role      = TeamMemberRoles.OWNER;
         owner.createdAt = new Date();

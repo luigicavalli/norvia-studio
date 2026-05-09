@@ -37,7 +37,7 @@ export class AddTeamMemberUseCase implements IUseCase<AddTeamMemberInput, TeamMe
             throw AppErrors.conflict('User is already a member of this workspace', 'TEAM_MEMBER_ALREADY_EXISTS');
         }
 
-        const { firstName, lastName } = await this.clerkService.getUser(input.newUserId);
+        const { email, firstName, lastName } = await this.clerkService.getUser(input.newUserId);
 
         const workspace = new Workspace();
         workspace.id = input.workspaceId;
@@ -48,7 +48,7 @@ export class AddTeamMemberUseCase implements IUseCase<AddTeamMemberInput, TeamMe
         member.userId    = input.newUserId;
         member.firstName = firstName;
         member.lastName  = lastName;
-        member.email     = null;
+        member.email     = email;
         member.status    = TeamMemberStatuses.ACTIVE;
         member.role      = input.role;
         member.createdAt = new Date();

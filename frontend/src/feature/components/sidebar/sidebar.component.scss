@@ -47,6 +47,102 @@
   span { color: var(--color-text-strong); }
 }
 
+// ── Workspace switcher ─────────────────────────────────────────────────────
+
+.sidebar__workspace {
+  position:      relative;
+  margin-bottom: 0.75rem;
+}
+
+.sidebar__workspace-btn {
+  all:             unset;
+  cursor:          pointer;
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  gap:             0.5rem;
+  width:           100%;
+  padding:         0.4rem 0.75rem;
+  border-radius:   8px;
+  background:      var(--color-bg);
+  border:          1px solid var(--color-border);
+  transition:      background 150ms, border-color 150ms;
+  box-sizing:      border-box;
+
+  svg { flex-shrink: 0; color: var(--color-muted); transition: transform 200ms; }
+
+  &:hover { border-color: var(--color-accent); }
+
+  &--open svg { transform: rotate(180deg); }
+}
+
+.sidebar__workspace-name {
+  font-size:     0.8125rem;
+  font-weight:   600;
+  color:         var(--color-text-strong);
+  overflow:      hidden;
+  text-overflow: ellipsis;
+  white-space:   nowrap;
+}
+
+.sidebar__workspace-dropdown {
+  position:      absolute;
+  top:           calc(100% + 4px);
+  left:          0;
+  right:         0;
+  z-index:       200;
+  background:    var(--color-surface);
+  border:        1px solid var(--color-border);
+  border-radius: 10px;
+  padding:       0.375rem;
+  box-shadow:    0 8px 24px rgba(0,0,0,0.12);
+  display:       flex;
+  flex-direction: column;
+  gap:           2px;
+}
+
+.sidebar__workspace-divider {
+  height:     1px;
+  background: var(--color-border);
+  margin:     0.25rem 0;
+}
+
+.sidebar__workspace-option {
+  all:           unset;
+  cursor:        pointer;
+  display:       flex;
+  align-items:   center;
+  gap:           0.5rem;
+  padding:       0.4rem 0.625rem;
+  border-radius: 6px;
+  font-size:     0.8125rem;
+  color:         var(--color-text);
+  transition:    background 150ms;
+  text-decoration: none;
+
+  &:hover { background: var(--color-bg); }
+
+  &--active {
+    color: var(--color-accent);
+    font-weight: 500;
+
+    .sidebar__workspace-option-dot { background: var(--color-accent); }
+  }
+
+  &--create {
+    color:       var(--color-muted);
+    font-size:   0.75rem;
+  }
+}
+
+.sidebar__workspace-option-dot {
+  flex-shrink:   0;
+  width:         6px;
+  height:        6px;
+  border-radius: 50%;
+  background:    var(--color-border);
+}
+
 // ── Nav ────────────────────────────────────────────────────────────────────
 
 .sidebar__nav {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet }              from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -36,6 +36,20 @@ export class ShellComponent implements OnInit {
 
   protected readonly saving = signal(false);
 
+  private initialized = false;
+
+  constructor() {
+    effect(() => {
+      const id = this.workspaceService.activeId();
+      if (!id || !this.initialized) return;
+      Promise.all([
+        this.clientService.load(),
+        this.projectService.load(),
+        this.teamService.load(),
+      ]);
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     await Promise.all([
       this.workspaceService.load(),
@@ -48,6 +62,7 @@ export class ShellComponent implements OnInit {
         this.teamService.load(),
       ]);
     }
+    this.initialized = true;
   }
 
   protected async onCreateWorkspace(): Promise<void> {
