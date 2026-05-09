@@ -5,9 +5,9 @@ import { firstValueFrom }              from 'rxjs';
 import { environment }              from '../environments/environment';
 import { WorkspaceService }         from './workspace.service';
 import type { ApiPaginatedResponse } from '../types/api.types';
-import type { Quote, QuoteStatus, SaveQuoteData } from '../models/quote.model';
+import type { Quote, QuoteItem, QuoteStatus, SaveQuoteData } from '../models/quote.model';
 
-export type { Quote, QuoteStatus, SaveQuoteData };
+export type { Quote, QuoteItem, QuoteStatus, SaveQuoteData };
 
 
 @Injectable({ providedIn: 'root' })
@@ -119,7 +119,7 @@ export class QuoteService {
       workspaceId: dto.workspaceId,
       clientId:    dto.clientId   ?? '',
       clientName:  dto.clientName ?? '',
-      items:       (dto.items ?? []).map((i: any) => ({
+      items:       (dto.items ?? []).map((i: QuoteItem) => ({
         id:          i.id,
         quoteId:     i.quoteId,
         description: i.description ?? '',
