@@ -12,6 +12,7 @@ import { CompanyService }     from '../../../services/company.service';
 import { ProjectService }     from '../../../services/project.service';
 import { TeamService }        from '../../../services/team.service';
 import { AssignmentService } from '../../../services/assignment.service';
+import { QuoteService }      from '../../../services/quote.service';
 import { ToastService }       from '../shared/toast/toast.service';
 
 
@@ -31,6 +32,7 @@ export class ShellComponent implements OnInit {
   private   readonly projectService   = inject(ProjectService);
   private   readonly teamService        = inject(TeamService);
   private   readonly assignmentService  = inject(AssignmentService);
+  private   readonly quoteService       = inject(QuoteService);
   private   readonly toast            = inject(ToastService);
   private   readonly fb               = inject(FormBuilder);
 
@@ -52,6 +54,7 @@ export class ShellComponent implements OnInit {
         this.projectService.load(),
         this.teamService.load(),
         this.assignmentService.load(id),
+        this.quoteService.load(),
       ]);
     });
   }
@@ -69,6 +72,7 @@ export class ShellComponent implements OnInit {
         this.projectService.load(),
         this.teamService.load(),
         this.assignmentService.load(id),
+        this.quoteService.load(),
       ]);
     }
     this.initialized = true;
@@ -87,6 +91,7 @@ export class ShellComponent implements OnInit {
         this.projectService.load(),
         this.teamService.load(),
         this.assignmentService.load(id),
+        this.quoteService.load(),
       ]);
       this.toast.success('Workspace creato con successo!');
     } catch {
