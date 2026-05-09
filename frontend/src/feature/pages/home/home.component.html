@@ -12,7 +12,7 @@
   <div class="home__stats">
 
     @if (loading()) {
-      @for (_ of [1,2,3,4]; track $index) {
+      @for (_ of [1,2,3,4,5,6]; track $index) {
         <div class="stat-card stat-card--skeleton">
           <div class="skeleton skeleton--icon"></div>
           <div class="stat-card__body">
@@ -40,8 +40,7 @@
         <div class="stat-card__icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
           </svg>
         </div>
         <div class="stat-card__body">
@@ -68,15 +67,40 @@
         <div class="stat-card__icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            <polyline points="20 6 9 17 4 12"/>
           </svg>
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ completedCount() }}</span>
-          <span class="stat-card__label">Progetti completati</span>
+          <span class="stat-card__label">Prog. completati</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--danger">
+        <div class="stat-card__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z"/>
+            <line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ outstandingTotal() | number:'1.0-0' }} €</span>
+          <span class="stat-card__label">Da incassare</span>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card--warning">
+        <div class="stat-card__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <div class="stat-card__body">
+          <span class="stat-card__value">{{ draftQuotesCount() }}</span>
+          <span class="stat-card__label">Prev. in bozza</span>
         </div>
       </div>
 
@@ -84,22 +108,76 @@
 
   </div>
 
-  <!-- Recent activity -->
-  <div class="home__section">
-    <h2>Attività recente</h2>
+  <!-- Widgets -->
+  <div class="home__widgets">
 
-    <div class="activity-empty">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-        <polyline points="14 2 14 8 20 8"/>
-        <line x1="16" y1="13" x2="8" y2="13"/>
-        <line x1="16" y1="17" x2="8" y2="17"/>
-        <polyline points="10 9 9 9 8 9"/>
-      </svg>
-      <p>Nessuna attività recente</p>
-      <small>Le tue azioni su progetti, task e clienti appariranno qui.</small>
-    </div>
+    <!-- Fatture in sospeso -->
+    <section class="home__widget">
+      <div class="home__widget-header">
+        <h2>Fatture in sospeso</h2>
+        <a class="home__widget-link" routerLink="/invoices">Vedi tutte →</a>
+      </div>
+
+      @if (pendingInvoices().length === 0) {
+        <div class="widget-empty">
+          <p>Nessuna fattura in sospeso</p>
+          <small>Le fatture inviate o scadute appariranno qui.</small>
+        </div>
+      } @else {
+        <div class="widget-list">
+          @for (inv of pendingInvoices(); track inv.id) {
+            <div class="widget-row">
+              <div class="widget-row__info">
+                <span class="widget-row__name">{{ inv.clientName || '—' }}</span>
+                <span class="widget-row__meta">
+                  Scad. {{ formatDate(inv.dueDate) }}
+                  @if (dueDays(inv.dueDate) < 0) {
+                    <span class="widget-row__overdue">· {{ -dueDays(inv.dueDate) }}gg scaduta</span>
+                  } @else if (dueDays(inv.dueDate) <= 7) {
+                    <span class="widget-row__soon">· tra {{ dueDays(inv.dueDate) }}gg</span>
+                  }
+                </span>
+              </div>
+              <div class="widget-row__right">
+                <span class="widget-row__amount">{{ invoiceService.total(inv) | number:'1.2-2' }} €</span>
+                <app-badge [label]="invoiceStatusBadge(inv.status).label" [variant]="invoiceStatusBadge(inv.status).variant" size="sm" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+    <!-- Preventivi recenti -->
+    <section class="home__widget">
+      <div class="home__widget-header">
+        <h2>Preventivi recenti</h2>
+        <a class="home__widget-link" routerLink="/quotes">Vedi tutti →</a>
+      </div>
+
+      @if (recentQuotes().length === 0) {
+        <div class="widget-empty">
+          <p>Nessun preventivo</p>
+          <small>I preventivi creati appariranno qui.</small>
+        </div>
+      } @else {
+        <div class="widget-list">
+          @for (quote of recentQuotes(); track quote.id) {
+            <div class="widget-row">
+              <div class="widget-row__info">
+                <span class="widget-row__name">{{ quote.clientName || '—' }}</span>
+                <span class="widget-row__meta">N° {{ quote.number }} · {{ formatDate(quote.issueDate) }}</span>
+              </div>
+              <div class="widget-row__right">
+                <span class="widget-row__amount">{{ quoteService.total(quote) | number:'1.2-2' }} €</span>
+                <app-badge [label]="quoteStatusBadge(quote.status).label" [variant]="quoteStatusBadge(quote.status).variant" size="sm" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
   </div>
 
 </div>

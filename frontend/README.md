@@ -98,7 +98,10 @@ src/
 │   ├── project.service.ts           # Project API + signal state
 │   ├── client.service.ts            # Client API + signal state
 │   ├── company.service.ts           # Company API + signal state + asOptions() for selects
-│   └── team.service.ts              # Team member API + signal state + activateSelf()
+│   ├── team.service.ts              # Team member API + signal state + activateSelf() + updateRole()
+│   ├── assignment.service.ts        # Assignment API + signal state + byProject computed Map
+│   ├── quote.service.ts             # Quote API + signal state + total() + nextNumber()
+│   └── invoice.service.ts           # Invoice API + signal state + total() + nextNumber()
 ├── app/
 │   ├── app.ts                       # Root component
 │   ├── app.config.ts                # provideRouter, provideHttpClient, APP_INITIALIZER
@@ -111,11 +114,13 @@ src/
 └── feature/
     ├── pages/
     │   ├── index/                   # Public landing page (no auth)
-    │   ├── home/                    # Dashboard
+    │   ├── home/                    # Dashboard with stat cards and invoice/quote widgets
     │   ├── projects/                # Project list and detail
     │   ├── clients/                 # Client list and detail (with company assignment)
     │   ├── companies/               # Company list, create, edit, delete
-    │   ├── team/                    # Team management (roles, skeleton loading)
+    │   ├── quotes/                  # Quote list, create, edit, status transitions
+    │   ├── invoices/                # Invoice list, create, edit, status transitions
+    │   ├── team/                    # Team management (roles, inline role change)
     │   ├── account/                 # User profile, password, delete account
     │   └── settings/                # Workspace settings
     └── components/
@@ -165,6 +170,8 @@ Each service has a `load()` method that fetches from the API and updates the sig
 /projects    → ProjectsPage     (auth required)
 /clients     → ClientsPage      (auth required)
 /companies   → CompaniesPage    (auth required)
+/quotes      → QuotesPage       (auth required)
+/invoices    → InvoicesPage     (auth required)
 /team        → TeamPage         (auth required)
 /account     → AccountPage      (auth required)
 /settings    → SettingsPage     (auth required)
