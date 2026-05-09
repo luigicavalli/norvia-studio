@@ -181,6 +181,11 @@ export class AuthService {
     await this.router.navigate(['/']);
   }
 
+  async deleteAccount(): Promise<void> {
+    await this.clerk.user!.delete();
+    await this.router.navigate(['/']);
+  }
+
   // --- Token per le chiamate API ---
 
   async getToken(): Promise<string | null> {
