@@ -7,7 +7,9 @@ import type { WorkspaceDTO }     from "../interface/dto/WorkspaceDTO.js";
 import type { TeamMemberDTO }    from "../interface/dto/TeamMemberDTO.js";
 import type { AssignmentDTO }    from "../interface/dto/AssignmentDTO.js";
 import type { QuoteDTO }         from "../interface/dto/QuoteDTO.js";
+import type { InvoiceDTO }       from "../interface/dto/InvoiceDTO.js";
 import { QuoteStatuses }         from "../domain/enums/QuoteStatuses.js";
+import { InvoiceStatus }         from "../domain/enums/InvoiceStatus.js";
 import { TeamMemberRoles }       from "../domain/enums/TeamMemberRoles.js";
 import { getAuth }               from "@clerk/express";
 
@@ -16,7 +18,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, assignmentCtrl, quoteCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, assignmentCtrl, quoteCtrl, invoiceCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
 
     const router = Router();
 
@@ -618,6 +620,107 @@ export const createApiRouter = (deps = wiring) => {
             const id = req.params["id"] as string;
 
             await assignmentCtrl.delete(id);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Invoices
+    // -------------------------------------------------------------------------
+
+    // Get all invoices for a workspace — GET /invoices?workspaceId=xxx
+    router.get('/invoices', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const invoices: InvoiceDTO[] = await invoiceCtrl.getByWorkspace(workspaceId, userId!, limit, offset);
+
+            AppResponse.paginated(res, invoices, invoices.length === limit);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get all invoices for a client — GET /clients/:id/invoices?workspaceId=xxx
+    router.get('/clients/:id/invoices', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const clientId   = req.params["id"] as string;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const invoices: InvoiceDTO[] = await invoiceCtrl.getByClient(workspaceId, clientId, userId!, limit, offset);
+
+            AppResponse.paginated(res, invoices, invoices.length === limit);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get an invoice by ID — GET /invoices/:id
+    router.get('/invoices/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            const invoice: InvoiceDTO = await invoiceCtrl.getById(id);
+
+            AppResponse.ok(res, invoice);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Create an invoice — POST /invoices
+    router.post('/invoices', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: InvoiceDTO = req.body as InvoiceDTO;
+
+            await invoiceCtrl.save(body);
+
+            AppResponse.created(res, null, 'Invoice created');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update an invoice — PUT /invoices/:id
+    router.put('/invoices/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: InvoiceDTO = req.body as InvoiceDTO;
+
+            await invoiceCtrl.update(body);
+
+            AppResponse.ok(res, null, 'Invoice updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update invoice status — PATCH /invoices/:id/status
+    router.patch('/invoices/:id/status', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id     = req.params["id"] as string;
+            const { status } = req.body as { status: InvoiceStatus };
+
+            await invoiceCtrl.updateStatus(id, status);
+
+            AppResponse.ok(res, null, 'Invoice status updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Delete an invoice — DELETE /invoices/:id
+    router.delete('/invoices/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            await invoiceCtrl.delete(id);
 
             AppResponse.noContent(res);
         } catch (error) {

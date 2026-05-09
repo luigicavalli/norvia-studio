@@ -3,9 +3,10 @@
  * ENTITIES
  * --------
  */
-import type { IClient, Client }       from "./Client.js";
-import type { IProject, Project }     from "./Project.js";
-import type { IWorkspace, Workspace } from "./Workspace.js";
+import type { IClient, Client }           from "./Client.js";
+import type { IProject, Project }         from "./Project.js";
+import type { IWorkspace, Workspace }     from "./Workspace.js";
+import type { IInvoiceItem, InvoiceItem } from "./InvoiceItem.js";
 
 /**
  * ----
@@ -21,6 +22,7 @@ export interface IInvoice {
     workspace: IWorkspace;
     client:    IClient;
     project:   IProject | undefined;
+    items:     IInvoiceItem[];
     number:    number;
     status:    InvoiceStatus;
     issueDate: Date;
@@ -38,6 +40,7 @@ export class Invoice implements IInvoice {
     private _workspace: Workspace;
     private _client:    Client;
     private _project:   Project | undefined;
+    private _items:     InvoiceItem[] = [];
     private _number:    number;
     private _status:    InvoiceStatus;
     private _issueDate: Date;
@@ -81,6 +84,14 @@ export class Invoice implements IInvoice {
 
     public set project(value: Project | undefined) {
         this._project = value;
+    }
+
+    public get items(): InvoiceItem[] {
+        return this._items;
+    }
+
+    public set items(value: InvoiceItem[]) {
+        this._items = value;
     }
 
     public get number(): number {

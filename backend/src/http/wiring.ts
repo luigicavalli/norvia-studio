@@ -63,6 +63,17 @@ import { CreateQuoteUseCase }              from "../application/use-case/CreateQ
 import { UpdateQuoteUseCase }              from "../application/use-case/UpdateQuoteUseCase.js";
 import { UpdateQuoteStatusUseCase }        from "../application/use-case/UpdateQuoteStatusUseCase.js";
 import { DeleteQuoteUseCase }              from "../application/use-case/DeleteQuoteUseCase.js";
+import { InvoiceController }              from "../interface/controller/InvoiceController.js";
+import { InvoiceRepositoryImpl }          from "../infrastructure/persistence/repository/InvoiceRepositoryImpl.js";
+import { PgInvoiceDAOImpl }              from "../infrastructure/persistence/dao/pg/PgInvoiceDAOImpl.js";
+import { PgInvoiceItemDAOImpl }          from "../infrastructure/persistence/dao/pg/PgInvoiceItemDAOImpl.js";
+import { GetInvoicesByWorkspaceUseCase }  from "../application/use-case/GetInvoicesByWorkspaceUseCase.js";
+import { GetInvoicesByClientUseCase }     from "../application/use-case/GetInvoicesByClientUseCase.js";
+import { GetInvoiceByIdUseCase }         from "../application/use-case/GetInvoiceByIdUseCase.js";
+import { CreateInvoiceUseCase }          from "../application/use-case/CreateInvoiceUseCase.js";
+import { UpdateInvoiceUseCase }          from "../application/use-case/UpdateInvoiceUseCase.js";
+import { UpdateInvoiceStatusUseCase }    from "../application/use-case/UpdateInvoiceStatusUseCase.js";
+import { DeleteInvoiceUseCase }          from "../application/use-case/DeleteInvoiceUseCase.js";
 
 // =========================================================================
 //                          COMPLETE BOOTSTRAP
@@ -82,6 +93,8 @@ const assignmentDAO         = new PgAssignmentDAOImpl(pool);
 const teamMemberDAO         = new PgTeamMemberDAOImpl(pool);
 const quoteDAO              = new PgQuoteDAOImpl(pool);
 const quoteItemDAO          = new PgQuoteItemDAOImpl(pool);
+const invoiceDAO            = new PgInvoiceDAOImpl(pool);
+const invoiceItemDAO        = new PgInvoiceItemDAOImpl(pool);
 
 const projectRepo           = new ProjectRepositoryImpl(projectDAO, workspaceDAO, assignmentDAO, teamMemberDAO, clientDAO, quoteDAO);
 const companyRepo           = new CompanyRepositoryImpl(companyDAO, workspaceDAO);
@@ -90,6 +103,7 @@ const workspaceRepo         = new WorkspaceRepositoryImpl(workspaceDAO);
 const teamMemberRepo        = new TeamMemberRepositoryImpl(teamMemberDAO);
 const assignmentRepo        = new AssignmentRepositoryImpl(assignmentDAO, teamMemberDAO);
 const quoteRepo             = new QuoteRepositoryImpl(quoteDAO, quoteItemDAO, clientDAO, workspaceDAO);
+const invoiceRepo           = new InvoiceRepositoryImpl(invoiceDAO, invoiceItemDAO, clientDAO, workspaceDAO);
 
 // =========================================================================
 //                           APPLICATION LAYER
@@ -160,6 +174,16 @@ const deleteQuoteUC          = new DeleteQuoteUseCase(quoteRepo);
 
 const quoteCtrl = new QuoteController(getQuotesByWorkspaceUC, getQuotesByClientUC, getQuoteByIdUC, createQuoteUC, updateQuoteUC, updateQuoteStatusUC, deleteQuoteUC);
 
+const getInvoicesByWorkspaceUC = new GetInvoicesByWorkspaceUseCase(invoiceRepo, teamMemberRepo);
+const getInvoicesByClientUC    = new GetInvoicesByClientUseCase(invoiceRepo, teamMemberRepo);
+const getInvoiceByIdUC         = new GetInvoiceByIdUseCase(invoiceRepo);
+const createInvoiceUC          = new CreateInvoiceUseCase(invoiceRepo);
+const updateInvoiceUC          = new UpdateInvoiceUseCase(invoiceRepo);
+const updateInvoiceStatusUC    = new UpdateInvoiceStatusUseCase(invoiceRepo);
+const deleteInvoiceUC          = new DeleteInvoiceUseCase(invoiceRepo);
+
+const invoiceCtrl = new InvoiceController(getInvoicesByWorkspaceUC, getInvoicesByClientUC, getInvoiceByIdUC, createInvoiceUC, updateInvoiceUC, updateInvoiceStatusUC, deleteInvoiceUC);
+
 export const wiring = {
     workspaceCtrl,
     projectCtrl,
@@ -168,6 +192,7 @@ export const wiring = {
     teamMemberCtrl,
     assignmentCtrl,
     quoteCtrl,
+    invoiceCtrl,
     activateTeamMemberUC,
     clerkInvitationService,
 };
