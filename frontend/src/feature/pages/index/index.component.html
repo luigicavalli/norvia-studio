@@ -53,7 +53,7 @@
     <div class="auth-card">
 
       <!-- Tab (nascosto durante MFA) -->
-      @if (mode() !== 'mfa') {
+      @if (mode() !== 'mfa' && mode() !== 'verify-email') {
         <div class="auth-tabs">
           <button
             class="auth-tab"
@@ -153,6 +153,49 @@
         </form>
       }
 
+      <!-- Verify email -->
+      @if (mode() === 'verify-email') {
+        <form class="auth-form" [formGroup]="verifyEmailForm" (ngSubmit)="onVerifyEmail()">
+
+          <div class="auth-mfa-header">
+            <div class="auth-mfa-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <h2>Verifica la tua email</h2>
+            <p>Abbiamo inviato un codice di verifica al tuo indirizzo email.</p>
+          </div>
+
+          <app-input
+            label="Codice di verifica"
+            placeholder="000000"
+            formControlName="code"
+            [error]="!!fieldError('verify-email', 'code')"
+            [errorMessage]="fieldError('verify-email', 'code')"
+          />
+
+          @if (authError()) {
+            <p class="auth-error">{{ authError() }}</p>
+          }
+
+          <app-button
+            label="Verifica email"
+            type="submit"
+            size="md"
+            width="100%"
+            [loading]="loading()"
+          />
+
+          <p class="auth-switch">
+            <button type="button" class="auth-switch__link" (click)="setMode('login')">← Torna al login</button>
+          </p>
+
+        </form>
+      }
+
       <!-- Register -->
       @if (mode() === 'register') {
         <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onRegister()">
@@ -203,6 +246,8 @@
           @if (authError()) {
             <p class="auth-error">{{ authError() }}</p>
           }
+
+          <div id="clerk-captcha"></div>
 
           <app-button
             label="Crea account"

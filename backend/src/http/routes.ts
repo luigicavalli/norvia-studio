@@ -13,9 +13,29 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
 
     const router = Router();
+
+    // -------------------------------------------------------------------------
+    // Self-activation (existing users accepting an invite)
+    // -------------------------------------------------------------------------
+
+    router.post('/members/activate-self', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+
+            const { email, firstName, lastName } = await clerkInvitationService.getUser(userId!);
+
+            if (email) {
+                await activateTeamMemberUC.execute({ email, userId: userId!, firstName, lastName });
+            }
+
+            AppResponse.ok(res, null);
+        } catch (error) {
+            next(error);
+        }
+    });
 
     // -------------------------------------------------------------------------
     // Workspaces
@@ -115,6 +135,21 @@ export const createApiRouter = (deps = wiring) => {
             const members: TeamMemberDTO[] = await teamMemberCtrl.getByWorkspace(workspaceId, userId!);
 
             AppResponse.ok(res, members);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Invite a member to a workspace by email
+    router.post('/workspaces/:id/members/invite', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const workspaceId = req.params["id"] as string;
+            const { email, role } = req.body as { email: string; role: TeamMemberRoles };
+
+            const member: TeamMemberDTO = await teamMemberCtrl.invite(workspaceId, email, role, userId!);
+
+            AppResponse.created(res, member, 'Invite sent');
         } catch (error) {
             next(error);
         }

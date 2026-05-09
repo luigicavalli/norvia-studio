@@ -34,14 +34,23 @@ export class TeamComponent {
   protected readonly currentUser = computed(() => {
     const u = this.auth.user();
     return {
+      id:        u?.id ?? '',
       name:      [u?.firstName, u?.lastName].filter(Boolean).join(' ') || 'Tu',
       email:     u?.primaryEmailAddress?.emailAddress ?? '',
       avatarUrl: u?.imageUrl ?? null,
     };
   });
 
+  protected readonly activeMembers = computed(() =>
+    this.teamService.active().filter(m => m.userId !== this.currentUser().id),
+  );
+
+  protected readonly currentUserRole = computed(() =>
+    this.teamService.members().find(m => m.userId === this.currentUser().id)?.role ?? 'owner',
+  );
+
   protected readonly totalCount = computed(() =>
-    1 + this.teamService.members().length,
+    this.teamService.members().length,
   );
 
   protected readonly roleOptions: SelectOption[] = [
@@ -82,12 +91,14 @@ export class TeamComponent {
   }
 
   protected roleBadge(role: MemberRole): { label: string; variant: BadgeVariant } {
-    const map: Record<MemberRole, { label: string; variant: BadgeVariant }> = {
-      admin:  { label: 'Amministratore', variant: 'info'    },
-      member: { label: 'Membro',         variant: 'default' },
-      viewer: { label: 'Osservatore',    variant: 'default' },
+    const map: Record<string, { label: string; variant: BadgeVariant }> = {
+      admin:      { label: 'Amministratore', variant: 'info'    },
+      owner:      { label: 'Proprietario',   variant: 'info'    },
+      superadmin: { label: 'Super Admin',    variant: 'info'    },
+      member:     { label: 'Membro',         variant: 'default' },
+      viewer:     { label: 'Osservatore',    variant: 'default' },
     };
-    return map[role];
+    return map[role] ?? { label: role, variant: 'default' };
   }
 
   protected fieldError(field: string): string {

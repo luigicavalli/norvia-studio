@@ -22,7 +22,8 @@ import { environment } from '../environments/environment';
 import * as Sentry     from '@sentry/angular';
 
 
-export type SignInResult = 'complete' | 'needs_second_factor';
+export type SignInResult  = 'complete' | 'needs_second_factor';
+export type SignUpResult  = 'complete' | 'needs_verification';
 
 export interface UserPreferences {
   language:     string;
@@ -118,7 +119,7 @@ export class AuthService {
     birthDate: Date | null;
     email:     string;
     password:  string;
-  }): Promise<void> {
+  }): Promise<SignUpResult> {
     const attempt = await this.clerk.client!.signUp.create({
       firstName:    data.firstName,
       lastName:     data.lastName,
@@ -130,10 +131,21 @@ export class AuthService {
       await this.clerk.setActive({ session: attempt.createdSessionId });
       this.syncState();
       await this.router.navigate(['/home']);
+      return 'complete';
     }
 
-    // Se Clerk richiede verifica email (status === 'missing_requirements')
-    // si può gestire qui il flusso OTP
+    await this.clerk.client!.signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
+    return 'needs_verification';
+  }
+
+  async verifyEmail(code: string): Promise<void> {
+    const attempt = await this.clerk.client!.signUp.attemptEmailAddressVerification({ code });
+
+    if (attempt.status === 'complete') {
+      await this.clerk.setActive({ session: attempt.createdSessionId });
+      this.syncState();
+      await this.router.navigate(['/home']);
+    }
   }
 
   async updateProfile(firstName: string, lastName: string): Promise<void> {
@@ -166,6 +178,11 @@ export class AuthService {
 
   async signOut(): Promise<void> {
     await this.clerk.signOut();
+    await this.router.navigate(['/']);
+  }
+
+  async deleteAccount(): Promise<void> {
+    await this.clerk.user!.delete();
     await this.router.navigate(['/']);
   }
 

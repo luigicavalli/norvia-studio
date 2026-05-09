@@ -28,6 +28,22 @@ export class TeamMemberRepositoryImpl implements TeamMemberRepository {
 
     };
 
+    public async findByWorkspaceAndEmail(workspaceId: string, email: string): Promise<TeamMember | null> {
+
+        const record: TeamMemberPO | null = await this.dao.findByEmail(workspaceId, email);
+
+        return record ? this.converter.toBO(record) : null;
+
+    };
+
+    public async findAllByEmail(email: string): Promise<TeamMember[]> {
+
+        const records: TeamMemberPO[] = await this.dao.findAllByEmail(email);
+
+        return records.map(r => this.converter.toBO(r));
+
+    };
+
     public async findById(id: string): Promise<TeamMember | null> {
 
         const record: TeamMemberPO | null = await this.dao.findById(id);

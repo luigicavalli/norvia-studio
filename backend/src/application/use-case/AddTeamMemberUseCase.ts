@@ -1,10 +1,12 @@
-import { randomUUID }                 from "crypto";
-import { Workspace }                  from "../../domain/model/Workspace.js";
-import { TeamMember }                 from "../../domain/model/TeamMember.js";
-import { TeamMemberRoles }            from "../../domain/enums/TeamMemberRoles.js";
-import { AppErrors }                  from "../error/AppError.js";
-import type { IUseCase }              from "./IUseCase.js";
-import type { TeamMemberRepository }  from "../../domain/repositories/TeamMemberRepository.js";
+import { randomUUID }                   from "crypto";
+import { Workspace }                    from "../../domain/model/Workspace.js";
+import { TeamMember }                   from "../../domain/model/TeamMember.js";
+import { TeamMemberRoles }              from "../../domain/enums/TeamMemberRoles.js";
+import { TeamMemberStatuses }           from "../../domain/enums/TeamMemberStatuses.js";
+import { AppErrors }                    from "../error/AppError.js";
+import type { IUseCase }                from "./IUseCase.js";
+import type { TeamMemberRepository }    from "../../domain/repositories/TeamMemberRepository.js";
+import type { ClerkInvitationService }  from "../../infrastructure/clerk/ClerkInvitationService.js";
 
 
 interface AddTeamMemberInput {
@@ -16,7 +18,10 @@ interface AddTeamMemberInput {
 
 export class AddTeamMemberUseCase implements IUseCase<AddTeamMemberInput, TeamMember> {
 
-    public constructor(private readonly teamMemberRepository: TeamMemberRepository) {}
+    public constructor(
+        private readonly teamMemberRepository:  TeamMemberRepository,
+        private readonly clerkService:          ClerkInvitationService,
+    ) {}
 
     public async execute(input: AddTeamMemberInput): Promise<TeamMember> {
 
@@ -32,6 +37,8 @@ export class AddTeamMemberUseCase implements IUseCase<AddTeamMemberInput, TeamMe
             throw AppErrors.conflict('User is already a member of this workspace', 'TEAM_MEMBER_ALREADY_EXISTS');
         }
 
+        const { email, firstName, lastName } = await this.clerkService.getUser(input.newUserId);
+
         const workspace = new Workspace();
         workspace.id = input.workspaceId;
 
@@ -39,6 +46,10 @@ export class AddTeamMemberUseCase implements IUseCase<AddTeamMemberInput, TeamMe
         member.id        = randomUUID();
         member.workspace = workspace;
         member.userId    = input.newUserId;
+        member.firstName = firstName;
+        member.lastName  = lastName;
+        member.email     = email;
+        member.status    = TeamMemberStatuses.ACTIVE;
         member.role      = input.role;
         member.createdAt = new Date();
         member.updatedAt = new Date();

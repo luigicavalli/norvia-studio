@@ -183,6 +183,18 @@ All routes require a valid Clerk session token in the `Authorization: Bearer <to
 | `POST` | `/workspaces/:id/members` | Add a member to a workspace |
 | `PUT` | `/workspaces/:id/members/:memberId` | Update a member's role |
 | `DELETE` | `/workspaces/:id/members/:memberId` | Remove a member |
+| `POST` | `/members/activate-self` | Activate the caller's pending membership (for existing Clerk users accepting invitations) |
+
+### Companies
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/companies?workspaceId=` | List companies for a workspace (paginated) |
+| `GET` | `/companies/:id` | Get a company by ID |
+| `GET` | `/companies/:id/clients` | List clients belonging to a company (paginated) |
+| `POST` | `/companies` | Create a company |
+| `PUT` | `/companies/:id` | Update a company |
+| `DELETE` | `/companies/:id` | Delete a company |
 
 ### Projects
 
@@ -200,7 +212,7 @@ All routes require a valid Clerk session token in the `Authorization: Bearer <to
 |---|---|---|
 | `GET` | `/clients?workspaceId=` | List clients (paginated) |
 | `GET` | `/clients/:id` | Get a client by ID |
-| `POST` | `/clients` | Create a client |
+| `POST` | `/clients` | Create a client (optionally link to a company via `company.id`) |
 | `PUT` | `/clients/:id` | Update a client |
 | `DELETE` | `/clients/:id` | Delete a client |
 
@@ -232,6 +244,8 @@ Cloud Run injects secrets as environment variables at runtime. The mapping below
 | `CLERK_SECRET_KEY` | `CLERK_SECRET_KEY` | Clerk secret key |
 | `CORS_ORIGIN` | `CORS_ORIGIN` | Allowed CORS origin (frontend URL or `*`) |
 | `SENTRY_DSN_BACKEND` | `SENTRY_DSN` | Sentry DSN for error tracking and performance monitoring |
+| `CLERK_WEBHOOK_SECRET` | `CLERK_WEBHOOK_SECRET` | Clerk webhook signing secret (`whsec_...`) for verifying `POST /webhooks` payloads |
+| `CLERK_INVITE_REDIRECT_URL` | `CLERK_INVITE_REDIRECT_URL` | URL the user is redirected to after accepting a workspace invitation |
 
 > Cloud Run also injects `PORT` automatically; the app reads it via `process.env.PORT ?? process.env.EXPRESS_PORT`.
 

@@ -1,26 +1,23 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators }      from '@angular/forms';
 
-import { ClientService }  from '../../../services/client.service';
 import { CompanyService } from '../../../services/company.service';
-import type { Client }    from '../../../models/client.model';
+import type { Company }   from '../../../models/company.model';
 import { ToastService }   from '../../components/shared/toast/toast.service';
 import { ButtonComponent } from '../../components/shared/button/button.component';
 import { InputComponent }  from '../../components/shared/input/input.component';
 import { ModalComponent }  from '../../components/shared/modal/modal.component';
-import { SelectComponent } from '../../components/shared/select/select.component';
 
 
 @Component({
-  selector:    'app-clients',
+  selector:    'app-companies',
   standalone:  true,
-  imports:     [ReactiveFormsModule, ButtonComponent, InputComponent, ModalComponent, SelectComponent],
-  templateUrl: './clients.component.html',
-  styleUrl:    './clients.component.scss',
+  imports:     [ReactiveFormsModule, ButtonComponent, InputComponent, ModalComponent],
+  templateUrl: './companies.component.html',
+  styleUrl:    './companies.component.scss',
 })
-export class ClientsComponent {
+export class CompaniesComponent {
 
-  protected readonly clientService  = inject(ClientService);
   protected readonly companyService = inject(CompanyService);
   private readonly  toast           = inject(ToastService);
   private readonly  fb              = inject(FormBuilder);
@@ -34,25 +31,29 @@ export class ClientsComponent {
   protected readonly filtered = computed(() => {
     const q = this.query().toLowerCase().trim();
     return q
-      ? this.clientService.clients().filter(c =>
-          c.fullName.toLowerCase().includes(q) ||
-          c.email.toLowerCase().includes(q)    ||
-          (c.companyName ?? '').toLowerCase().includes(q),
+      ? this.companyService.companies().filter(c =>
+          c.name.toLowerCase().includes(q)  ||
+          c.city.toLowerCase().includes(q)  ||
+          c.email.toLowerCase().includes(q) ||
+          c.taxCode.toLowerCase().includes(q),
         )
-      : this.clientService.clients();
+      : this.companyService.companies();
   });
 
   protected readonly modalTitle = computed(() =>
-    this.editingId() ? 'Modifica cliente' : 'Nuovo cliente',
+    this.editingId() ? 'Modifica azienda' : 'Nuova azienda',
   );
 
   protected readonly form = this.fb.group({
-    firstName: ['', Validators.required],
-    lastName:  ['', Validators.required],
-    email:     ['', Validators.email],
-    phone:     [''],
-    notes:     [''],
-    companyId: ['' as string | null],
+    name:    ['', Validators.required],
+    taxCode: [''],
+    email:   ['', Validators.email],
+    phone:   [''],
+    address: [''],
+    city:    [''],
+    zipCode: [''],
+    country: [''],
+    website: [''],
   });
 
   protected openCreate(): void {
@@ -61,17 +62,20 @@ export class ClientsComponent {
     this.modalOpen.set(true);
   }
 
-  protected openEdit(client: Client, event: MouseEvent): void {
+  protected openEdit(company: Company, event: MouseEvent): void {
     event.stopPropagation();
     this.openMenuId.set(null);
-    this.editingId.set(client.id);
+    this.editingId.set(company.id);
     this.form.setValue({
-      firstName: client.firstName,
-      lastName:  client.lastName,
-      email:     client.email,
-      phone:     client.phone,
-      notes:     client.notes,
-      companyId: client.companyId ?? '',
+      name:    company.name,
+      taxCode: company.taxCode,
+      email:   company.email,
+      phone:   company.phone,
+      address: company.address,
+      city:    company.city,
+      zipCode: company.zipCode,
+      country: company.country,
+      website: company.website,
     });
     this.modalOpen.set(true);
   }
@@ -81,39 +85,42 @@ export class ClientsComponent {
 
     const v = this.form.value;
     const data = {
-      firstName: v.firstName ?? '',
-      lastName:  v.lastName  ?? '',
-      email:     v.email     ?? '',
-      phone:     v.phone     ?? '',
-      notes:     v.notes     ?? '',
-      companyId: v.companyId || null,
+      name:    v.name    ?? '',
+      taxCode: v.taxCode ?? '',
+      email:   v.email   ?? '',
+      phone:   v.phone   ?? '',
+      address: v.address ?? '',
+      city:    v.city    ?? '',
+      zipCode: v.zipCode ?? '',
+      country: v.country ?? '',
+      website: v.website ?? '',
     };
 
     this.saving.set(true);
     try {
       const id = this.editingId();
       if (id) {
-        const existing = this.clientService.clients().find(c => c.id === id)!;
-        await this.clientService.update(id, data, existing);
-        this.toast.success('Cliente aggiornato.');
+        const existing = this.companyService.companies().find(c => c.id === id)!;
+        await this.companyService.update(id, data, existing);
+        this.toast.success('Azienda aggiornata.');
       } else {
-        await this.clientService.create(data);
-        this.toast.success('Cliente aggiunto con successo.');
+        await this.companyService.create(data);
+        this.toast.success('Azienda aggiunta con successo.');
       }
       this.modalOpen.set(false);
     } catch {
-      this.toast.danger('Errore durante il salvataggio del cliente.');
+      this.toast.danger('Errore durante il salvataggio.');
     } finally {
       this.saving.set(false);
     }
   }
 
-  protected async removeClient(id: string, event: MouseEvent): Promise<void> {
+  protected async removeCompany(id: string, event: MouseEvent): Promise<void> {
     event.stopPropagation();
     try {
-      await this.clientService.remove(id);
+      await this.companyService.remove(id);
       this.openMenuId.set(null);
-      this.toast.info('Cliente eliminato.');
+      this.toast.info('Azienda eliminata.');
     } catch {
       this.toast.danger('Errore durante l\'eliminazione.');
     }

@@ -5,6 +5,7 @@ import { TeamMemberDTOConverter }              from "../converter/TeamMemberDTOC
 import type { TeamMemberRoles }                from "../../domain/enums/TeamMemberRoles.js";
 import type { GetWorkspaceMembersUseCase }     from "../../application/use-case/GetWorkspaceMembersUseCase.js";
 import type { AddTeamMemberUseCase }           from "../../application/use-case/AddTeamMemberUseCase.js";
+import type { InviteTeamMemberUseCase }        from "../../application/use-case/InviteTeamMemberUseCase.js";
 import type { UpdateTeamMemberRoleUseCase }    from "../../application/use-case/UpdateTeamMemberRoleUseCase.js";
 import type { RemoveTeamMemberUseCase }        from "../../application/use-case/RemoveTeamMemberUseCase.js";
 
@@ -16,6 +17,7 @@ export class TeamMemberController {
     public constructor(
         private readonly getWorkspaceMembersUC:  GetWorkspaceMembersUseCase,
         private readonly addTeamMemberUC:        AddTeamMemberUseCase,
+        private readonly inviteTeamMemberUC:     InviteTeamMemberUseCase,
         private readonly updateTeamMemberRoleUC: UpdateTeamMemberRoleUseCase,
         private readonly removeTeamMemberUC:     RemoveTeamMemberUseCase
     ) {}
@@ -31,6 +33,14 @@ export class TeamMemberController {
     public async add(workspaceId: string, newUserId: string, role: TeamMemberRoles, requestingUserId: string): Promise<TeamMemberDTO> {
 
         const member: TeamMember = await this.addTeamMemberUC.execute({ workspaceId, newUserId, role, requestingUserId });
+
+        return this.converter.toDTO(member);
+
+    };
+
+    public async invite(workspaceId: string, email: string, role: TeamMemberRoles, requestingUserId: string): Promise<TeamMemberDTO> {
+
+        const member: TeamMember = await this.inviteTeamMemberUC.execute({ workspaceId, email, role, requestingUserId });
 
         return this.converter.toDTO(member);
 

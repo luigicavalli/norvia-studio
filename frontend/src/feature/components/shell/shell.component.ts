@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet }              from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -8,7 +8,9 @@ import { ButtonComponent }    from '../shared/button/button.component';
 import { InputComponent }     from '../shared/input/input.component';
 import { WorkspaceService }   from '../../../services/workspace.service';
 import { ClientService }      from '../../../services/client.service';
+import { CompanyService }     from '../../../services/company.service';
 import { ProjectService }     from '../../../services/project.service';
+import { TeamService }        from '../../../services/team.service';
 import { ToastService }       from '../shared/toast/toast.service';
 
 
@@ -24,7 +26,9 @@ export class ShellComponent implements OnInit {
 
   protected readonly workspaceService = inject(WorkspaceService);
   private   readonly clientService    = inject(ClientService);
+  private   readonly companyService   = inject(CompanyService);
   private   readonly projectService   = inject(ProjectService);
+  private   readonly teamService      = inject(TeamService);
   private   readonly toast            = inject(ToastService);
   private   readonly fb               = inject(FormBuilder);
 
@@ -34,14 +38,35 @@ export class ShellComponent implements OnInit {
 
   protected readonly saving = signal(false);
 
+  private initialized = false;
+
+  constructor() {
+    effect(() => {
+      const id = this.workspaceService.activeId();
+      if (!id || !this.initialized) return;
+      Promise.all([
+        this.clientService.load(),
+        this.companyService.load(),
+        this.projectService.load(),
+        this.teamService.load(),
+      ]);
+    });
+  }
+
   async ngOnInit(): Promise<void> {
-    await this.workspaceService.load();
+    await Promise.all([
+      this.workspaceService.load(),
+      this.teamService.activateSelf(),
+    ]);
     if (this.workspaceService.hasWorkspace()) {
       await Promise.all([
         this.clientService.load(),
+        this.companyService.load(),
         this.projectService.load(),
+        this.teamService.load(),
       ]);
     }
+    this.initialized = true;
   }
 
   protected async onCreateWorkspace(): Promise<void> {
@@ -52,7 +77,9 @@ export class ShellComponent implements OnInit {
       await this.workspaceService.create(this.setupForm.value.name!);
       await Promise.all([
         this.clientService.load(),
+        this.companyService.load(),
         this.projectService.load(),
+        this.teamService.load(),
       ]);
       this.toast.success('Workspace creato con successo!');
     } catch {

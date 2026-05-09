@@ -1,22 +1,6 @@
-/**
- * --
- * BO
- * --
- */
-import { Company } from "../../domain/model/Company.js";
-
-/**
- * ---
- * DTO
- * ---
- */
+import { Company }   from "../../domain/model/Company.js";
+import { Workspace }  from "../../domain/model/Workspace.js";
 import type { CompanyDTO } from "../dto/CompanyDTO.js";
-
-/**
- * ----------
- * INTERFACES
- * ----------
- */
 import type { IDTOConverter } from "./IDTOConverter.js";
 
 
@@ -39,6 +23,9 @@ export class CompanyDTOConverter implements IDTOConverter<CompanyDTO, Company> {
         companyBO.createdAt = dto.createdAt;
         companyBO.updatedAt = dto.updatedAt;
 
+        companyBO.workspace    = new Workspace();
+        companyBO.workspace.id = dto.workspaceId;
+
         return companyBO;
 
     }
@@ -47,18 +34,19 @@ export class CompanyDTOConverter implements IDTOConverter<CompanyDTO, Company> {
 
         const companyDTO: CompanyDTO = {} as CompanyDTO;
 
-        companyDTO.id        = bo.id;
-        companyDTO.name      = bo.name;
-        companyDTO.taxCode   = bo.taxCode;
-        companyDTO.email     = bo.email;
-        companyDTO.phone     = bo.phone;
-        companyDTO.address   = bo.address;
-        companyDTO.city      = bo.city;
-        companyDTO.zipCode   = bo.zipCode;
-        companyDTO.country   = bo.country;
-        companyDTO.website   = bo.website;
-        companyDTO.createdAt = bo.createdAt;
-        companyDTO.updatedAt = bo.updatedAt;
+        companyDTO.id          = bo.id;
+        companyDTO.workspaceId = bo.workspace?.id ?? '';
+        companyDTO.name        = bo.name;
+        companyDTO.taxCode     = bo.taxCode;
+        companyDTO.email       = bo.email;
+        companyDTO.phone       = bo.phone;
+        companyDTO.address     = bo.address;
+        companyDTO.city        = bo.city;
+        companyDTO.zipCode     = bo.zipCode;
+        companyDTO.country     = bo.country;
+        companyDTO.website     = bo.website;
+        companyDTO.createdAt   = bo.createdAt;
+        companyDTO.updatedAt   = bo.updatedAt;
 
         return companyDTO;
 

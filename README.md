@@ -84,9 +84,9 @@ The frontend follows standard Angular patterns with no NgModules:
 | Entity | Description |
 |---|---|
 | **Workspace** | Top-level multi-tenant container; all resources belong to one |
-| **Company** | Studio's own company info stored per workspace |
-| **TeamMember** | Internal users with roles: `OWNER`, `ADMIN`, `SUPERADMIN`, `MEMBER` |
-| **Client** | External clients with statuses: `ACTIVE`, `INACTIVE`, `PROSPECT` |
+| **Company** | External companies (aziende) linked to a workspace; clients can be assigned to a company |
+| **TeamMember** | Internal users with roles: `OWNER`, `ADMIN`, `SUPERADMIN`, `MEMBER`, `VIEWER` |
+| **Client** | External clients with statuses: `ACTIVE`, `INACTIVE`, `PROSPECT`; optionally linked to a Company |
 | **Project** | Work items with status (`DRAFT` → `ACTIVE` → `COMPLETED`) and priority |
 | **Quote** | Price proposals (`DRAFT`, `SENT`, `ACCEPTED`, `REJECTED`, `EXPIRED`) |
 | **Invoice** | Billing documents (`DRAFT`, `SENT`, `PAID`, `OVERDUE`, `CANCELLED`) |
@@ -115,9 +115,10 @@ All endpoints are prefixed with `/api` and require a valid Clerk session token.
 | Resource | Endpoints |
 |---|---|
 | Workspaces | `GET /workspaces`, `POST /workspaces`, `GET\|PUT\|DELETE /workspaces/:id` |
+| Companies | `GET /companies?workspaceId=`, `POST /companies`, `GET\|PUT\|DELETE /companies/:id`, `GET /companies/:id/clients` |
 | Projects | `GET /projects?workspaceId=`, `POST /projects`, `GET\|PUT\|DELETE /projects/:id` |
 | Clients | `GET /clients?workspaceId=`, `POST /clients`, `GET\|PUT\|DELETE /clients/:id` |
-| Team members | `GET\|POST /workspaces/:id/members`, `PUT\|DELETE /workspaces/:id/members/:memberId` |
+| Team members | `GET\|POST /workspaces/:id/members`, `PUT\|DELETE /workspaces/:id/members/:memberId`, `POST /members/activate-self` |
 | Quotes | `GET\|POST /quotes`, `GET\|PUT\|DELETE /quotes/:id` |
 | Invoices | `GET\|POST /invoices`, `GET\|PUT\|DELETE /invoices/:id` |
 
@@ -145,6 +146,14 @@ Triggers on pushes to `develop` and `feature/**` branches and on pull requests t
 | **backend** | install → lint → test |
 | **semgrep** | static security scan |
 | **owasp** | OWASP Dependency-Check against NVD; fails on CVSS ≥ 7 (HIGH/CRITICAL); always uploads HTML report as artifact |
+
+### Preview (`.github/workflows/preview.yml`)
+
+Triggers on pull requests to `main` (opened, pushed, reopened). Deploys the frontend to a temporary Firebase Hosting preview channel and posts the URL as a comment on the PR. The channel expires automatically after 7 days. No new secrets required — reuses `GCP_SA_KEY`, `GCP_PROJECT_ID`, `CLERK_PUBLISHABLE_KEY`, and `API_URL`.
+
+| Job | Steps |
+|---|---|
+| **preview-frontend** | install → inject environment from secrets (Sentry DSN left empty) → `ng build --configuration production` → deploy to Firebase preview channel → comment PR with URL |
 
 ### CD (`.github/workflows/cd.yml`)
 
@@ -174,6 +183,8 @@ Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys 
 | Secret | Used by | Description |
 |---|---|---|
 | `SENTRY_DSN_BACKEND` | backend | Sentry DSN for the Node.js project |
+| `CLERK_WEBHOOK_SECRET` | backend | Clerk webhook signing secret (`whsec_...`) for verifying `POST /webhooks` payloads |
+| `CLERK_INVITE_REDIRECT_URL` | backend | URL the user lands on after accepting a workspace invitation |
 | `SUPABASE_URL` | backend | Supabase database connection URL |
 | `SUPABASE_SCHEMA` | backend | Supabase schema name |
 | `CLERK_SECRET_KEY` | backend | Clerk secret key |

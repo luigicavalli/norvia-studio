@@ -1,0 +1,239 @@
+<div class="companies">
+
+  <!-- Header -->
+  <div class="companies__header">
+    <div>
+      <h1>Aziende</h1>
+      <p class="companies__subtitle">{{ companyService.total() }} aziend{{ companyService.total() === 1 ? 'a' : 'e' }} totali</p>
+    </div>
+    <app-button label="Nuova azienda" size="sm" (clicked)="openCreate()">
+      <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </app-button>
+  </div>
+
+  <!-- Search -->
+  <div class="companies__search">
+    <div class="companies__search-wrap">
+      <svg class="companies__search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        class="companies__search-input"
+        type="text"
+        placeholder="Cerca per nome, città, P.IVA o email…"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+      />
+      @if (query()) {
+        <button class="companies__search-clear" (click)="query.set('')" aria-label="Cancella ricerca">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Grid -->
+  @if (companyService.loading()) {
+    <div class="companies__loading">
+      <p>Caricamento aziende…</p>
+    </div>
+  } @else if (filtered().length === 0) {
+    <div class="companies__empty">
+      @if (query()) {
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <p>Nessun risultato per "{{ query() }}"</p>
+        <small>Prova con un termine diverso.</small>
+      } @else {
+        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <p>Nessuna azienda</p>
+        <small>Aggiungi la tua prima azienda per iniziare.</small>
+        <app-button label="Aggiungi azienda" size="sm" (clicked)="openCreate()" />
+      }
+    </div>
+  } @else {
+    <div class="companies__grid">
+      @for (company of filtered(); track company.id) {
+        <div class="company-card">
+
+          <!-- Head -->
+          <div class="company-card__head">
+            <div class="company-card__avatar">{{ initials(company.name) }}</div>
+            <div class="company-card__identity">
+              <h3 class="company-card__name">{{ company.name }}</h3>
+              @if (company.city) {
+                <p class="company-card__location">{{ company.city }}</p>
+              }
+            </div>
+            <div class="company-card__menu-wrap" (click)="$event.stopPropagation()">
+              <button class="company-card__menu-btn" (click)="toggleMenu(company.id)" aria-label="Azioni">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+                </svg>
+              </button>
+              @if (openMenuId() === company.id) {
+                <div class="company-card__dropdown">
+                  <button class="company-card__dropdown-item" (click)="openEdit(company, $event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    Modifica
+                  </button>
+                  <button class="company-card__dropdown-item company-card__dropdown-item--danger"
+                          (click)="removeCompany(company.id, $event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="3 6 5 6 21 6"/>
+                      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                      <path d="M10 11v6"/><path d="M14 11v6"/>
+                      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                    </svg>
+                    Elimina
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Info -->
+          @if (company.taxCode || company.email || company.phone || company.website) {
+            <div class="company-card__info">
+              @if (company.taxCode) {
+                <span class="company-card__info-row">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="5" width="20" height="14" rx="2"/>
+                    <line x1="2" y1="10" x2="22" y2="10"/>
+                  </svg>
+                  {{ company.taxCode }}
+                </span>
+              }
+              @if (company.email) {
+                <a class="company-card__info-row" [href]="'mailto:' + company.email">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  {{ company.email }}
+                </a>
+              }
+              @if (company.phone) {
+                <a class="company-card__info-row" [href]="'tel:' + company.phone">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.44 2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.13 6.13l.97-.97a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/>
+                  </svg>
+                  {{ company.phone }}
+                </a>
+              }
+              @if (company.website) {
+                <a class="company-card__info-row" [href]="company.website" target="_blank" rel="noopener">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="2" y1="12" x2="22" y2="12"/>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                  </svg>
+                  {{ company.website }}
+                </a>
+              }
+            </div>
+          }
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- Modal azienda -->
+<app-modal [open]="modalOpen()" [title]="modalTitle()" size="md" (closed)="modalOpen.set(false)">
+  <form class="company-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <app-input
+      label="Nome azienda"
+      placeholder="Es. Rossi & Associati"
+      formControlName="name"
+      [error]="!!fieldError('name')"
+      [errorMessage]="fieldError('name')"
+    />
+
+    <div class="company-form__row">
+      <app-input
+        label="P.IVA / Codice fiscale"
+        placeholder="IT12345678901"
+        formControlName="taxCode"
+      />
+      <app-input
+        label="Email"
+        type="email"
+        placeholder="info@azienda.it"
+        formControlName="email"
+        [error]="!!fieldError('email')"
+        [errorMessage]="fieldError('email')"
+      />
+    </div>
+
+    <div class="company-form__row">
+      <app-input
+        label="Telefono"
+        placeholder="+39 02 1234567"
+        formControlName="phone"
+      />
+      <app-input
+        label="Sito web"
+        placeholder="https://www.azienda.it"
+        formControlName="website"
+      />
+    </div>
+
+    <app-input
+      label="Indirizzo"
+      placeholder="Via Roma 1"
+      formControlName="address"
+    />
+
+    <div class="company-form__row company-form__row--3">
+      <app-input
+        label="Città"
+        placeholder="Milano"
+        formControlName="city"
+      />
+      <app-input
+        label="CAP"
+        placeholder="20121"
+        formControlName="zipCode"
+      />
+      <app-input
+        label="Paese"
+        placeholder="Italia"
+        formControlName="country"
+      />
+    </div>
+
+  </form>
+
+  <div modal-footer>
+    <app-button label="Annulla"          variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
+    <app-button [label]="editingId() ? 'Salva modifiche' : 'Aggiungi azienda'" size="sm" [loading]="saving()" (clicked)="onSubmit()" />
+  </div>
+</app-modal>

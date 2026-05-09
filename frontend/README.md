@@ -93,11 +93,12 @@ src/
 ├── types/
 │   └── api.types.ts                 # Shared API response types
 ├── services/
-│   ├── auth.service.ts              # Clerk session management
-│   ├── workspace.service.ts         # Workspace API + signal state
+│   ├── auth.service.ts              # Clerk session management + account deletion
+│   ├── workspace.service.ts         # Workspace API + signal state (multi-workspace)
 │   ├── project.service.ts           # Project API + signal state
 │   ├── client.service.ts            # Client API + signal state
-│   └── team.service.ts              # Team member API + signal state
+│   ├── company.service.ts           # Company API + signal state + asOptions() for selects
+│   └── team.service.ts              # Team member API + signal state + activateSelf()
 ├── app/
 │   ├── app.ts                       # Root component
 │   ├── app.config.ts                # provideRouter, provideHttpClient, APP_INITIALIZER
@@ -112,9 +113,10 @@ src/
     │   ├── index/                   # Public landing page (no auth)
     │   ├── home/                    # Dashboard
     │   ├── projects/                # Project list and detail
-    │   ├── clients/                 # Client list and detail
-    │   ├── team/                    # Team management
-    │   ├── account/                 # User profile and preferences
+    │   ├── clients/                 # Client list and detail (with company assignment)
+    │   ├── companies/               # Company list, create, edit, delete
+    │   ├── team/                    # Team management (roles, skeleton loading)
+    │   ├── account/                 # User profile, password, delete account
     │   └── settings/                # Workspace settings
     └── components/
         ├── shell/                   # Authenticated layout wrapper
@@ -162,6 +164,7 @@ Each service has a `load()` method that fetches from the API and updates the sig
 /home        → HomePage         (auth required)
 /projects    → ProjectsPage     (auth required)
 /clients     → ClientsPage      (auth required)
+/companies   → CompaniesPage    (auth required)
 /team        → TeamPage         (auth required)
 /account     → AccountPage      (auth required)
 /settings    → SettingsPage     (auth required)

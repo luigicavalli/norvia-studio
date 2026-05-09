@@ -189,6 +189,13 @@
       />
     </div>
 
+    <app-select
+      label="Azienda"
+      formControlName="companyId"
+      [options]="companyService.asOptions()"
+      placeholder="Nessuna azienda"
+    />
+
     <app-input
       label="Note"
       placeholder="Informazioni aggiuntive sul cliente…"

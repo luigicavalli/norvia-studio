@@ -5,6 +5,7 @@ import {
     makeWorkspace,
     makeMockWorkspaceRepository,
     makeMockTeamMemberRepository,
+    makeMockClerkService,
 } from '../helpers/factories.js';
 
 describe('CreateWorkspaceUseCase', () => {
@@ -12,8 +13,9 @@ describe('CreateWorkspaceUseCase', () => {
     function makeUseCase() {
         const workspaceRepo  = makeMockWorkspaceRepository();
         const teamMemberRepo = makeMockTeamMemberRepository();
-        const useCase        = new CreateWorkspaceUseCase(workspaceRepo as any, teamMemberRepo as any);
-        return { useCase, workspaceRepo, teamMemberRepo };
+        const clerkService   = makeMockClerkService();
+        const useCase        = new CreateWorkspaceUseCase(workspaceRepo as any, teamMemberRepo as any, clerkService as any);
+        return { useCase, workspaceRepo, teamMemberRepo, clerkService };
     }
 
     it('throws CONFLICT (409) when the slug is already in use', async () => {

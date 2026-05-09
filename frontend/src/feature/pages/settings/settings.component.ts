@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { WorkspaceService }            from '../../../services/workspace.service';
@@ -29,6 +29,15 @@ export class SettingsComponent implements OnInit {
   protected readonly workspaceSaving = signal(false);
   protected readonly notifSaving     = signal(false);
 
+  constructor() {
+    effect(() => {
+      const ws = this.workspaceService.activeWorkspace();
+      if (ws) {
+        this.workspaceForm.patchValue({ name: ws.name, description: ws.description ?? '' });
+      }
+    });
+  }
+
   protected readonly workspaceForm = this.fb.group({
     name:        ['', Validators.required],
     description: [''],
@@ -51,14 +60,6 @@ export class SettingsComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    const ws = this.workspaceService.activeWorkspace();
-    if (ws) {
-      this.workspaceForm.patchValue({
-        name:        ws.name,
-        description: ws.description ?? '',
-      });
-    }
-
     const prefs = this.auth.getPreferences();
     this.notifForm.patchValue({
       taskAssigned: prefs.taskAssigned,

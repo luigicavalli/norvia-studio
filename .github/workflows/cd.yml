@@ -47,7 +47,7 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --quiet \
-            --set-secrets "SUPABASE_DB_URL=SUPABASE_URL:latest,SUPABASE_SCHEMA=SUPABASE_SCHEMA:latest,CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,CORS_ORIGIN=CORS_ORIGIN:latest,SENTRY_DSN=SENTRY_DSN_BACKEND:latest"
+            --set-secrets "SUPABASE_DB_URL=SUPABASE_URL:latest,SUPABASE_SCHEMA=SUPABASE_SCHEMA:latest,CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,CORS_ORIGIN=CORS_ORIGIN:latest,SENTRY_DSN=SENTRY_DSN_BACKEND:latest,CLERK_WEBHOOK_SECRET=CLERK_WEBHOOK_SECRET:latest,CLERK_INVITE_REDIRECT_URL=CLERK_INVITE_REDIRECT_URL:latest"
 
   deploy-frontend:
     name: Deploy Frontend → Firebase Hosting

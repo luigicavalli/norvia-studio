@@ -6,12 +6,13 @@ import { ToastService } from '../../components/shared/toast/toast.service';
 import { AvatarComponent }  from '../../components/shared/avatar/avatar.component';
 import { InputComponent }   from '../../components/shared/input/input.component';
 import { ButtonComponent }  from '../../components/shared/button/button.component';
+import { ModalComponent }   from '../../components/shared/modal/modal.component';
 
 
 @Component({
   selector:    'app-account',
   standalone:  true,
-  imports:     [ReactiveFormsModule, AvatarComponent, InputComponent, ButtonComponent],
+  imports:     [ReactiveFormsModule, AvatarComponent, InputComponent, ButtonComponent, ModalComponent],
   templateUrl: './account.component.html',
   styleUrl:    './account.component.scss',
 })
@@ -32,6 +33,9 @@ export class AccountComponent implements OnInit {
 
   protected readonly profileSaving  = signal(false);
   protected readonly passwordSaving = signal(false);
+  protected readonly deleteOpen     = signal(false);
+  protected readonly deleting       = signal(false);
+  protected readonly confirmEmail   = signal('');
 
   protected readonly profileForm = this.fb.group({
     firstName: ['', Validators.required],
@@ -85,6 +89,23 @@ export class AccountComponent implements OnInit {
       this.toast.danger('Password attuale non corretta.');
     } finally {
       this.passwordSaving.set(false);
+    }
+  }
+
+  protected openDeleteModal(): void {
+    this.confirmEmail.set('');
+    this.deleteOpen.set(true);
+  }
+
+  protected async onDeleteAccount(): Promise<void> {
+    if (this.confirmEmail() !== this.email()) return;
+
+    this.deleting.set(true);
+    try {
+      await this.auth.deleteAccount();
+    } catch {
+      this.toast.danger('Errore durante l\'eliminazione dell\'account.');
+      this.deleting.set(false);
     }
   }
 
