@@ -6,6 +6,10 @@ export interface QuoteItemDAO extends IGenericDAO<string, QuoteItemPO> {
 
     findByQuote(quoteId: string): Promise<QuoteItemPO[]>;
 
+    findByQuotes(quoteIds: string[]): Promise<QuoteItemPO[]>;
+
+    deleteByQuote(quoteId: string): Promise<void>;
+
     findById(id: string): Promise<QuoteItemPO | null>;
 
     save(entity: QuoteItemPO): Promise<QuoteItemPO>;

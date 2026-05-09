@@ -37,6 +37,28 @@ export class PgInvoiceItemDAOImpl implements InvoiceItemDAO {
 
     };
 
+    public async findByInvoices(invoiceIds: string[]): Promise<InvoiceItemPO[]> {
+
+        if (invoiceIds.length === 0) return [];
+
+        const { rows } = await this.pool.query(
+            'SELECT * FROM invoice_items WHERE invoice_id = ANY($1)',
+            [ invoiceIds ]
+        );
+
+        return rows;
+
+    };
+
+    public async deleteByInvoice(invoiceId: string): Promise<void> {
+
+        await this.pool.query(
+            'DELETE FROM invoice_items WHERE invoice_id = $1',
+            [ invoiceId ]
+        );
+
+    };
+
     public async save(entity: InvoiceItemPO): Promise<InvoiceItemPO> {
 
         const { rows } = await this.pool.query(

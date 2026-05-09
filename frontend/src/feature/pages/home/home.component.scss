@@ -13,9 +13,9 @@
 }
 
 .home__date {
-  margin-top: 0.25rem;
-  color:      var(--color-muted);
-  font-size:  0.875rem;
+  margin-top:     0.25rem;
+  color:          var(--color-muted);
+  font-size:      0.875rem;
   text-transform: capitalize;
 }
 
@@ -23,12 +23,13 @@
 
 .home__stats {
   display:               grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap:                   1rem;
   margin-bottom:         2rem;
 
-  @media (max-width: 900px) { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 480px) { grid-template-columns: 1fr; }
+  @media (max-width: 1024px) { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width:  640px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width:  400px) { grid-template-columns: 1fr; }
 }
 
 // ── Stat card ──────────────────────────────────────────────────────────────
@@ -38,8 +39,8 @@
 
   display:       flex;
   align-items:   center;
-  gap:           1rem;
-  padding:       1.25rem;
+  gap:           0.875rem;
+  padding:       1.125rem 1rem;
   background:    var(--color-surface);
   border:        1px solid var(--color-border);
   border-radius: 12px;
@@ -58,8 +59,8 @@
   display:         flex;
   align-items:     center;
   justify-content: center;
-  width:           44px;
-  height:          44px;
+  width:           40px;
+  height:          40px;
   border-radius:   10px;
   background:      color-mix(in srgb, var(--card-color) 12%, transparent);
   color:           var(--card-color);
@@ -69,18 +70,23 @@
   display:        flex;
   flex-direction: column;
   gap:            2px;
+  min-width:      0;
 }
 
 .stat-card__value {
-  font-size:   1.5rem;
+  font-size:   1.375rem;
   font-weight: 700;
   color:       var(--color-text-strong);
   line-height: 1;
+  white-space: nowrap;
+  overflow:    hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-card__label {
-  font-size: 0.8125rem;
-  color:     var(--color-muted);
+  font-size:   0.75rem;
+  color:       var(--color-muted);
+  white-space: nowrap;
 }
 
 // ── Skeleton ───────────────────────────────────────────────────────────────
@@ -92,7 +98,7 @@
 
 .skeleton {
   border-radius: 6px;
-  background:    linear-gradient(90deg,
+  background: linear-gradient(90deg,
     var(--color-border) 25%,
     color-mix(in srgb, var(--color-border) 50%, var(--color-surface)) 50%,
     var(--color-border) 75%
@@ -100,36 +106,124 @@
   background-size: 200% 100%;
   animation:       shimmer 1.4s ease-in-out infinite;
 
-  &--icon  { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; }
-  &--value { width: 48px; height: 24px; margin-bottom: 4px; }
-  &--label { width: 90px; height: 13px; }
+  &--icon  { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; }
+  &--value { width: 48px; height: 22px; margin-bottom: 4px; }
+  &--label { width: 80px; height: 12px; }
 }
 
-.stat-card--skeleton {
-  pointer-events: none;
+.stat-card--skeleton { pointer-events: none; }
+
+// ── Widgets grid ───────────────────────────────────────────────────────────
+
+.home__widgets {
+  display:               grid;
+  grid-template-columns: 1fr 1fr;
+  gap:                   1.25rem;
+
+  @media (max-width: 720px) { grid-template-columns: 1fr; }
 }
 
-// ── Section ────────────────────────────────────────────────────────────────
+// ── Widget ─────────────────────────────────────────────────────────────────
 
-.home__section {
-  h2 { margin-bottom: 1rem; }
+.home__widget {
+  background:    var(--color-surface);
+  border:        1px solid var(--color-border);
+  border-radius: 12px;
+  overflow:      hidden;
 }
 
-// ── Empty state ────────────────────────────────────────────────────────────
-
-.activity-empty {
+.home__widget-header {
   display:         flex;
-  flex-direction:  column;
   align-items:     center;
-  gap:             0.5rem;
-  padding:         3rem 1rem;
-  background:      var(--color-surface);
-  border:          1px solid var(--color-border);
-  border-radius:   12px;
-  text-align:      center;
-  color:           var(--color-muted);
+  justify-content: space-between;
+  padding:         1rem 1.25rem 0.75rem;
+  border-bottom:   1px solid var(--color-border);
 
-  svg  { opacity: 0.4; }
-  p    { font-weight: 500; color: var(--color-text); }
-  small { max-width: 280px; }
+  h2 {
+    font-size:   1rem;
+    font-weight: 600;
+    color:       var(--color-text-strong);
+    margin:      0;
+  }
+}
+
+.home__widget-link {
+  font-size:       0.8125rem;
+  color:           var(--color-muted);
+  text-decoration: none;
+  transition:      color 150ms;
+
+  &:hover { color: var(--color-text); }
+}
+
+// ── Widget list ────────────────────────────────────────────────────────────
+
+.widget-list {
+  display:        flex;
+  flex-direction: column;
+}
+
+.widget-row {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  gap:             1rem;
+  padding:         0.75rem 1.25rem;
+  border-bottom:   1px solid var(--color-border);
+  transition:      background 150ms;
+
+  &:last-child { border-bottom: none; }
+  &:hover      { background: var(--color-bg); }
+}
+
+.widget-row__info {
+  display:        flex;
+  flex-direction: column;
+  gap:            2px;
+  min-width:      0;
+}
+
+.widget-row__name {
+  font-size:     0.875rem;
+  font-weight:   500;
+  color:         var(--color-text-strong);
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}
+
+.widget-row__meta {
+  font-size: 0.75rem;
+  color:     var(--color-muted);
+}
+
+.widget-row__overdue { color: var(--color-danger);  font-weight: 500; }
+.widget-row__soon    { color: var(--color-warning); font-weight: 500; }
+
+.widget-row__right {
+  display:     flex;
+  align-items: center;
+  gap:         0.625rem;
+  flex-shrink: 0;
+}
+
+.widget-row__amount {
+  font-size:   0.875rem;
+  font-weight: 600;
+  color:       var(--color-text-strong);
+  white-space: nowrap;
+}
+
+// ── Widget empty ───────────────────────────────────────────────────────────
+
+.widget-empty {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  padding:        2.5rem 1rem;
+  gap:            0.25rem;
+  text-align:     center;
+
+  p     { font-size: 0.875rem; font-weight: 500; color: var(--color-text); margin: 0; }
+  small { font-size: 0.8125rem; color: var(--color-muted); max-width: 220px; }
 }

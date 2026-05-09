@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-05-10
+
+### Added
+
+- **Fatture (Invoices) — backend** — full Clean Architecture implementation: `Invoice` and `InvoiceItem` domain models, `InvoiceRepository` with batch assembly (no N+1), 7 use cases (`GetByWorkspace`, `GetByClient`, `GetById`, `Create`, `Update`, `UpdateStatus`, `Delete`), DTO/converter/controller layer, and 7 routes (`GET|POST /invoices`, `GET|PUT|DELETE /invoices/:id`, `PATCH /invoices/:id/status`, `GET /clients/:id/invoices`)
+- **Fatture (Invoices) — frontend** — full page with 8-column table, FormArray line-items modal, contextual dropdown actions (DRAFT→SENT, SENT/OVERDUE→PAID, cancellation), `InvoiceService` with signal state, `total()`, and `nextNumber()`; wired into sidebar navigation and shell boot sequence
+- **Preventivi (Quotes) — frontend** — same full-page implementation as invoices: FormArray modal, status transitions (DRAFT→SENT, SENT→ACCEPTED/REJECTED/EXPIRED), `QuoteService` with `total()` and `nextNumber()`
+- **Dashboard widgets** — "Fatture in sospeso" and "Preventivi recenti" two-column widget grid on the home page; invoices sorted by due date with overdue (red) and ≤7-day (yellow) indicators; zero extra network requests (derives from preloaded signal state)
+- **Dashboard stat cards expanded** — added "Da incassare" (outstanding invoice total) and "Prev. in bozza" (draft quote count) to the 6-card stat grid; stat grid now uses a responsive 6→3→2 column layout
+- **Team inline role change** — owners and superadmins can change a member's role directly from the team page via a styled pill `<select>`; calls `PUT /api/workspaces/:id/members/:memberId`; non-modifiable roles (owner, superadmin) render as a plain badge
+
+### Fixed
+
+- **Quotes dropdown clipped** — `.quotes__table-wrap` had `overflow-x: auto` which created a scroll container that clipped the absolutely-positioned row dropdown; changed to `overflow: visible`
+- **Quotes dropdown button text alignment** — `all: unset` on `<button>` removes `text-align`; added `text-align: left` explicitly to `.quotes__dropdown-item`
+- **`quote.service.ts` lint error** — inner `.map()` callback was typed as `(i: any)`, not covered by the surrounding `eslint-disable-next-line`; retyped as `(i: QuoteItem)`
+- **Home template `TS2341`** — `invoiceService` and `quoteService` were declared `private` but accessed in the template via `invoiceService.total()` and `quoteService.total()`; changed to `protected`
+
 ## [1.2.0] - 2026-05-09
 
 ### Added
@@ -54,7 +72,8 @@ All notable changes to this project will be documented in this file.
 
 - First release.
 
-[unreleased]: https://github.com/luigicavalli/norvia-studio/compare/v1.2.0...HEAD
+[unreleased]: https://github.com/luigicavalli/norvia-studio/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/luigicavalli/norvia-studio/compare/v1.0.0...v1.0.1

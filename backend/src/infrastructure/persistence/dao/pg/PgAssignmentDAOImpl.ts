@@ -48,6 +48,19 @@ export class PgAssignmentDAOImpl implements AssignmentDAO {
 
     };
 
+    public async findByWorkspace(workspaceId: string): Promise<AssignmentPO[]> {
+
+        const { rows } = await this.pool.query(
+            `SELECT a.* FROM assignments a
+             JOIN projects p ON p.id = a.project_id
+             WHERE p.workspace_id = $1`,
+            [ workspaceId ]
+        );
+
+        return rows;
+
+    };
+
     public async findByTeamMember(teamMemberId: string): Promise<AssignmentPO[]> {
 
         const { rows } = await this.pool.query(

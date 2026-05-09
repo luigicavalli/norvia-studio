@@ -116,11 +116,12 @@ All endpoints are prefixed with `/api` and require a valid Clerk session token.
 |---|---|
 | Workspaces | `GET /workspaces`, `POST /workspaces`, `GET\|PUT\|DELETE /workspaces/:id` |
 | Companies | `GET /companies?workspaceId=`, `POST /companies`, `GET\|PUT\|DELETE /companies/:id`, `GET /companies/:id/clients` |
-| Projects | `GET /projects?workspaceId=`, `POST /projects`, `GET\|PUT\|DELETE /projects/:id` |
-| Clients | `GET /clients?workspaceId=`, `POST /clients`, `GET\|PUT\|DELETE /clients/:id` |
+| Projects | `GET /projects?workspaceId=`, `POST /projects`, `GET\|PUT\|DELETE /projects/:id`, `PATCH /projects/:id/status` |
+| Clients | `GET /clients?workspaceId=`, `POST /clients`, `GET\|PUT\|DELETE /clients/:id`, `GET /clients/:id/quotes`, `GET /clients/:id/invoices` |
 | Team members | `GET\|POST /workspaces/:id/members`, `PUT\|DELETE /workspaces/:id/members/:memberId`, `POST /members/activate-self` |
-| Quotes | `GET\|POST /quotes`, `GET\|PUT\|DELETE /quotes/:id` |
-| Invoices | `GET\|POST /invoices`, `GET\|PUT\|DELETE /invoices/:id` |
+| Assignments | `GET /assignments?workspaceId=`, `GET /projects/:id/assignments`, `POST /projects/:id/assignments`, `DELETE /assignments/:id` |
+| Quotes | `GET /quotes?workspaceId=`, `GET /quotes/:id`, `POST /quotes`, `PUT /quotes/:id`, `PATCH /quotes/:id/status`, `DELETE /quotes/:id` |
+| Invoices | `GET /invoices?workspaceId=`, `GET /invoices/:id`, `POST /invoices`, `PUT /invoices/:id`, `PATCH /invoices/:id/status`, `DELETE /invoices/:id` |
 
 ---
 

@@ -46,7 +46,34 @@ import { GetProjectsByClientUseCase }  from "../application/use-case/GetProjects
 import { UpdateProjectStatusUseCase }  from "../application/use-case/UpdateProjectStatusUseCase.js";
 import { GetClientsByCompanyUseCase }  from "../application/use-case/GetClientsByCompanyUseCase.js";
 import { GetWorkspaceMembersUseCase }  from "../application/use-case/GetWorkspaceMembersUseCase.js";
-import { UpdateTeamMemberRoleUseCase } from "../application/use-case/UpdateTeamMemberRoleUseCase.js";
+import { UpdateTeamMemberRoleUseCase }     from "../application/use-case/UpdateTeamMemberRoleUseCase.js";
+import { AssignmentController }            from "../interface/controller/AssignmentController.js";
+import { AssignmentRepositoryImpl }        from "../infrastructure/persistence/repository/AssignmentRepositoryImpl.js";
+import { CreateAssignmentUseCase }         from "../application/use-case/CreateAssignmentUseCase.js";
+import { DeleteAssignmentUseCase }         from "../application/use-case/DeleteAssignmentUseCase.js";
+import { GetAssignmentsByProjectUseCase }   from "../application/use-case/GetAssignmentsByProjectUseCase.js";
+import { GetAssignmentsByWorkspaceUseCase } from "../application/use-case/GetAssignmentsByWorkspaceUseCase.js";
+import { QuoteController }                 from "../interface/controller/QuoteController.js";
+import { QuoteRepositoryImpl }             from "../infrastructure/persistence/repository/QuoteRepositoryImpl.js";
+import { PgQuoteItemDAOImpl }              from "../infrastructure/persistence/dao/pg/PgQuoteItemDAOImpl.js";
+import { GetQuotesByWorkspaceUseCase }     from "../application/use-case/GetQuotesByWorkspaceUseCase.js";
+import { GetQuotesByClientUseCase }        from "../application/use-case/GetQuotesByClientUseCase.js";
+import { GetQuoteByIdUseCase }             from "../application/use-case/GetQuoteByIdUseCase.js";
+import { CreateQuoteUseCase }              from "../application/use-case/CreateQuoteUseCase.js";
+import { UpdateQuoteUseCase }              from "../application/use-case/UpdateQuoteUseCase.js";
+import { UpdateQuoteStatusUseCase }        from "../application/use-case/UpdateQuoteStatusUseCase.js";
+import { DeleteQuoteUseCase }              from "../application/use-case/DeleteQuoteUseCase.js";
+import { InvoiceController }              from "../interface/controller/InvoiceController.js";
+import { InvoiceRepositoryImpl }          from "../infrastructure/persistence/repository/InvoiceRepositoryImpl.js";
+import { PgInvoiceDAOImpl }              from "../infrastructure/persistence/dao/pg/PgInvoiceDAOImpl.js";
+import { PgInvoiceItemDAOImpl }          from "../infrastructure/persistence/dao/pg/PgInvoiceItemDAOImpl.js";
+import { GetInvoicesByWorkspaceUseCase }  from "../application/use-case/GetInvoicesByWorkspaceUseCase.js";
+import { GetInvoicesByClientUseCase }     from "../application/use-case/GetInvoicesByClientUseCase.js";
+import { GetInvoiceByIdUseCase }         from "../application/use-case/GetInvoiceByIdUseCase.js";
+import { CreateInvoiceUseCase }          from "../application/use-case/CreateInvoiceUseCase.js";
+import { UpdateInvoiceUseCase }          from "../application/use-case/UpdateInvoiceUseCase.js";
+import { UpdateInvoiceStatusUseCase }    from "../application/use-case/UpdateInvoiceStatusUseCase.js";
+import { DeleteInvoiceUseCase }          from "../application/use-case/DeleteInvoiceUseCase.js";
 
 // =========================================================================
 //                          COMPLETE BOOTSTRAP
@@ -65,12 +92,18 @@ const workspaceDAO          = new PgWorkspaceDAOImpl(pool);
 const assignmentDAO         = new PgAssignmentDAOImpl(pool);
 const teamMemberDAO         = new PgTeamMemberDAOImpl(pool);
 const quoteDAO              = new PgQuoteDAOImpl(pool);
+const quoteItemDAO          = new PgQuoteItemDAOImpl(pool);
+const invoiceDAO            = new PgInvoiceDAOImpl(pool);
+const invoiceItemDAO        = new PgInvoiceItemDAOImpl(pool);
 
 const projectRepo           = new ProjectRepositoryImpl(projectDAO, workspaceDAO, assignmentDAO, teamMemberDAO, clientDAO, quoteDAO);
 const companyRepo           = new CompanyRepositoryImpl(companyDAO, workspaceDAO);
 const clientRepo            = new ClientRepositoryImpl(clientDAO);
 const workspaceRepo         = new WorkspaceRepositoryImpl(workspaceDAO);
 const teamMemberRepo        = new TeamMemberRepositoryImpl(teamMemberDAO);
+const assignmentRepo        = new AssignmentRepositoryImpl(assignmentDAO, teamMemberDAO);
+const quoteRepo             = new QuoteRepositoryImpl(quoteDAO, quoteItemDAO, clientDAO, workspaceDAO);
+const invoiceRepo           = new InvoiceRepositoryImpl(invoiceDAO, invoiceItemDAO, clientDAO, workspaceDAO);
 
 // =========================================================================
 //                           APPLICATION LAYER
@@ -124,12 +157,42 @@ const clientCtrl            = new ClientController(getAllClientsUC, getClientsBy
 
 const teamMemberCtrl        = new TeamMemberController(getWorkspaceMembersUC, addTeamMemberUC, inviteTeamMemberUC, updateTeamMemberRoleUC, removeTeamMemberUC);
 
+const getAssignmentsByWorkspaceUC = new GetAssignmentsByWorkspaceUseCase(assignmentRepo, teamMemberRepo);
+const getAssignmentsByProjectUC   = new GetAssignmentsByProjectUseCase(assignmentRepo, teamMemberRepo);
+const createAssignmentUC          = new CreateAssignmentUseCase(assignmentRepo, teamMemberRepo);
+const deleteAssignmentUC          = new DeleteAssignmentUseCase(assignmentRepo);
+
+const assignmentCtrl = new AssignmentController(getAssignmentsByWorkspaceUC, getAssignmentsByProjectUC, createAssignmentUC, deleteAssignmentUC);
+
+const getQuotesByWorkspaceUC = new GetQuotesByWorkspaceUseCase(quoteRepo, teamMemberRepo);
+const getQuotesByClientUC    = new GetQuotesByClientUseCase(quoteRepo, teamMemberRepo);
+const getQuoteByIdUC         = new GetQuoteByIdUseCase(quoteRepo);
+const createQuoteUC          = new CreateQuoteUseCase(quoteRepo);
+const updateQuoteUC          = new UpdateQuoteUseCase(quoteRepo);
+const updateQuoteStatusUC    = new UpdateQuoteStatusUseCase(quoteRepo);
+const deleteQuoteUC          = new DeleteQuoteUseCase(quoteRepo);
+
+const quoteCtrl = new QuoteController(getQuotesByWorkspaceUC, getQuotesByClientUC, getQuoteByIdUC, createQuoteUC, updateQuoteUC, updateQuoteStatusUC, deleteQuoteUC);
+
+const getInvoicesByWorkspaceUC = new GetInvoicesByWorkspaceUseCase(invoiceRepo, teamMemberRepo);
+const getInvoicesByClientUC    = new GetInvoicesByClientUseCase(invoiceRepo, teamMemberRepo);
+const getInvoiceByIdUC         = new GetInvoiceByIdUseCase(invoiceRepo);
+const createInvoiceUC          = new CreateInvoiceUseCase(invoiceRepo);
+const updateInvoiceUC          = new UpdateInvoiceUseCase(invoiceRepo);
+const updateInvoiceStatusUC    = new UpdateInvoiceStatusUseCase(invoiceRepo);
+const deleteInvoiceUC          = new DeleteInvoiceUseCase(invoiceRepo);
+
+const invoiceCtrl = new InvoiceController(getInvoicesByWorkspaceUC, getInvoicesByClientUC, getInvoiceByIdUC, createInvoiceUC, updateInvoiceUC, updateInvoiceStatusUC, deleteInvoiceUC);
+
 export const wiring = {
     workspaceCtrl,
     projectCtrl,
     companyCtrl,
     clientCtrl,
     teamMemberCtrl,
+    assignmentCtrl,
+    quoteCtrl,
+    invoiceCtrl,
     activateTeamMemberUC,
     clerkInvitationService,
 };

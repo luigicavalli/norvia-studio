@@ -1,0 +1,207 @@
+<div class="quotes">
+
+  <!-- Header -->
+  <div class="quotes__header">
+    <div>
+      <h1>Preventivi</h1>
+      <p class="quotes__subtitle">{{ quoteService.quotes().length }} preventiv{{ quoteService.quotes().length === 1 ? 'o' : 'i' }} totali</p>
+    </div>
+    <app-button label="Nuovo preventivo" size="sm" (clicked)="openCreate()">
+      <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </app-button>
+  </div>
+
+  <!-- Tabella -->
+  @if (quoteService.loading()) {
+    <div class="quotes__empty"><p>Caricamento preventivi…</p></div>
+  } @else if (quoteService.quotes().length === 0) {
+    <div class="quotes__empty">
+      <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      <p>Nessun preventivo</p>
+      <small>Crea il primo preventivo per iniziare.</small>
+      <app-button label="Crea preventivo" size="sm" (clicked)="openCreate()" />
+    </div>
+  } @else {
+    <div class="quotes__table-wrap">
+      <table class="quotes__table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Stato</th>
+            <th>Emissione</th>
+            <th>Scadenza</th>
+            <th class="quotes__th--right">Totale</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (quote of quoteService.quotes(); track quote.id) {
+            <tr class="quotes__row">
+              <td class="quotes__num">{{ quote.number }}</td>
+              <td class="quotes__client">{{ quote.clientName || '—' }}</td>
+              <td><app-badge [label]="statusBadge(quote.status).label" [variant]="statusBadge(quote.status).variant" size="sm" /></td>
+              <td>{{ formatDate(quote.issueDate) }}</td>
+              <td>{{ formatDate(quote.expiresAt) }}</td>
+              <td class="quotes__total">{{ quoteService.total(quote) | number:'1.2-2' }} {{ quote.items[0]?.currency ?? '' }}</td>
+              <td class="quotes__actions">
+                <div class="quotes__menu-wrap" (click)="$event.stopPropagation()">
+                  <button class="quotes__menu-btn" (click)="toggleMenu(quote.id)" aria-label="Azioni">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
+                    </svg>
+                  </button>
+                  @if (openMenuId() === quote.id) {
+                    <div class="quotes__dropdown">
+                      <button class="quotes__dropdown-item" (click)="openEdit(quote, $event)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Modifica
+                      </button>
+                      @if (quote.status === 'DRAFT') {
+                        <button class="quotes__dropdown-item" (click)="changeStatus(quote, 'SENT', $event)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                          </svg>
+                          Segna come inviato
+                        </button>
+                      }
+                      @if (quote.status === 'SENT') {
+                        <button class="quotes__dropdown-item quotes__dropdown-item--success" (click)="changeStatus(quote, 'ACCEPTED', $event)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                          Accettato
+                        </button>
+                        <button class="quotes__dropdown-item quotes__dropdown-item--danger" (click)="changeStatus(quote, 'REJECTED', $event)">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                          </svg>
+                          Rifiutato
+                        </button>
+                      }
+                      <button class="quotes__dropdown-item quotes__dropdown-item--danger" (click)="removeQuote(quote.id, $event)">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="3 6 5 6 21 6"/>
+                          <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                          <path d="M10 11v6"/><path d="M14 11v6"/>
+                          <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                        </svg>
+                        Elimina
+                      </button>
+                    </div>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>
+
+<!-- Modal crea / modifica preventivo -->
+<app-modal [open]="modalOpen()" [title]="modalTitle()" size="lg" (closed)="modalOpen.set(false)">
+  <form class="quote-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <div class="quote-form__row">
+      <app-select
+        label="Cliente"
+        placeholder="Seleziona un cliente…"
+        formControlName="clientId"
+        [options]="clientOptions()"
+        [error]="!!form.get('clientId')?.invalid && !!form.get('clientId')?.touched"
+      />
+      <app-input
+        label="N° preventivo"
+        type="number"
+        formControlName="number"
+        [error]="!!form.get('number')?.invalid && !!form.get('number')?.touched"
+      />
+    </div>
+
+    <div class="quote-form__row">
+      <app-datepicker label="Data emissione" formControlName="issueDate" />
+      <app-datepicker label="Data scadenza"  formControlName="expiresAt" />
+    </div>
+
+    <app-select label="Stato" formControlName="status" [options]="statusOptions" />
+
+    <app-input label="Note" placeholder="Note aggiuntive (opzionale)" formControlName="notes" />
+
+    <!-- Voci -->
+    <div class="quote-form__items">
+      <div class="quote-form__items-header">
+        <span>Voci</span>
+        <app-button label="Aggiungi voce" variant="ghost" size="sm" (clicked)="addItem()">
+          <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </app-button>
+      </div>
+
+      <div formArrayName="items">
+        @for (item of itemsArray.controls; track $index) {
+          <div class="quote-form__item" [formGroupName]="$index">
+            <div class="quote-form__item-main">
+              <app-input
+                label="Descrizione"
+                placeholder="Es. Progettazione UI"
+                formControlName="description"
+                [error]="!!item.get('description')?.invalid && !!item.get('description')?.touched"
+              />
+            </div>
+            <div class="quote-form__item-nums">
+              <app-input label="Qtà"    type="number" formControlName="quantity"  />
+              <app-input label="Prezzo" type="number" formControlName="unitPrice" />
+              <app-select label="Valuta" formControlName="currency" [options]="currencyOptions" />
+              <div class="quote-form__item-total">
+                <span class="quote-form__item-total-label">Totale</span>
+                <span class="quote-form__item-total-value">{{ rowTotal($index) | number:'1.2-2' }}</span>
+              </div>
+              @if (itemsArray.length > 1) {
+                <button type="button" class="quote-form__item-remove" (click)="removeItem($index)" aria-label="Rimuovi">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                       fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="quote-form__total">
+        <span>Totale preventivo</span>
+        <strong>{{ formTotal() | number:'1.2-2' }}</strong>
+      </div>
+    </div>
+
+  </form>
+
+  <div modal-footer>
+    <app-button label="Annulla" variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
+    <app-button [label]="editingId() ? 'Salva modifiche' : 'Crea preventivo'" size="sm" [loading]="saving()" (clicked)="onSubmit()" />
+  </div>
+</app-modal>

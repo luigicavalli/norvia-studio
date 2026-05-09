@@ -63,6 +63,16 @@
                     </svg>
                     Modifica
                   </button>
+                  <button class="project-card__dropdown-item" (click)="openAssignModal(project, $event)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                      <circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                    Gestisci team
+                  </button>
                   <button class="project-card__dropdown-item project-card__dropdown-item--danger"
                           (click)="removeProject(project.id, $event)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -106,6 +116,24 @@
                 {{ project.budgetAmount | number:'1.0-0' }} {{ project.budgetCurrency }}
               </span>
             }
+
+            <!-- Avatar stack membri assegnati -->
+            @if ((assignmentService.byProject().get(project.id) ?? []).length > 0) {
+              <div class="project-card__avatars">
+                @for (a of (assignmentService.byProject().get(project.id) ?? []).slice(0, 4); track a.id) {
+                  <app-avatar
+                    size="xs"
+                    [name]="a.teamMember ? (a.teamMember.firstName + ' ' + a.teamMember.lastName).trim() : '?'"
+                    [imageUrl]="a.teamMember?.avatarUrl ?? null"
+                  />
+                }
+                @if ((assignmentService.byProject().get(project.id) ?? []).length > 4) {
+                  <span class="project-card__avatars-more">
+                    +{{ (assignmentService.byProject().get(project.id) ?? []).length - 4 }}
+                  </span>
+                }
+              </div>
+            }
           </div>
 
         </div>
@@ -114,6 +142,57 @@
   }
 
 </div>
+
+<!-- Modal gestione team / assignment -->
+<app-modal
+  [open]="!!assignModalProject()"
+  [title]="'Team — ' + (assignModalProject()?.name ?? '')"
+  size="sm"
+  (closed)="assignModalProject.set(null)"
+>
+    <!-- Lista membri assegnati -->
+    @if (assignments().length === 0) {
+      <p class="assign-modal__empty">Nessun membro assegnato a questo progetto.</p>
+    } @else {
+      <ul class="assign-modal__list">
+        @for (a of assignments(); track a.id) {
+          <li class="assign-modal__item">
+            <span class="assign-modal__name">
+              {{ a.teamMember ? (a.teamMember.firstName + ' ' + a.teamMember.lastName).trim() || a.teamMember.email : a.teamMemberId }}
+            </span>
+            <button class="assign-modal__remove" (click)="removeAssignment(a.id)" aria-label="Rimuovi">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                   fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    <!-- Aggiungi membro -->
+    @if (assignableMembers().length > 0) {
+      <div class="assign-modal__add">
+        <app-select
+          label="Aggiungi membro"
+          placeholder="Seleziona un membro…"
+          [options]="assignableMembers()"
+          [ngModel]="selectedMemberId()"
+          (ngModelChange)="selectedMemberId.set($event)"
+        />
+        <app-button
+          label="Aggiungi"
+          size="sm"
+          [loading]="assigningSaving()"
+          [disabled]="!selectedMemberId()"
+          (clicked)="addAssignment()"
+        />
+      </div>
+    } @else if (assignments().length > 0) {
+      <p class="assign-modal__all-assigned">Tutti i membri attivi sono già assegnati.</p>
+    }
+</app-modal>
 
 <!-- Modal crea / modifica progetto -->
 <app-modal [open]="modalOpen()" [title]="modalTitle()" size="md" (closed)="modalOpen.set(false)">

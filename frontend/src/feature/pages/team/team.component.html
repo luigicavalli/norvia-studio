@@ -58,12 +58,25 @@
               <span class="team__row-name">{{ member.firstName }} {{ member.lastName }}</span>
               <span class="team__row-email">{{ member.email }}</span>
             </div>
-            <app-badge
-              [label]="roleBadge(member.role).label"
-              [variant]="roleBadge(member.role).variant"
-              size="sm"
-            />
-            @if (member.role !== 'owner' && member.role !== 'superadmin') {
+            @if (canChangeRole(member.role)) {
+              <select
+                class="team__role-select"
+                [value]="member.role"
+                (change)="changeRole(member.id, $event)"
+                aria-label="Cambia ruolo"
+              >
+                @for (opt of roleOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+            } @else {
+              <app-badge
+                [label]="roleBadge(member.role).label"
+                [variant]="roleBadge(member.role).variant"
+                size="sm"
+              />
+            }
+            @if (canChangeRole(member.role)) {
               <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" aria-label="Rimuovi membro">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

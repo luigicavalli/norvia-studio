@@ -37,6 +37,28 @@ export class PgQuoteItemDAOImpl implements QuoteItemDAO {
 
     };
 
+    public async findByQuotes(quoteIds: string[]): Promise<QuoteItemPO[]> {
+
+        if (quoteIds.length === 0) return [];
+
+        const { rows } = await this.pool.query(
+            'SELECT * FROM quote_items WHERE quote_id = ANY($1)',
+            [ quoteIds ]
+        );
+
+        return rows;
+
+    };
+
+    public async deleteByQuote(quoteId: string): Promise<void> {
+
+        await this.pool.query(
+            'DELETE FROM quote_items WHERE quote_id = $1',
+            [ quoteId ]
+        );
+
+    };
+
     public async save(entity: QuoteItemPO): Promise<QuoteItemPO> {
 
         const { rows } = await this.pool.query(

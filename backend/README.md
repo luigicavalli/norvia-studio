@@ -216,9 +216,38 @@ All routes require a valid Clerk session token in the `Authorization: Bearer <to
 | `PUT` | `/clients/:id` | Update a client |
 | `DELETE` | `/clients/:id` | Delete a client |
 
-### Quotes & Invoices
+### Assignments
 
-Both follow the same CRUD pattern as Projects/Clients.
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/assignments?workspaceId=` | List all assignments for a workspace (batch, used for avatar stacks) |
+| `GET` | `/projects/:id/assignments` | List assignments for a specific project |
+| `POST` | `/projects/:id/assignments` | Assign a team member to a project |
+| `DELETE` | `/assignments/:id` | Remove an assignment |
+
+### Quotes
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/quotes?workspaceId=` | List quotes for a workspace (paginated) |
+| `GET` | `/quotes/:id` | Get a quote by ID (includes line items) |
+| `GET` | `/clients/:id/quotes` | List quotes for a specific client |
+| `POST` | `/quotes` | Create a quote with line items |
+| `PUT` | `/quotes/:id` | Update a quote and its line items (delete-then-insert) |
+| `PATCH` | `/quotes/:id/status` | Update quote status only (`DRAFT` → `SENT` → `ACCEPTED\|REJECTED`) |
+| `DELETE` | `/quotes/:id` | Delete a quote and its line items |
+
+### Invoices
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/invoices?workspaceId=` | List invoices for a workspace (paginated) |
+| `GET` | `/invoices/:id` | Get an invoice by ID (includes line items) |
+| `GET` | `/clients/:id/invoices` | List invoices for a specific client |
+| `POST` | `/invoices` | Create an invoice with line items |
+| `PUT` | `/invoices/:id` | Update an invoice and its line items (delete-then-insert) |
+| `PATCH` | `/invoices/:id/status` | Update invoice status only (`DRAFT` → `SENT` → `PAID`; sets `paid_at` automatically) |
+| `DELETE` | `/invoices/:id` | Delete an invoice and its line items |
 
 ---
 

@@ -5,6 +5,11 @@ import type { ProjectDTO }       from "../interface/dto/ProjectDTO.js";
 import type { CompanyDTO }       from "../interface/dto/CompanyDTO.js";
 import type { WorkspaceDTO }     from "../interface/dto/WorkspaceDTO.js";
 import type { TeamMemberDTO }    from "../interface/dto/TeamMemberDTO.js";
+import type { AssignmentDTO }    from "../interface/dto/AssignmentDTO.js";
+import type { QuoteDTO }         from "../interface/dto/QuoteDTO.js";
+import type { InvoiceDTO }       from "../interface/dto/InvoiceDTO.js";
+import { QuoteStatuses }         from "../domain/enums/QuoteStatuses.js";
+import { InvoiceStatus }         from "../domain/enums/InvoiceStatus.js";
 import { TeamMemberRoles }       from "../domain/enums/TeamMemberRoles.js";
 import { getAuth }               from "@clerk/express";
 
@@ -13,7 +18,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, assignmentCtrl, quoteCtrl, invoiceCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
 
     const router = Router();
 
@@ -451,6 +456,271 @@ export const createApiRouter = (deps = wiring) => {
             const id = req.params["id"] as string;
 
             await clientCtrl.delete(id);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Quotes
+    // -------------------------------------------------------------------------
+
+    // Get all quotes — GET /quotes?workspaceId=xxx
+    router.get('/quotes', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const quotes: QuoteDTO[] = await quoteCtrl.getByWorkspace(workspaceId, userId!, limit, offset);
+
+            AppResponse.paginated(res, quotes, quotes.length === limit);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get all quotes for a client — GET /clients/:id/quotes?workspaceId=xxx
+    router.get('/clients/:id/quotes', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const clientId   = req.params["id"] as string;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const quotes: QuoteDTO[] = await quoteCtrl.getByClient(workspaceId, clientId, userId!, limit, offset);
+
+            AppResponse.paginated(res, quotes, quotes.length === limit);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get a quote by ID — GET /quotes/:id
+    router.get('/quotes/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            const quote: QuoteDTO = await quoteCtrl.getById(id);
+
+            AppResponse.ok(res, quote);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Create a quote — POST /quotes
+    router.post('/quotes', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: QuoteDTO = req.body as QuoteDTO;
+
+            await quoteCtrl.save(body);
+
+            AppResponse.created(res, null, 'Quote created');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update a quote — PUT /quotes/:id
+    router.put('/quotes/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: QuoteDTO = req.body as QuoteDTO;
+
+            await quoteCtrl.update(body);
+
+            AppResponse.ok(res, null, 'Quote updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update quote status — PATCH /quotes/:id/status
+    router.patch('/quotes/:id/status', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id     = req.params["id"] as string;
+            const { status } = req.body as { status: QuoteStatuses };
+
+            await quoteCtrl.updateStatus(id, status);
+
+            AppResponse.ok(res, null, 'Quote status updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Delete a quote — DELETE /quotes/:id
+    router.delete('/quotes/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            await quoteCtrl.delete(id);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Assignments
+    // -------------------------------------------------------------------------
+
+    // Get all assignments for a workspace — GET /assignments?workspaceId=xxx
+    router.get('/assignments', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId } = req.query as any;
+
+            const assignments: AssignmentDTO[] = await assignmentCtrl.getByWorkspace(workspaceId, userId!);
+
+            AppResponse.ok(res, assignments);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get all assignments for a project — GET /projects/:id/assignments?workspaceId=xxx
+    router.get('/projects/:id/assignments', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const projectId = req.params["id"] as string;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId } = req.query as any;
+
+            const assignments: AssignmentDTO[] = await assignmentCtrl.getByProject(projectId, workspaceId, userId!);
+
+            AppResponse.ok(res, assignments);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Assign a team member to a project — POST /projects/:id/assignments
+    router.post('/projects/:id/assignments', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const projectId = req.params["id"] as string;
+            const { teamMemberId, workspaceId } = req.body as { teamMemberId: string; workspaceId: string };
+
+            await assignmentCtrl.save(projectId, teamMemberId, workspaceId, userId!);
+
+            AppResponse.created(res, null, 'Assignment created');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Delete an assignment — DELETE /assignments/:id
+    router.delete('/assignments/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            await assignmentCtrl.delete(id);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Invoices
+    // -------------------------------------------------------------------------
+
+    // Get all invoices for a workspace — GET /invoices?workspaceId=xxx
+    router.get('/invoices', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const invoices: InvoiceDTO[] = await invoiceCtrl.getByWorkspace(workspaceId, userId!, limit, offset);
+
+            AppResponse.paginated(res, invoices, invoices.length === limit);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get all invoices for a client — GET /clients/:id/invoices?workspaceId=xxx
+    router.get('/clients/:id/invoices', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const clientId   = req.params["id"] as string;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId, limit, offset } = req.query as any;
+
+            const invoices: InvoiceDTO[] = await invoiceCtrl.getByClient(workspaceId, clientId, userId!, limit, offset);
+
+            AppResponse.paginated(res, invoices, invoices.length === limit);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Get an invoice by ID — GET /invoices/:id
+    router.get('/invoices/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            const invoice: InvoiceDTO = await invoiceCtrl.getById(id);
+
+            AppResponse.ok(res, invoice);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Create an invoice — POST /invoices
+    router.post('/invoices', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: InvoiceDTO = req.body as InvoiceDTO;
+
+            await invoiceCtrl.save(body);
+
+            AppResponse.created(res, null, 'Invoice created');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update an invoice — PUT /invoices/:id
+    router.put('/invoices/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const body: InvoiceDTO = req.body as InvoiceDTO;
+
+            await invoiceCtrl.update(body);
+
+            AppResponse.ok(res, null, 'Invoice updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Update invoice status — PATCH /invoices/:id/status
+    router.patch('/invoices/:id/status', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id     = req.params["id"] as string;
+            const { status } = req.body as { status: InvoiceStatus };
+
+            await invoiceCtrl.updateStatus(id, status);
+
+            AppResponse.ok(res, null, 'Invoice status updated');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Delete an invoice — DELETE /invoices/:id
+    router.delete('/invoices/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            await invoiceCtrl.delete(id);
 
             AppResponse.noContent(res);
         } catch (error) {

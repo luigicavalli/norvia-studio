@@ -60,6 +60,18 @@ export class TeamService {
     );
   }
 
+  async updateRole(id: string, role: MemberRole): Promise<void> {
+    const workspaceId = this.workspace.activeId()!;
+    await firstValueFrom(
+      this.http.put(`${environment.apiUrl}/api/workspaces/${workspaceId}/members/${id}`, {
+        role: role.toUpperCase(),
+      }),
+    );
+    this._members.update(list =>
+      list.map(m => m.id === id ? { ...m, role } : m),
+    );
+  }
+
   async remove(id: string): Promise<void> {
     const workspaceId = this.workspace.activeId()!;
     await firstValueFrom(

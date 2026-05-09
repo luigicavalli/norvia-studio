@@ -85,6 +85,21 @@ export class TeamComponent {
     this.toast.success(`Invito inviato a ${email}.`);
   }
 
+  protected canChangeRole(role: MemberRole): boolean {
+    return role !== 'owner' && role !== 'superadmin';
+  }
+
+  protected async changeRole(id: string, event: Event): Promise<void> {
+    const role = (event.target as HTMLSelectElement).value as MemberRole;
+    try {
+      await this.teamService.updateRole(id, role);
+      this.toast.success('Ruolo aggiornato.');
+    } catch {
+      this.toast.danger('Errore durante l\'aggiornamento del ruolo.');
+      await this.teamService.load();
+    }
+  }
+
   protected removeMember(id: string, email: string): void {
     this.teamService.remove(id);
     this.toast.info(`${email} rimosso dal team.`);
