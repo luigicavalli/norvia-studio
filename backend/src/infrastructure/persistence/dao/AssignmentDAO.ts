@@ -8,6 +8,8 @@ export interface AssignmentDAO extends IGenericDAO<string, AssignmentPO> {
 
     findByProjects(projectIds: string[]): Promise<AssignmentPO[]>;
 
+    findByWorkspace(workspaceId: string): Promise<AssignmentPO[]>;
+
     findByTeamMember(teamMemberId: string): Promise<AssignmentPO[]>;
 
     findById(id: string): Promise<AssignmentPO | null>;

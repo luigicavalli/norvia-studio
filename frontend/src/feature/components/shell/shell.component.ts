@@ -11,6 +11,7 @@ import { ClientService }      from '../../../services/client.service';
 import { CompanyService }     from '../../../services/company.service';
 import { ProjectService }     from '../../../services/project.service';
 import { TeamService }        from '../../../services/team.service';
+import { AssignmentService } from '../../../services/assignment.service';
 import { ToastService }       from '../shared/toast/toast.service';
 
 
@@ -28,7 +29,8 @@ export class ShellComponent implements OnInit {
   private   readonly clientService    = inject(ClientService);
   private   readonly companyService   = inject(CompanyService);
   private   readonly projectService   = inject(ProjectService);
-  private   readonly teamService      = inject(TeamService);
+  private   readonly teamService        = inject(TeamService);
+  private   readonly assignmentService  = inject(AssignmentService);
   private   readonly toast            = inject(ToastService);
   private   readonly fb               = inject(FormBuilder);
 
@@ -49,6 +51,7 @@ export class ShellComponent implements OnInit {
         this.companyService.load(),
         this.projectService.load(),
         this.teamService.load(),
+        this.assignmentService.load(id),
       ]);
     });
   }
@@ -59,11 +62,13 @@ export class ShellComponent implements OnInit {
       this.teamService.activateSelf(),
     ]);
     if (this.workspaceService.hasWorkspace()) {
+      const id = this.workspaceService.activeId()!;
       await Promise.all([
         this.clientService.load(),
         this.companyService.load(),
         this.projectService.load(),
         this.teamService.load(),
+        this.assignmentService.load(id),
       ]);
     }
     this.initialized = true;
@@ -75,11 +80,13 @@ export class ShellComponent implements OnInit {
     this.saving.set(true);
     try {
       await this.workspaceService.create(this.setupForm.value.name!);
+      const id = this.workspaceService.activeId()!;
       await Promise.all([
         this.clientService.load(),
         this.companyService.load(),
         this.projectService.load(),
         this.teamService.load(),
+        this.assignmentService.load(id),
       ]);
       this.toast.success('Workspace creato con successo!');
     } catch {
