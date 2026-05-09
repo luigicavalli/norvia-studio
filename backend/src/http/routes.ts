@@ -463,6 +463,21 @@ export const createApiRouter = (deps = wiring) => {
     // Assignments
     // -------------------------------------------------------------------------
 
+    // Get all assignments for a workspace — GET /assignments?workspaceId=xxx
+    router.get('/assignments', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId } = req.query as any;
+
+            const assignments: AssignmentDTO[] = await assignmentCtrl.getByWorkspace(workspaceId, userId!);
+
+            AppResponse.ok(res, assignments);
+        } catch (error) {
+            next(error);
+        }
+    });
+
     // Get all assignments for a project — GET /projects/:id/assignments?workspaceId=xxx
     router.get('/projects/:id/assignments', async (req: Request, res: Response, next: NextFunction) => {
         try {

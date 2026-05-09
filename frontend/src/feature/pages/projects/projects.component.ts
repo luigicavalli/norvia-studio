@@ -16,6 +16,7 @@ import { InputComponent }       from '../../components/shared/input/input.compon
 import { SelectComponent }      from '../../components/shared/select/select.component';
 import { ModalComponent }       from '../../components/shared/modal/modal.component';
 import { BadgeComponent }       from '../../components/shared/badge/badge.component';
+import { AvatarComponent }     from '../../components/shared/avatar/avatar.component';
 import { DatepickerComponent }  from '../../components/shared/datepicker/datepicker.component';
 import { SelectOption }         from '../../components/shared/select/select.types';
 import { BadgeVariant }         from '../../components/shared/badge/badge.component';
@@ -27,7 +28,7 @@ type FilterTab = 'all' | ProjectStatus;
   selector:    'app-projects',
   standalone:  true,
   imports:     [ReactiveFormsModule, FormsModule, RouterLink, DecimalPipe, ButtonComponent, InputComponent,
-                SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent],
+                SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent, AvatarComponent],
   templateUrl: './projects.component.html',
   styleUrl:    './projects.component.scss',
 })
@@ -36,7 +37,7 @@ export class ProjectsComponent {
   protected readonly projectService    = inject(ProjectService);
   protected readonly clientService     = inject(ClientService);
   protected readonly teamService       = inject(TeamService);
-  private readonly  assignmentService  = inject(AssignmentService);
+  protected readonly assignmentService  = inject(AssignmentService);
   private readonly  workspaceService   = inject(WorkspaceService);
   private readonly  toast              = inject(ToastService);
   private readonly  fb                 = inject(FormBuilder);
@@ -48,11 +49,10 @@ export class ProjectsComponent {
   protected readonly saving       = signal(false);
 
   // Assignment modal
-  protected readonly assignModalProject    = signal<Project | null>(null);
-  protected readonly assignments           = signal<Assignment[]>([]);
-  protected readonly assignmentsLoading    = signal(false);
-  protected readonly assigningSaving       = signal(false);
-  protected readonly selectedMemberId      = signal<string>('');
+  protected readonly assignModalProject = signal<Project | null>(null);
+  protected readonly assignments        = signal<Assignment[]>([]);
+  protected readonly assigningSaving    = signal(false);
+  protected readonly selectedMemberId   = signal<string>('');
 
   protected readonly statusOptions: SelectOption[] = [
     { value: 'ACTIVE',    label: 'Attivo'     },
@@ -220,15 +220,8 @@ export class ProjectsComponent {
     this.openMenuId.set(null);
     this.assignModalProject.set(project);
     this.selectedMemberId.set('');
-    this.assignmentsLoading.set(true);
-    try {
-      const list = await this.assignmentService.getByProject(project.id, this.workspaceService.activeId()!);
-      this.assignments.set(list);
-    } catch {
-      this.toast.danger('Errore nel caricamento del team assegnato.');
-    } finally {
-      this.assignmentsLoading.set(false);
-    }
+    // Prende i dati già in cache dal signal globale
+    this.assignments.set(this.assignmentService.byProject().get(project.id) ?? []);
   }
 
   protected async addAssignment(): Promise<void> {
@@ -242,6 +235,7 @@ export class ProjectsComponent {
       await this.assignmentService.create(project.id, memberId, workspaceId);
       const list = await this.assignmentService.getByProject(project.id, workspaceId);
       this.assignments.set(list);
+      this.assignmentService.updateLocalCache(project.id, list);
       this.selectedMemberId.set('');
       this.toast.success('Membro assegnato.');
     } catch {
@@ -254,7 +248,10 @@ export class ProjectsComponent {
   protected async removeAssignment(assignmentId: string): Promise<void> {
     try {
       await this.assignmentService.remove(assignmentId);
-      this.assignments.update(list => list.filter(a => a.id !== assignmentId));
+      const updated = this.assignments().filter(a => a.id !== assignmentId);
+      this.assignments.set(updated);
+      const project = this.assignModalProject();
+      if (project) this.assignmentService.updateLocalCache(project.id, updated);
       this.toast.info('Assegnazione rimossa.');
     } catch {
       this.toast.danger('Errore durante la rimozione.');

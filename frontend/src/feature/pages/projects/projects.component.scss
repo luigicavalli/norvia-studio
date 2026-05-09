@@ -204,6 +204,32 @@
   svg { flex-shrink: 0; }
 }
 
+// ── Avatar stack ───────────────────────────────────────────────────────────
+
+.project-card__avatars {
+  display:     flex;
+  align-items: center;
+  margin-left: auto;
+
+  app-avatar + app-avatar { margin-left: -6px; }
+}
+
+.project-card__avatars-more {
+  margin-left:     -4px;
+  height:          24px;
+  min-width:       24px;
+  padding:         0 5px;
+  border-radius:   50px;
+  background:      var(--color-bg);
+  border:          2px solid var(--color-surface);
+  font-size:       0.7rem;
+  font-weight:     600;
+  color:           var(--color-muted);
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+}
+
 // ── Assignment modal ───────────────────────────────────────────────────────
 
 .assign-modal__loading,

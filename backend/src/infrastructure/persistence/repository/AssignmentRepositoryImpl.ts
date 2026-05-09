@@ -47,6 +47,14 @@ export class AssignmentRepositoryImpl implements AssignmentRepository {
 
     };
 
+    public async findByWorkspace(workspaceId: string): Promise<Assignment[]> {
+
+        const records = await this.assignmentDao.findByWorkspace(workspaceId);
+
+        return this.assembleAssignments(records);
+
+    };
+
     public async findByProject(projectId: string): Promise<Assignment[]> {
 
         const records = await this.assignmentDao.findByProject(projectId);

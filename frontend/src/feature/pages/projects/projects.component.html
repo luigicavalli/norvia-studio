@@ -116,6 +116,24 @@
                 {{ project.budgetAmount | number:'1.0-0' }} {{ project.budgetCurrency }}
               </span>
             }
+
+            <!-- Avatar stack membri assegnati -->
+            @if ((assignmentService.byProject().get(project.id) ?? []).length > 0) {
+              <div class="project-card__avatars">
+                @for (a of (assignmentService.byProject().get(project.id) ?? []).slice(0, 4); track a.id) {
+                  <app-avatar
+                    size="xs"
+                    [name]="a.teamMember ? (a.teamMember.firstName + ' ' + a.teamMember.lastName).trim() : '?'"
+                    [imageUrl]="a.teamMember?.avatarUrl ?? null"
+                  />
+                }
+                @if ((assignmentService.byProject().get(project.id) ?? []).length > 4) {
+                  <span class="project-card__avatars-more">
+                    +{{ (assignmentService.byProject().get(project.id) ?? []).length - 4 }}
+                  </span>
+                }
+              </div>
+            }
           </div>
 
         </div>
@@ -132,10 +150,6 @@
   size="sm"
   (closed)="assignModalProject.set(null)"
 >
-  @if (assignmentsLoading()) {
-    <p class="assign-modal__loading">Caricamento…</p>
-  } @else {
-
     <!-- Lista membri assegnati -->
     @if (assignments().length === 0) {
       <p class="assign-modal__empty">Nessun membro assegnato a questo progetto.</p>
@@ -178,8 +192,6 @@
     } @else if (assignments().length > 0) {
       <p class="assign-modal__all-assigned">Tutti i membri attivi sono già assegnati.</p>
     }
-
-  }
 </app-modal>
 
 <!-- Modal crea / modifica progetto -->
