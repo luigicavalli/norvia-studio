@@ -84,9 +84,9 @@ The frontend follows standard Angular patterns with no NgModules:
 | Entity | Description |
 |---|---|
 | **Workspace** | Top-level multi-tenant container; all resources belong to one |
-| **Company** | Studio's own company info stored per workspace |
-| **TeamMember** | Internal users with roles: `OWNER`, `ADMIN`, `SUPERADMIN`, `MEMBER` |
-| **Client** | External clients with statuses: `ACTIVE`, `INACTIVE`, `PROSPECT` |
+| **Company** | External companies (aziende) linked to a workspace; clients can be assigned to a company |
+| **TeamMember** | Internal users with roles: `OWNER`, `ADMIN`, `SUPERADMIN`, `MEMBER`, `VIEWER` |
+| **Client** | External clients with statuses: `ACTIVE`, `INACTIVE`, `PROSPECT`; optionally linked to a Company |
 | **Project** | Work items with status (`DRAFT` → `ACTIVE` → `COMPLETED`) and priority |
 | **Quote** | Price proposals (`DRAFT`, `SENT`, `ACCEPTED`, `REJECTED`, `EXPIRED`) |
 | **Invoice** | Billing documents (`DRAFT`, `SENT`, `PAID`, `OVERDUE`, `CANCELLED`) |
@@ -115,9 +115,10 @@ All endpoints are prefixed with `/api` and require a valid Clerk session token.
 | Resource | Endpoints |
 |---|---|
 | Workspaces | `GET /workspaces`, `POST /workspaces`, `GET\|PUT\|DELETE /workspaces/:id` |
+| Companies | `GET /companies?workspaceId=`, `POST /companies`, `GET\|PUT\|DELETE /companies/:id`, `GET /companies/:id/clients` |
 | Projects | `GET /projects?workspaceId=`, `POST /projects`, `GET\|PUT\|DELETE /projects/:id` |
 | Clients | `GET /clients?workspaceId=`, `POST /clients`, `GET\|PUT\|DELETE /clients/:id` |
-| Team members | `GET\|POST /workspaces/:id/members`, `PUT\|DELETE /workspaces/:id/members/:memberId` |
+| Team members | `GET\|POST /workspaces/:id/members`, `PUT\|DELETE /workspaces/:id/members/:memberId`, `POST /members/activate-self` |
 | Quotes | `GET\|POST /quotes`, `GET\|PUT\|DELETE /quotes/:id` |
 | Invoices | `GET\|POST /invoices`, `GET\|PUT\|DELETE /invoices/:id` |
 
