@@ -95,7 +95,8 @@ export class SidebarComponent {
     { label: 'Progetti', path: '/projects',  icon: 'folder'   },
     { label: 'Clienti',  path: '/clients',   icon: 'briefcase'},
     { label: 'Aziende',  path: '/companies', icon: 'building' },
-    { label: 'Team',     path: '/team',      icon: 'users'    },
+    { label: 'Team',        path: '/team',    icon: 'users'     },
+    { label: 'Preventivi', path: '/quotes',  icon: 'file-text' },
   ];
 
   protected async onSignOut(): Promise<void> {

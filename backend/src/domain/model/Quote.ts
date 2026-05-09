@@ -3,8 +3,9 @@
  * ENTITIES
  * --------
  */
-import type { IClient, Client }       from "./Client.js";
-import type { IWorkspace, Workspace } from "./Workspace.js";
+import type { IClient, Client }         from "./Client.js";
+import type { IWorkspace, Workspace }   from "./Workspace.js";
+import type { IQuoteItem, QuoteItem }   from "./QuoteItem.js";
 
 /**
  * ----
@@ -19,6 +20,7 @@ export interface IQuote {
     id:        string;
     workspace: IWorkspace;
     client:    IClient;
+    items:     IQuoteItem[];
     number:    number;
     status:    QuoteStatuses;
     issueDate: Date;
@@ -34,6 +36,7 @@ export class Quote implements IQuote {
     private _id:        string;
     private _workspace: Workspace;
     private _client:    Client;
+    private _items:     QuoteItem[] = [];
     private _number:    number;
     private _status:    QuoteStatuses;
     private _issueDate: Date;
@@ -68,6 +71,14 @@ export class Quote implements IQuote {
 
     public set client(value: Client) {
         this._client = value;
+    }
+
+    public get items(): QuoteItem[] {
+        return this._items;
+    }
+
+    public set items(value: QuoteItem[]) {
+        this._items = value;
     }
 
     public get number(): number {
