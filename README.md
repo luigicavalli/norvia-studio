@@ -147,6 +147,14 @@ Triggers on pushes to `develop` and `feature/**` branches and on pull requests t
 | **semgrep** | static security scan |
 | **owasp** | OWASP Dependency-Check against NVD; fails on CVSS ≥ 7 (HIGH/CRITICAL); always uploads HTML report as artifact |
 
+### Preview (`.github/workflows/preview.yml`)
+
+Triggers on pull requests to `main` (opened, pushed, reopened). Deploys the frontend to a temporary Firebase Hosting preview channel and posts the URL as a comment on the PR. The channel expires automatically after 7 days. No new secrets required — reuses `GCP_SA_KEY`, `GCP_PROJECT_ID`, `CLERK_PUBLISHABLE_KEY`, and `API_URL`.
+
+| Job | Steps |
+|---|---|
+| **preview-frontend** | install → inject environment from secrets (Sentry DSN left empty) → `ng build --configuration production` → deploy to Firebase preview channel → comment PR with URL |
+
 ### CD (`.github/workflows/cd.yml`)
 
 Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys both services in parallel.
@@ -175,6 +183,8 @@ Triggers on pushes to `main` (i.e. when a PR from `develop` is merged). Deploys 
 | Secret | Used by | Description |
 |---|---|---|
 | `SENTRY_DSN_BACKEND` | backend | Sentry DSN for the Node.js project |
+| `CLERK_WEBHOOK_SECRET` | backend | Clerk webhook signing secret (`whsec_...`) for verifying `POST /webhooks` payloads |
+| `CLERK_INVITE_REDIRECT_URL` | backend | URL the user lands on after accepting a workspace invitation |
 | `SUPABASE_URL` | backend | Supabase database connection URL |
 | `SUPABASE_SCHEMA` | backend | Supabase schema name |
 | `CLERK_SECRET_KEY` | backend | Clerk secret key |

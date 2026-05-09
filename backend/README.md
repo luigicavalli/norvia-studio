@@ -244,6 +244,8 @@ Cloud Run injects secrets as environment variables at runtime. The mapping below
 | `CLERK_SECRET_KEY` | `CLERK_SECRET_KEY` | Clerk secret key |
 | `CORS_ORIGIN` | `CORS_ORIGIN` | Allowed CORS origin (frontend URL or `*`) |
 | `SENTRY_DSN_BACKEND` | `SENTRY_DSN` | Sentry DSN for error tracking and performance monitoring |
+| `CLERK_WEBHOOK_SECRET` | `CLERK_WEBHOOK_SECRET` | Clerk webhook signing secret (`whsec_...`) for verifying `POST /webhooks` payloads |
+| `CLERK_INVITE_REDIRECT_URL` | `CLERK_INVITE_REDIRECT_URL` | URL the user is redirected to after accepting a workspace invitation |
 
 > Cloud Run also injects `PORT` automatically; the app reads it via `process.env.PORT ?? process.env.EXPRESS_PORT`.
 
