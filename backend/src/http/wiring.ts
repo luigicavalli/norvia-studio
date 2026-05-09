@@ -46,7 +46,12 @@ import { GetProjectsByClientUseCase }  from "../application/use-case/GetProjects
 import { UpdateProjectStatusUseCase }  from "../application/use-case/UpdateProjectStatusUseCase.js";
 import { GetClientsByCompanyUseCase }  from "../application/use-case/GetClientsByCompanyUseCase.js";
 import { GetWorkspaceMembersUseCase }  from "../application/use-case/GetWorkspaceMembersUseCase.js";
-import { UpdateTeamMemberRoleUseCase } from "../application/use-case/UpdateTeamMemberRoleUseCase.js";
+import { UpdateTeamMemberRoleUseCase }     from "../application/use-case/UpdateTeamMemberRoleUseCase.js";
+import { AssignmentController }            from "../interface/controller/AssignmentController.js";
+import { AssignmentRepositoryImpl }        from "../infrastructure/persistence/repository/AssignmentRepositoryImpl.js";
+import { CreateAssignmentUseCase }         from "../application/use-case/CreateAssignmentUseCase.js";
+import { DeleteAssignmentUseCase }         from "../application/use-case/DeleteAssignmentUseCase.js";
+import { GetAssignmentsByProjectUseCase }  from "../application/use-case/GetAssignmentsByProjectUseCase.js";
 
 // =========================================================================
 //                          COMPLETE BOOTSTRAP
@@ -71,6 +76,7 @@ const companyRepo           = new CompanyRepositoryImpl(companyDAO, workspaceDAO
 const clientRepo            = new ClientRepositoryImpl(clientDAO);
 const workspaceRepo         = new WorkspaceRepositoryImpl(workspaceDAO);
 const teamMemberRepo        = new TeamMemberRepositoryImpl(teamMemberDAO);
+const assignmentRepo        = new AssignmentRepositoryImpl(assignmentDAO, teamMemberDAO);
 
 // =========================================================================
 //                           APPLICATION LAYER
@@ -124,12 +130,19 @@ const clientCtrl            = new ClientController(getAllClientsUC, getClientsBy
 
 const teamMemberCtrl        = new TeamMemberController(getWorkspaceMembersUC, addTeamMemberUC, inviteTeamMemberUC, updateTeamMemberRoleUC, removeTeamMemberUC);
 
+const getAssignmentsByProjectUC = new GetAssignmentsByProjectUseCase(assignmentRepo, teamMemberRepo);
+const createAssignmentUC        = new CreateAssignmentUseCase(assignmentRepo, teamMemberRepo);
+const deleteAssignmentUC        = new DeleteAssignmentUseCase(assignmentRepo);
+
+const assignmentCtrl        = new AssignmentController(getAssignmentsByProjectUC, createAssignmentUC, deleteAssignmentUC);
+
 export const wiring = {
     workspaceCtrl,
     projectCtrl,
     companyCtrl,
     clientCtrl,
     teamMemberCtrl,
+    assignmentCtrl,
     activateTeamMemberUC,
     clerkInvitationService,
 };

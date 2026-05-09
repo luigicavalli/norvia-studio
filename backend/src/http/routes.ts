@@ -5,6 +5,7 @@ import type { ProjectDTO }       from "../interface/dto/ProjectDTO.js";
 import type { CompanyDTO }       from "../interface/dto/CompanyDTO.js";
 import type { WorkspaceDTO }     from "../interface/dto/WorkspaceDTO.js";
 import type { TeamMemberDTO }    from "../interface/dto/TeamMemberDTO.js";
+import type { AssignmentDTO }    from "../interface/dto/AssignmentDTO.js";
 import { TeamMemberRoles }       from "../domain/enums/TeamMemberRoles.js";
 import { getAuth }               from "@clerk/express";
 
@@ -13,7 +14,7 @@ import { Router, type NextFunction, type Request, type Response } from "express"
 
 export const createApiRouter = (deps = wiring) => {
 
-    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
+    const { workspaceCtrl, projectCtrl, companyCtrl, clientCtrl, teamMemberCtrl, assignmentCtrl, activateTeamMemberUC, clerkInvitationService } = deps;
 
     const router = Router();
 
@@ -451,6 +452,54 @@ export const createApiRouter = (deps = wiring) => {
             const id = req.params["id"] as string;
 
             await clientCtrl.delete(id);
+
+            AppResponse.noContent(res);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // -------------------------------------------------------------------------
+    // Assignments
+    // -------------------------------------------------------------------------
+
+    // Get all assignments for a project — GET /projects/:id/assignments?workspaceId=xxx
+    router.get('/projects/:id/assignments', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const projectId = req.params["id"] as string;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { workspaceId } = req.query as any;
+
+            const assignments: AssignmentDTO[] = await assignmentCtrl.getByProject(projectId, workspaceId, userId!);
+
+            AppResponse.ok(res, assignments);
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Assign a team member to a project — POST /projects/:id/assignments
+    router.post('/projects/:id/assignments', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { userId } = getAuth(req);
+            const projectId = req.params["id"] as string;
+            const { teamMemberId, workspaceId } = req.body as { teamMemberId: string; workspaceId: string };
+
+            await assignmentCtrl.save(projectId, teamMemberId, workspaceId, userId!);
+
+            AppResponse.created(res, null, 'Assignment created');
+        } catch (error) {
+            next(error);
+        }
+    });
+
+    // Delete an assignment — DELETE /assignments/:id
+    router.delete('/assignments/:id', async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const id = req.params["id"] as string;
+
+            await assignmentCtrl.delete(id);
 
             AppResponse.noContent(res);
         } catch (error) {

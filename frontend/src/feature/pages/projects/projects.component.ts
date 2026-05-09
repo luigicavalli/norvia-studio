@@ -1,20 +1,24 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators }      from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink }                                        from '@angular/router';
 import { DecimalPipe }                                       from '@angular/common';
 
 import { ProjectService }                                          from '../../../services/project.service';
 import type { Project, ProjectStatus, ProjectPriority, SaveProjectData } from '../../../models/project.model';
-import { ClientService }      from '../../../services/client.service';
-import { ToastService }       from '../../components/shared/toast/toast.service';
-import { ButtonComponent }    from '../../components/shared/button/button.component';
-import { InputComponent }     from '../../components/shared/input/input.component';
-import { SelectComponent }    from '../../components/shared/select/select.component';
-import { ModalComponent }     from '../../components/shared/modal/modal.component';
-import { BadgeComponent }     from '../../components/shared/badge/badge.component';
-import { DatepickerComponent } from '../../components/shared/datepicker/datepicker.component';
-import { SelectOption }       from '../../components/shared/select/select.types';
-import { BadgeVariant }       from '../../components/shared/badge/badge.component';
+import { ClientService }        from '../../../services/client.service';
+import { WorkspaceService }     from '../../../services/workspace.service';
+import { TeamService }          from '../../../services/team.service';
+import { AssignmentService }    from '../../../services/assignment.service';
+import type { Assignment }      from '../../../models/assignment.model';
+import { ToastService }         from '../../components/shared/toast/toast.service';
+import { ButtonComponent }      from '../../components/shared/button/button.component';
+import { InputComponent }       from '../../components/shared/input/input.component';
+import { SelectComponent }      from '../../components/shared/select/select.component';
+import { ModalComponent }       from '../../components/shared/modal/modal.component';
+import { BadgeComponent }       from '../../components/shared/badge/badge.component';
+import { DatepickerComponent }  from '../../components/shared/datepicker/datepicker.component';
+import { SelectOption }         from '../../components/shared/select/select.types';
+import { BadgeVariant }         from '../../components/shared/badge/badge.component';
 
 
 type FilterTab = 'all' | ProjectStatus;
@@ -22,23 +26,33 @@ type FilterTab = 'all' | ProjectStatus;
 @Component({
   selector:    'app-projects',
   standalone:  true,
-  imports:     [ReactiveFormsModule, RouterLink, DecimalPipe, ButtonComponent, InputComponent,
+  imports:     [ReactiveFormsModule, FormsModule, RouterLink, DecimalPipe, ButtonComponent, InputComponent,
                 SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent],
   templateUrl: './projects.component.html',
   styleUrl:    './projects.component.scss',
 })
 export class ProjectsComponent {
 
-  protected readonly projectService = inject(ProjectService);
-  protected readonly clientService  = inject(ClientService);
-  private readonly  toast           = inject(ToastService);
-  private readonly  fb              = inject(FormBuilder);
+  protected readonly projectService    = inject(ProjectService);
+  protected readonly clientService     = inject(ClientService);
+  protected readonly teamService       = inject(TeamService);
+  private readonly  assignmentService  = inject(AssignmentService);
+  private readonly  workspaceService   = inject(WorkspaceService);
+  private readonly  toast              = inject(ToastService);
+  private readonly  fb                 = inject(FormBuilder);
 
   protected readonly modalOpen    = signal(false);
   protected readonly activeTab    = signal<FilterTab>('all');
   protected readonly openMenuId   = signal<string | null>(null);
   protected readonly editingId    = signal<string | null>(null);
   protected readonly saving       = signal(false);
+
+  // Assignment modal
+  protected readonly assignModalProject    = signal<Project | null>(null);
+  protected readonly assignments           = signal<Assignment[]>([]);
+  protected readonly assignmentsLoading    = signal(false);
+  protected readonly assigningSaving       = signal(false);
+  protected readonly selectedMemberId      = signal<string>('');
 
   protected readonly statusOptions: SelectOption[] = [
     { value: 'ACTIVE',    label: 'Attivo'     },
@@ -192,6 +206,59 @@ export class ProjectsComponent {
   protected formatDate(date: Date | null): string {
     if (!date) return '—';
     return new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+  }
+
+  protected readonly assignableMembers = computed<SelectOption[]>(() => {
+    const assigned = new Set(this.assignments().map(a => a.teamMemberId));
+    return this.teamService.active()
+      .filter(m => !assigned.has(m.id))
+      .map(m => ({ value: m.id, label: `${m.firstName} ${m.lastName}`.trim() || m.email }));
+  });
+
+  protected async openAssignModal(project: Project, event: MouseEvent): Promise<void> {
+    event.stopPropagation();
+    this.openMenuId.set(null);
+    this.assignModalProject.set(project);
+    this.selectedMemberId.set('');
+    this.assignmentsLoading.set(true);
+    try {
+      const list = await this.assignmentService.getByProject(project.id, this.workspaceService.activeId()!);
+      this.assignments.set(list);
+    } catch {
+      this.toast.danger('Errore nel caricamento del team assegnato.');
+    } finally {
+      this.assignmentsLoading.set(false);
+    }
+  }
+
+  protected async addAssignment(): Promise<void> {
+    const project  = this.assignModalProject();
+    const memberId = this.selectedMemberId();
+    if (!project || !memberId) return;
+
+    this.assigningSaving.set(true);
+    try {
+      const workspaceId = this.workspaceService.activeId()!;
+      await this.assignmentService.create(project.id, memberId, workspaceId);
+      const list = await this.assignmentService.getByProject(project.id, workspaceId);
+      this.assignments.set(list);
+      this.selectedMemberId.set('');
+      this.toast.success('Membro assegnato.');
+    } catch {
+      this.toast.danger('Errore durante l\'assegnazione.');
+    } finally {
+      this.assigningSaving.set(false);
+    }
+  }
+
+  protected async removeAssignment(assignmentId: string): Promise<void> {
+    try {
+      await this.assignmentService.remove(assignmentId);
+      this.assignments.update(list => list.filter(a => a.id !== assignmentId));
+      this.toast.info('Assegnazione rimossa.');
+    } catch {
+      this.toast.danger('Errore durante la rimozione.');
+    }
   }
 
   @HostListener('document:click')
