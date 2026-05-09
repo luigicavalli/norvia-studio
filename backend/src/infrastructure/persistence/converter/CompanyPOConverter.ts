@@ -3,7 +3,8 @@
  * BO
  * --
  */
-import { Company } from "../../../domain/model/Company.js";
+import { Company }   from "../../../domain/model/Company.js";
+import { Workspace }  from "../../../domain/model/Workspace.js";
 
 /**
  * --
@@ -38,6 +39,9 @@ export class CompanyPOConverter implements IPersistenceConverter<CompanyPO, Comp
         companyBO.website   = po.website;
         companyBO.createdAt = po.created_at;
         companyBO.updatedAt = po.updated_at;
+
+        companyBO.workspace    = new Workspace();
+        companyBO.workspace.id = po.workspace_id;
 
         return companyBO;
 

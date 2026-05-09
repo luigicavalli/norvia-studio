@@ -22,4 +22,5 @@ export interface CreateClientData {
   email:     string;
   phone:     string;
   notes:     string;
+  companyId: string | null;
 }

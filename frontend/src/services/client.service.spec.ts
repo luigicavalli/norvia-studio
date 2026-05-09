@@ -47,6 +47,7 @@ const MOCK_CREATE_DATA: CreateClientData = {
   email:     'luigi@example.com',
   phone:     '',
   notes:     '',
+  companyId: null,
 };
 
 describe('ClientService', () => {
