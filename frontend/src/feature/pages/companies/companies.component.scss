@@ -1,0 +1,251 @@
+.companies {
+  max-width: 1100px;
+  margin:    0 auto;
+  padding:   2rem 1.5rem;
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+
+.companies__header {
+  display:         flex;
+  align-items:     flex-start;
+  justify-content: space-between;
+  gap:             1rem;
+  margin-bottom:   1.25rem;
+
+  h1 { color: var(--color-text-strong); }
+}
+
+.companies__subtitle {
+  color:      var(--color-muted);
+  font-size:  0.875rem;
+  margin-top: 0.125rem;
+}
+
+// ── Search ─────────────────────────────────────────────────────────────────
+
+.companies__search {
+  margin-bottom: 1.5rem;
+}
+
+.companies__search-wrap {
+  position:  relative;
+  max-width: 400px;
+}
+
+.companies__search-icon {
+  position:       absolute;
+  left:           0.75rem;
+  top:            50%;
+  transform:      translateY(-50%);
+  color:          var(--color-muted);
+  pointer-events: none;
+}
+
+.companies__search-input {
+  all:           unset;
+  display:       block;
+  width:         100%;
+  box-sizing:    border-box;
+  padding:       0.5rem 2.25rem;
+  background:    var(--color-surface);
+  border:        1px solid var(--color-border);
+  border-radius: 8px;
+  font-size:     0.875rem;
+  color:         var(--color-text);
+  transition:    border-color 150ms, box-shadow 150ms;
+
+  &::placeholder { color: var(--color-muted); }
+
+  &:focus {
+    border-color: var(--color-accent);
+    box-shadow:   0 0 0 3px color-mix(in srgb, var(--color-accent) 15%, transparent);
+  }
+}
+
+.companies__search-clear {
+  all:         unset;
+  position:    absolute;
+  right:       0.625rem;
+  top:         50%;
+  transform:   translateY(-50%);
+  cursor:      pointer;
+  color:       var(--color-muted);
+  display:     flex;
+  padding:     3px;
+  border-radius: 4px;
+  transition:  color 150ms;
+
+  &:hover { color: var(--color-text); }
+}
+
+// ── Empty / Loading ────────────────────────────────────────────────────────
+
+.companies__loading {
+  padding:    4rem 1rem;
+  text-align: center;
+  color:      var(--color-text-muted);
+}
+
+.companies__empty {
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            0.5rem;
+  padding:        4rem 1rem;
+  text-align:     center;
+  color:          var(--color-muted);
+
+  svg        { opacity: 0.35; margin-bottom: 0.5rem; }
+  p          { font-weight: 500; color: var(--color-text); font-size: 1rem; }
+  small      { max-width: 260px; }
+  app-button { margin-top: 0.5rem; }
+}
+
+// ── Grid ───────────────────────────────────────────────────────────────────
+
+.companies__grid {
+  display:               grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap:                   1rem;
+}
+
+// ── Company card ───────────────────────────────────────────────────────────
+
+.company-card {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.875rem;
+  background:     var(--color-surface);
+  border:         1px solid var(--color-border);
+  border-radius:  12px;
+  padding:        1.125rem;
+  transition:     box-shadow 150ms, border-color 150ms;
+
+  &:hover {
+    box-shadow:   0 2px 12px rgba(0, 0, 0, 0.07);
+    border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  }
+}
+
+.company-card__head {
+  display:     flex;
+  align-items: flex-start;
+  gap:         0.75rem;
+}
+
+.company-card__avatar {
+  flex-shrink:     0;
+  width:           40px;
+  height:          40px;
+  border-radius:   10px;
+  background:      color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color:           var(--color-accent);
+  font-size:       0.875rem;
+  font-weight:     700;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+}
+
+.company-card__identity {
+  flex:      1;
+  min-width: 0;
+}
+
+.company-card__name {
+  color:         var(--color-text-strong);
+  white-space:   nowrap;
+  overflow:      hidden;
+  text-overflow: ellipsis;
+}
+
+.company-card__location {
+  font-size:  0.8125rem;
+  color:      var(--color-muted);
+  margin-top: 0.125rem;
+}
+
+.company-card__menu-wrap { position: relative; }
+
+.company-card__menu-btn {
+  all:         unset;
+  cursor:      pointer;
+  color:       var(--color-muted);
+  display:     flex;
+  padding:     4px;
+  border-radius: 6px;
+  transition:  background 150ms, color 150ms;
+
+  &:hover { background: var(--color-bg); color: var(--color-text); }
+}
+
+.company-card__dropdown {
+  position:      absolute;
+  top:           calc(100% + 4px);
+  right:         0;
+  z-index:       50;
+  background:    var(--color-surface);
+  border:        1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow:    0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow:      hidden;
+  min-width:     140px;
+}
+
+.company-card__dropdown-item {
+  all:         unset;
+  display:     flex;
+  align-items: center;
+  gap:         0.5rem;
+  width:       100%;
+  padding:     0.5rem 0.875rem;
+  font-size:   0.875rem;
+  cursor:      pointer;
+  box-sizing:  border-box;
+  transition:  background 150ms;
+
+  &:hover              { background: var(--color-bg); }
+  &--danger            { color: var(--color-danger); }
+  &--danger:hover      { background: color-mix(in srgb, var(--color-danger) 8%, transparent); }
+}
+
+.company-card__info {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.375rem;
+}
+
+.company-card__info-row {
+  display:         flex;
+  align-items:     center;
+  gap:             0.5rem;
+  font-size:       0.8125rem;
+  color:           var(--color-muted);
+  text-decoration: none;
+  transition:      color 150ms;
+
+  &[href]:hover { color: var(--color-accent); }
+  svg { flex-shrink: 0; }
+}
+
+// ── Modal form ─────────────────────────────────────────────────────────────
+
+.company-form {
+  display:        flex;
+  flex-direction: column;
+  gap:            1rem;
+}
+
+.company-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+
+  &--3 { grid-template-columns: 2fr 1fr 1fr; }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    &--3 { grid-template-columns: 1fr; }
+  }
+}

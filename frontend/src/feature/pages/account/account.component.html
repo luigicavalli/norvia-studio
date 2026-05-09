@@ -92,8 +92,34 @@
         <strong>Elimina account</strong>
         <p>L'account e tutti i dati associati verranno eliminati definitivamente.</p>
       </div>
-      <app-button label="Elimina account" size="sm" color="danger" variant="outlined" />
+      <app-button label="Elimina account" size="sm" color="danger" variant="outlined" (clicked)="openDeleteModal()" />
     </div>
   </section>
 
 </div>
+
+<!-- Modal conferma eliminazione account -->
+<app-modal [open]="deleteOpen()" title="Elimina account" size="sm" (closed)="deleteOpen.set(false)">
+  <div class="delete-confirm">
+    <p>Questa azione è <strong>irreversibile</strong>. Verranno eliminati account e tutti i dati associati.</p>
+    <p class="delete-confirm__prompt">Per confermare, digita il tuo indirizzo email: <strong>{{ email() }}</strong></p>
+    <input
+      class="delete-confirm__input"
+      type="email"
+      [placeholder]="email()"
+      [value]="confirmEmail()"
+      (input)="confirmEmail.set($any($event.target).value)"
+    />
+  </div>
+  <div modal-footer>
+    <app-button label="Annulla" variant="ghost" size="sm" (clicked)="deleteOpen.set(false)" />
+    <app-button
+      label="Elimina definitivamente"
+      size="sm"
+      color="danger"
+      [loading]="deleting()"
+      [disabled]="confirmEmail() !== email()"
+      (clicked)="onDeleteAccount()"
+    />
+  </div>
+</app-modal>

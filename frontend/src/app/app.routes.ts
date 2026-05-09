@@ -7,6 +7,7 @@ import { AccountComponent }  from '../feature/pages/account/account.component';
 import { SettingsComponent }  from '../feature/pages/settings/settings.component';
 import { ProjectsComponent }  from '../feature/pages/projects/projects.component';
 import { ClientsComponent }   from '../feature/pages/clients/clients.component';
+import { CompaniesComponent } from '../feature/pages/companies/companies.component';
 import { TeamComponent }      from '../feature/pages/team/team.component';
 
 import { authGuard }  from './guards/auth.guard';
@@ -23,9 +24,10 @@ export const routes: Routes = [
       { path: 'home',     component: HomeComponent     },
       { path: 'account',  component: AccountComponent  },
       { path: 'settings', component: SettingsComponent },
-      { path: 'projects', component: ProjectsComponent },
-      { path: 'clients',  component: ClientsComponent  },
-      { path: 'team',     component: TeamComponent     },
+      { path: 'projects',  component: ProjectsComponent  },
+      { path: 'clients',   component: ClientsComponent   },
+      { path: 'companies', component: CompaniesComponent },
+      { path: 'team',      component: TeamComponent      },
     ],
   },
   { path: '**', redirectTo: '' },

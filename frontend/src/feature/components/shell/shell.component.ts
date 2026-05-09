@@ -8,6 +8,7 @@ import { ButtonComponent }    from '../shared/button/button.component';
 import { InputComponent }     from '../shared/input/input.component';
 import { WorkspaceService }   from '../../../services/workspace.service';
 import { ClientService }      from '../../../services/client.service';
+import { CompanyService }     from '../../../services/company.service';
 import { ProjectService }     from '../../../services/project.service';
 import { TeamService }        from '../../../services/team.service';
 import { ToastService }       from '../shared/toast/toast.service';
@@ -25,6 +26,7 @@ export class ShellComponent implements OnInit {
 
   protected readonly workspaceService = inject(WorkspaceService);
   private   readonly clientService    = inject(ClientService);
+  private   readonly companyService   = inject(CompanyService);
   private   readonly projectService   = inject(ProjectService);
   private   readonly teamService      = inject(TeamService);
   private   readonly toast            = inject(ToastService);
@@ -44,6 +46,7 @@ export class ShellComponent implements OnInit {
       if (!id || !this.initialized) return;
       Promise.all([
         this.clientService.load(),
+        this.companyService.load(),
         this.projectService.load(),
         this.teamService.load(),
       ]);
@@ -58,6 +61,7 @@ export class ShellComponent implements OnInit {
     if (this.workspaceService.hasWorkspace()) {
       await Promise.all([
         this.clientService.load(),
+        this.companyService.load(),
         this.projectService.load(),
         this.teamService.load(),
       ]);
@@ -73,6 +77,7 @@ export class ShellComponent implements OnInit {
       await this.workspaceService.create(this.setupForm.value.name!);
       await Promise.all([
         this.clientService.load(),
+        this.companyService.load(),
         this.projectService.load(),
         this.teamService.load(),
       ]);

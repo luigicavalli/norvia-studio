@@ -91,10 +91,11 @@ export class SidebarComponent {
   }
 
   protected readonly navItems: NavItem[] = [
-    { label: 'Home',        path: '/home',     icon: 'home'      },
-    { label: 'Progetti',    path: '/projects', icon: 'folder'    },
-    { label: 'Clienti',     path: '/clients',  icon: 'briefcase' },
-    { label: 'Team',        path: '/team',     icon: 'users'     },
+    { label: 'Home',     path: '/home',      icon: 'home'     },
+    { label: 'Progetti', path: '/projects',  icon: 'folder'   },
+    { label: 'Clienti',  path: '/clients',   icon: 'briefcase'},
+    { label: 'Aziende',  path: '/companies', icon: 'building' },
+    { label: 'Team',     path: '/team',      icon: 'users'    },
   ];
 
   protected async onSignOut(): Promise<void> {
