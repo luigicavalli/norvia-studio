@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-05-15
+
+### Added
+
+- **Internationalisation (i18n)** — full Italian / English support via `@ngx-translate/core` v17 + `@ngx-translate/http-loader` v17; translation files served as static JSON from `/public/i18n/`
+- **Language preference** — authenticated users store their preferred language in Clerk `unsafeMetadata`; unauthenticated users (login page) fall back to `navigator.language`; changing the language from Settings reloads the app so all `instant()`-computed values are refreshed
+- **Language switcher** — Settings page now exposes a language selector (Italiano / English) that persists the choice to Clerk and reloads
+- **Translated pages** — all feature pages fully translated: Index/Login, Home, Projects, Clients, Companies, Team, Quotes, Invoices, Account, Settings, Sidebar, and Shell onboarding overlay
+- **Bootstrap guard** — a single `provideAppInitializer` initialiser sequentially runs `auth.init()` then `translate.use(lang)`, ensuring translations are loaded before any component renders; the auth interceptor skips `/i18n/` requests to prevent a deadlock
+- **Locale-aware date formatting** — `formatDate()` in Quotes and Invoices now selects `en-GB` or `it-IT` based on the active language
+
+### Fixed
+
+- **Index component spec** — `TestBed` was missing a `TranslateService` provider after the component gained i18n support; added a mock with Italian translations for all keys used by the component; replaced brittle `app-button[label="..."]` attribute selectors (broken by property binding) with structural selectors
+
 ## [1.3.0] - 2026-05-10
 
 ### Added
@@ -72,7 +87,8 @@ All notable changes to this project will be documented in this file.
 
 - First release.
 
-[unreleased]: https://github.com/luigicavalli/norvia-studio/compare/v1.3.0...HEAD
+[unreleased]: https://github.com/luigicavalli/norvia-studio/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.3.0...v2.0.0
 [1.3.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/luigicavalli/norvia-studio/compare/v1.0.1...v1.1.0

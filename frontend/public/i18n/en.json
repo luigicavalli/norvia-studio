@@ -1,0 +1,490 @@
+{
+  "INDEX": {
+    "BRAND": {
+      "HEADLINE": "Manage projects and clients with clarity.",
+      "SUBHEADLINE": "Workspace, team and deadlines in one place, without noise.",
+      "FEATURE_WORKSPACE": "Multi-workspace management",
+      "FEATURE_CLIENTS": "Centralized clients and companies",
+      "FEATURE_TEAM": "Real-time team collaboration"
+    },
+    "TABS": {
+      "LOGIN": "Sign in",
+      "REGISTER": "Sign up"
+    },
+    "LOGIN": {
+      "SUBMIT": "Sign in",
+      "NO_ACCOUNT": "Don't have an account?",
+      "REGISTER_LINK": "Sign up"
+    },
+    "MFA": {
+      "TITLE": "Two-step verification",
+      "DESCRIPTION": "Enter the code from your authenticator app.",
+      "SUBMIT": "Verify",
+      "BACK": "← Back to sign in"
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verify your email",
+      "DESCRIPTION": "We sent a verification code to your email address.",
+      "SUBMIT": "Verify email",
+      "BACK": "← Back to sign in"
+    },
+    "REGISTER": {
+      "SUBMIT": "Create account",
+      "PASSWORD_HINT": "Minimum 8 characters",
+      "HAS_ACCOUNT": "Already have an account?",
+      "LOGIN_LINK": "Sign in"
+    }
+  },
+  "FORM": {
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "BIRTH_DATE": "Date of birth",
+    "VERIFY_CODE": "Verification code"
+  },
+  "SHELL": {
+    "OPEN_MENU_ARIA": "Open menu",
+    "LOGOUT_ARIA": "Sign out",
+    "WORKSPACE": {
+      "CREATE_BTN": "Create workspace",
+      "MODAL_TITLE": "New workspace",
+      "NAME_LABEL": "Workspace name",
+      "NAME_PLACEHOLDER": "E.g. Studio Rossi, My Agency…",
+      "DESCRIPTION_LABEL": "Description",
+      "DESCRIPTION_PLACEHOLDER": "A brief description of the workspace (optional)",
+      "SUBMIT": "Create workspace"
+    },
+    "ONBOARDING": {
+      "TITLE": "Welcome to Norvia Studio",
+      "SUBTITLE": "Create your first workspace to start managing projects and clients."
+    },
+    "NAV": {
+      "HOME": "Home",
+      "PROJECTS": "Projects",
+      "CLIENTS": "Clients",
+      "COMPANIES": "Companies",
+      "TEAM": "Team",
+      "QUOTES": "Quotes",
+      "INVOICES": "Invoices",
+      "SETTINGS": "Settings"
+    },
+    "TOAST": {
+      "WORKSPACE_CREATED": "Workspace created successfully!",
+      "WORKSPACE_CREATE_ERROR": "Error creating the workspace."
+    }
+  },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "SAVE": "Save changes"
+  },
+  "COMPANIES": {
+    "TITLE": "Companies",
+    "SUBTITLE_SINGLE": "{{ count }} company total",
+    "SUBTITLE_PLURAL": "{{ count }} companies total",
+    "NEW_COMPANY": "New company",
+    "SEARCH_PLACEHOLDER": "Search by name, city, VAT or email…",
+    "SEARCH_CLEAR_ARIA": "Clear search",
+    "LOADING": "Loading companies…",
+    "EMPTY_SEARCH": "No results for \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Try a different term.",
+    "EMPTY_TITLE": "No companies",
+    "EMPTY_HINT": "Add your first company to get started.",
+    "ADD_COMPANY": "Add company",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_DELETE": "Delete",
+    "MODAL_TITLE_CREATE": "New company",
+    "MODAL_TITLE_EDIT": "Edit company",
+    "FORM": {
+      "NAME_LABEL": "Company name",
+      "NAME_PLACEHOLDER": "E.g. Smith & Associates",
+      "TAX_CODE_LABEL": "VAT / Tax code",
+      "TAX_CODE_PLACEHOLDER": "GB123456789",
+      "EMAIL_PLACEHOLDER": "info@company.com",
+      "PHONE_LABEL": "Phone",
+      "PHONE_PLACEHOLDER": "+44 20 1234567",
+      "WEBSITE_LABEL": "Website",
+      "WEBSITE_PLACEHOLDER": "https://www.company.com",
+      "ADDRESS_LABEL": "Address",
+      "ADDRESS_PLACEHOLDER": "1 Main Street",
+      "CITY_LABEL": "City",
+      "CITY_PLACEHOLDER": "London",
+      "ZIP_LABEL": "Postcode",
+      "ZIP_PLACEHOLDER": "EC1A 1BB",
+      "COUNTRY_LABEL": "Country",
+      "COUNTRY_PLACEHOLDER": "United Kingdom"
+    },
+    "TOAST": {
+      "UPDATED": "Company updated.",
+      "CREATED": "Company added successfully.",
+      "SAVE_ERROR": "Error saving the company.",
+      "DELETED": "Company deleted.",
+      "DELETE_ERROR": "Error deleting the company."
+    }
+  },
+  "CLIENTS": {
+    "TITLE": "Clients",
+    "SUBTITLE_SINGLE": "{{ count }} client total",
+    "SUBTITLE_PLURAL": "{{ count }} clients total",
+    "NEW_CLIENT": "New client",
+    "SEARCH_PLACEHOLDER": "Search by name, company or email…",
+    "SEARCH_CLEAR_ARIA": "Clear search",
+    "LOADING": "Loading clients…",
+    "EMPTY_SEARCH": "No results for \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Try a different term.",
+    "EMPTY_TITLE": "No clients",
+    "EMPTY_HINT": "Add your first client to get started.",
+    "ADD_CLIENT": "Add client",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_DELETE": "Delete",
+    "MODAL_TITLE_CREATE": "New client",
+    "MODAL_TITLE_EDIT": "Edit client",
+    "FORM": {
+      "FIRST_NAME_PLACEHOLDER": "E.g. John",
+      "LAST_NAME_PLACEHOLDER": "E.g. Smith",
+      "PHONE_LABEL": "Phone",
+      "PHONE_PLACEHOLDER": "+44 20 1234567",
+      "COMPANY_LABEL": "Company",
+      "COMPANY_PLACEHOLDER": "No company",
+      "NOTES_LABEL": "Notes",
+      "NOTES_PLACEHOLDER": "Additional information about the client…"
+    },
+    "TOAST": {
+      "UPDATED": "Client updated.",
+      "CREATED": "Client added successfully.",
+      "SAVE_ERROR": "Error saving the client.",
+      "DELETED": "Client deleted.",
+      "DELETE_ERROR": "Error deleting the client."
+    }
+  },
+  "PROJECTS": {
+    "TITLE": "Projects",
+    "SUBTITLE_SINGLE": "{{ count }} project total",
+    "SUBTITLE_PLURAL": "{{ count }} projects total",
+    "NEW_PROJECT": "New project",
+    "LOADING": "Loading projects…",
+    "EMPTY_TITLE": "No projects",
+    "EMPTY_HINT": "Create your first project to get started.",
+    "CREATE": "Create project",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_TEAM": "Manage team",
+    "MENU_DELETE": "Delete",
+    "TEAM_MODAL_TITLE": "Team — {{ name }}",
+    "NO_MEMBERS": "No members assigned to this project.",
+    "REMOVE_ARIA": "Remove",
+    "ADD_MEMBER_LABEL": "Add member",
+    "ADD_MEMBER_PLACEHOLDER": "Select a member…",
+    "ADD_MEMBER_BTN": "Add",
+    "ALL_ASSIGNED": "All active members are already assigned.",
+    "MODAL_TITLE_CREATE": "New project",
+    "MODAL_TITLE_EDIT": "Edit project",
+    "FORM": {
+      "NAME_LABEL": "Project name",
+      "NAME_PLACEHOLDER": "E.g. Company website",
+      "CLIENT_LABEL": "Client",
+      "CLIENT_PLACEHOLDER": "Select a client…",
+      "DESCRIPTION_LABEL": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Brief project description",
+      "STATUS_LABEL": "Status",
+      "PRIORITY_LABEL": "Priority",
+      "START_DATE_LABEL": "Start date",
+      "DUE_DATE_LABEL": "Due date",
+      "BUDGET_LABEL": "Budget",
+      "CURRENCY_LABEL": "Currency",
+      "NO_CLIENTS": "No clients available.",
+      "NO_CLIENTS_LINK": "Add a client",
+      "NO_CLIENTS_SUFFIX": "before creating a project."
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "ON_HOLD": "On hold",
+      "COMPLETED": "Completed",
+      "DRAFT": "Draft",
+      "CANCELLED": "Cancelled",
+      "UNKNOWN": "Unknown"
+    },
+    "PRIORITY": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical"
+    },
+    "TABS": {
+      "ALL": "All",
+      "ACTIVE": "Active",
+      "ON_HOLD": "On hold",
+      "COMPLETED": "Completed"
+    },
+    "TOAST": {
+      "SELECT_CLIENT": "Please select a client.",
+      "UPDATED": "Project updated.",
+      "CREATED": "Project created successfully.",
+      "SAVE_ERROR": "Error saving the project.",
+      "DELETED": "Project deleted.",
+      "DELETE_ERROR": "Error deleting the project.",
+      "MEMBER_ADDED": "Member assigned.",
+      "MEMBER_ADD_ERROR": "Error assigning the member.",
+      "MEMBER_REMOVED": "Assignment removed.",
+      "MEMBER_REMOVE_ERROR": "Error removing the assignment."
+    }
+  },
+  "HOME": {
+    "GREETING": "Hello 👋",
+    "GREETING_NAME": "Hello, {{ name }} 👋",
+    "STATS": {
+      "ACTIVE_PROJECTS": "Active projects",
+      "ON_HOLD_PROJECTS": "On hold",
+      "CLIENTS": "Clients",
+      "COMPLETED": "Completed",
+      "OUTSTANDING": "Outstanding",
+      "DRAFT_QUOTES": "Draft quotes"
+    },
+    "INVOICES": {
+      "TITLE": "Pending invoices",
+      "SEE_ALL": "See all →",
+      "EMPTY": "No pending invoices",
+      "EMPTY_HINT": "Sent or overdue invoices will appear here.",
+      "DUE_DATE": "Due",
+      "OVERDUE_DAYS": "· {{ days }}d overdue",
+      "DUE_SOON": "· in {{ days }}d"
+    },
+    "QUOTES": {
+      "TITLE": "Recent quotes",
+      "SEE_ALL": "See all →",
+      "EMPTY": "No quotes",
+      "EMPTY_HINT": "Created quotes will appear here.",
+      "NUMBER": "N°"
+    }
+  },
+  "INVOICE_STATUS": {
+    "DRAFT": "Draft",
+    "SENT": "Sent",
+    "PAID": "Paid",
+    "OVERDUE": "Overdue",
+    "CANCELLED": "Cancelled"
+  },
+  "QUOTE_STATUS": {
+    "DRAFT": "Draft",
+    "SENT": "Sent",
+    "ACCEPTED": "Accepted",
+    "REJECTED": "Rejected",
+    "EXPIRED": "Expired"
+  },
+  "SETTINGS": {
+    "TITLE": "Settings",
+    "SUBTITLE": "Manage your workspace and preferences.",
+    "WORKSPACE_TITLE": "Workspace",
+    "WORKSPACE_SUBTITLE": "Name and description of your workspace.",
+    "WORKSPACE_NAME_LABEL": "Workspace name",
+    "WORKSPACE_NAME_PLACEHOLDER": "My workspace",
+    "WORKSPACE_DESC_LABEL": "Description",
+    "WORKSPACE_DESC_PLACEHOLDER": "A brief description of the workspace (optional)",
+    "WORKSPACE_SAVE_BTN": "Save",
+    "LANGUAGE_TITLE": "Language",
+    "LANGUAGE_SUBTITLE": "Interface language.",
+    "LANGUAGE_LABEL": "Language",
+    "LANGUAGE_SAVE_BTN": "Save language",
+    "PLAN_TITLE": "Plan",
+    "PLAN_SUBTITLE": "Your current plan and available features.",
+    "PLAN_ACTIVE": "Active",
+    "PLAN_UPGRADE_BTN": "Upgrade to Pro",
+    "PLAN_COMING_SOON": "Paid plans are coming soon.",
+    "TOAST": {
+      "WORKSPACE_SAVED": "Workspace settings saved.",
+      "WORKSPACE_SAVE_ERROR": "Error saving settings.",
+      "LANGUAGE_SAVE_ERROR": "Error saving the language.",
+      "NOTIF_SAVED": "Preferences updated.",
+      "NOTIF_SAVE_ERROR": "Error saving preferences."
+    }
+  },
+  "QUOTES": {
+    "TITLE": "Quotes",
+    "SUBTITLE_SINGLE": "{{ count }} quote total",
+    "SUBTITLE_PLURAL": "{{ count }} quotes total",
+    "NEW_QUOTE": "New quote",
+    "LOADING": "Loading quotes…",
+    "EMPTY_TITLE": "No quotes",
+    "EMPTY_HINT": "Create your first quote to get started.",
+    "CREATE": "Create quote",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_MARK_SENT": "Mark as sent",
+    "MENU_ACCEPTED": "Accepted",
+    "MENU_REJECTED": "Rejected",
+    "MENU_DELETE": "Delete",
+    "TABLE": {
+      "NUMBER": "#",
+      "CLIENT": "Client",
+      "STATUS": "Status",
+      "ISSUE_DATE": "Issue date",
+      "EXPIRES_AT": "Expiry date",
+      "TOTAL": "Total"
+    },
+    "MODAL_TITLE_CREATE": "New quote",
+    "MODAL_TITLE_EDIT": "Edit quote",
+    "FORM": {
+      "CLIENT_LABEL": "Client",
+      "CLIENT_PLACEHOLDER": "Select a client…",
+      "NUMBER_LABEL": "Quote N°",
+      "ISSUE_DATE_LABEL": "Issue date",
+      "EXPIRES_AT_LABEL": "Expiry date",
+      "STATUS_LABEL": "Status",
+      "NOTES_LABEL": "Notes",
+      "NOTES_PLACEHOLDER": "Additional notes (optional)",
+      "ITEMS_HEADER": "Line items",
+      "ADD_ITEM": "Add item",
+      "ITEM_DESC_LABEL": "Description",
+      "ITEM_DESC_PLACEHOLDER": "E.g. UI design",
+      "ITEM_QTY_LABEL": "Qty",
+      "ITEM_PRICE_LABEL": "Price",
+      "ITEM_CURRENCY_LABEL": "Currency",
+      "ITEM_TOTAL_LABEL": "Total",
+      "ITEM_REMOVE_ARIA": "Remove",
+      "QUOTE_TOTAL": "Quote total"
+    },
+    "TOAST": {
+      "UPDATED": "Quote updated.",
+      "CREATED": "Quote created successfully.",
+      "SAVE_ERROR": "Error saving the quote.",
+      "DELETED": "Quote deleted.",
+      "DELETE_ERROR": "Error deleting the quote.",
+      "STATUS_UPDATED": "Status updated.",
+      "STATUS_UPDATE_ERROR": "Error updating the status."
+    }
+  },
+  "INVOICES": {
+    "TITLE": "Invoices",
+    "SUBTITLE_SINGLE": "{{ count }} invoice total",
+    "SUBTITLE_PLURAL": "{{ count }} invoices total",
+    "NEW_INVOICE": "New invoice",
+    "LOADING": "Loading invoices…",
+    "EMPTY_TITLE": "No invoices",
+    "EMPTY_HINT": "Create your first invoice to get started.",
+    "CREATE": "Create invoice",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_MARK_SENT": "Mark as sent",
+    "MENU_MARK_PAID": "Mark as paid",
+    "MENU_CANCEL": "Cancel",
+    "MENU_DELETE": "Delete",
+    "TABLE": {
+      "NUMBER": "#",
+      "CLIENT": "Client",
+      "STATUS": "Status",
+      "ISSUE_DATE": "Issue date",
+      "DUE_DATE": "Due date",
+      "PAID_AT": "Paid on",
+      "TOTAL": "Total"
+    },
+    "MODAL_TITLE_CREATE": "New invoice",
+    "MODAL_TITLE_EDIT": "Edit invoice",
+    "FORM": {
+      "CLIENT_LABEL": "Client",
+      "CLIENT_PLACEHOLDER": "Select a client…",
+      "NUMBER_LABEL": "Invoice N°",
+      "ISSUE_DATE_LABEL": "Issue date",
+      "DUE_DATE_LABEL": "Due date",
+      "STATUS_LABEL": "Status",
+      "NOTES_LABEL": "Notes",
+      "NOTES_PLACEHOLDER": "Additional notes (optional)",
+      "ITEMS_HEADER": "Line items",
+      "ADD_ITEM": "Add item",
+      "ITEM_DESC_LABEL": "Description",
+      "ITEM_DESC_PLACEHOLDER": "E.g. Frontend development",
+      "ITEM_QTY_LABEL": "Qty",
+      "ITEM_PRICE_LABEL": "Price",
+      "ITEM_CURRENCY_LABEL": "Currency",
+      "ITEM_TOTAL_LABEL": "Total",
+      "ITEM_REMOVE_ARIA": "Remove",
+      "INVOICE_TOTAL": "Invoice total"
+    },
+    "TOAST": {
+      "UPDATED": "Invoice updated.",
+      "CREATED": "Invoice created successfully.",
+      "SAVE_ERROR": "Error saving the invoice.",
+      "DELETED": "Invoice deleted.",
+      "DELETE_ERROR": "Error deleting the invoice.",
+      "STATUS_UPDATED": "Status updated.",
+      "STATUS_UPDATE_ERROR": "Error updating the status."
+    }
+  },
+  "ACCOUNT": {
+    "USER_FALLBACK": "User",
+    "PROFILE_TITLE": "Personal information",
+    "PROFILE_SUBTITLE": "Update your display name.",
+    "FIRST_NAME_PLACEHOLDER": "John",
+    "LAST_NAME_PLACEHOLDER": "Smith",
+    "SECURITY_TITLE": "Security",
+    "SECURITY_SUBTITLE": "Update your login password.",
+    "CURRENT_PASSWORD_LABEL": "Current password",
+    "NEW_PASSWORD_LABEL": "New password",
+    "CONFIRM_PASSWORD_LABEL": "Confirm password",
+    "UPDATE_PASSWORD_BTN": "Update password",
+    "DANGER_TITLE": "Danger zone",
+    "DANGER_SUBTITLE": "Irreversible actions on your account.",
+    "DELETE_TITLE": "Delete account",
+    "DELETE_DESC": "The account and all associated data will be permanently deleted.",
+    "DELETE_BTN": "Delete account",
+    "DELETE_MODAL_TITLE": "Delete account",
+    "DELETE_MODAL_DESC": "This action is <strong>irreversible</strong>. The account and all associated data will be deleted.",
+    "DELETE_MODAL_PROMPT": "To confirm, type your email address:",
+    "DELETE_CONFIRM_BTN": "Delete permanently",
+    "TOAST": {
+      "PROFILE_UPDATED": "Profile updated successfully.",
+      "PROFILE_ERROR": "Error updating the profile.",
+      "PASSWORD_UPDATED": "Password updated successfully.",
+      "PASSWORD_MISMATCH": "Passwords do not match.",
+      "PASSWORD_ERROR": "Current password is incorrect.",
+      "DELETE_ERROR": "Error deleting the account."
+    }
+  },
+  "TEAM": {
+    "TITLE": "Team",
+    "SUBTITLE_SINGLE": "{{ count }} member in the workspace",
+    "SUBTITLE_PLURAL": "{{ count }} members in the workspace",
+    "INVITE_BTN": "Invite member",
+    "ACTIVE_SECTION": "Active members",
+    "YOU": "You",
+    "CHANGE_ROLE_ARIA": "Change role",
+    "REMOVE_ARIA": "Remove member",
+    "NO_OTHER_MEMBERS": "No other active members.",
+    "PENDING_SECTION": "Pending invites",
+    "PENDING_INVITE_STATUS": "Invite pending acceptance",
+    "CANCEL_INVITE_ARIA": "Cancel invite",
+    "MODAL_TITLE": "Invite a member",
+    "FORM": {
+      "EMAIL_LABEL": "Email address",
+      "EMAIL_PLACEHOLDER": "colleague@company.com",
+      "ROLE_LABEL": "Role"
+    },
+    "ROLES": {
+      "ADMIN": "Administrator",
+      "MEMBER": "Member",
+      "VIEWER": "Viewer",
+      "OWNER": "Owner",
+      "SUPERADMIN": "Super Admin",
+      "ADMIN_DESC": "Full access to all settings and data.",
+      "MEMBER_DESC": "Can create and manage projects and tasks.",
+      "VIEWER_DESC": "Read-only, cannot modify anything."
+    },
+    "TOAST": {
+      "ALREADY_EXISTS": "This email address is already in the team.",
+      "INVITED": "Invite sent to {{ email }}.",
+      "ROLE_UPDATED": "Role updated.",
+      "ROLE_UPDATE_ERROR": "Error updating the role.",
+      "REMOVED": "{{ email }} removed from the team."
+    }
+  },
+  "VALIDATION": {
+    "REQUIRED": "Required field",
+    "EMAIL": "Enter a valid email",
+    "MIN_LENGTH": "Minimum {{ length }} characters"
+  },
+  "ERRORS": {
+    "UNKNOWN": "Unknown error",
+    "GENERIC": "An error occurred. Please try again."
+  }
+}

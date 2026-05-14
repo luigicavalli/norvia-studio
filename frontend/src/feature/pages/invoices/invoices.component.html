@@ -3,10 +3,16 @@
   <!-- Header -->
   <div class="invoices__header">
     <div>
-      <h1>Fatture</h1>
-      <p class="invoices__subtitle">{{ invoiceService.invoices().length }} fattur{{ invoiceService.invoices().length === 1 ? 'a' : 'e' }} totali</p>
+      <h1>{{ 'INVOICES.TITLE' | translate }}</h1>
+      <p class="invoices__subtitle">
+        @if (invoiceService.invoices().length === 1) {
+          {{ 'INVOICES.SUBTITLE_SINGLE' | translate: { count: 1 } }}
+        } @else {
+          {{ 'INVOICES.SUBTITLE_PLURAL' | translate: { count: invoiceService.invoices().length } }}
+        }
+      </p>
     </div>
-    <app-button label="Nuova fattura" size="sm" (clicked)="openCreate()">
+    <app-button [label]="'INVOICES.NEW_INVOICE' | translate" size="sm" (clicked)="openCreate()">
       <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -14,9 +20,9 @@
     </app-button>
   </div>
 
-  <!-- Tabella -->
+  <!-- Table -->
   @if (invoiceService.loading()) {
-    <div class="invoices__empty"><p>Caricamento fatture…</p></div>
+    <div class="invoices__empty"><p>{{ 'INVOICES.LOADING' | translate }}</p></div>
   } @else if (invoiceService.invoices().length === 0) {
     <div class="invoices__empty">
       <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none"
@@ -25,22 +31,22 @@
         <line x1="8" y1="21" x2="16" y2="21"/>
         <line x1="12" y1="17" x2="12" y2="21"/>
       </svg>
-      <p>Nessuna fattura</p>
-      <small>Crea la prima fattura per iniziare.</small>
-      <app-button label="Crea fattura" size="sm" (clicked)="openCreate()" />
+      <p>{{ 'INVOICES.EMPTY_TITLE' | translate }}</p>
+      <small>{{ 'INVOICES.EMPTY_HINT' | translate }}</small>
+      <app-button [label]="'INVOICES.CREATE' | translate" size="sm" (clicked)="openCreate()" />
     </div>
   } @else {
     <div class="invoices__table-wrap">
       <table class="invoices__table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Cliente</th>
-            <th>Stato</th>
-            <th>Emissione</th>
-            <th>Scadenza</th>
-            <th>Pagata il</th>
-            <th class="invoices__th--right">Totale</th>
+            <th>{{ 'INVOICES.TABLE.NUMBER' | translate }}</th>
+            <th>{{ 'INVOICES.TABLE.CLIENT' | translate }}</th>
+            <th>{{ 'INVOICES.TABLE.STATUS' | translate }}</th>
+            <th>{{ 'INVOICES.TABLE.ISSUE_DATE' | translate }}</th>
+            <th>{{ 'INVOICES.TABLE.DUE_DATE' | translate }}</th>
+            <th>{{ 'INVOICES.TABLE.PAID_AT' | translate }}</th>
+            <th class="invoices__th--right">{{ 'INVOICES.TABLE.TOTAL' | translate }}</th>
             <th></th>
           </tr>
         </thead>
@@ -56,7 +62,7 @@
               <td class="invoices__total">{{ invoiceService.total(invoice) | number:'1.2-2' }} {{ invoice.items[0]?.currency ?? '' }}</td>
               <td class="invoices__actions">
                 <div class="invoices__menu-wrap" (click)="$event.stopPropagation()">
-                  <button class="invoices__menu-btn" (click)="toggleMenu(invoice.id)" aria-label="Azioni">
+                  <button class="invoices__menu-btn" (click)="toggleMenu(invoice.id)" [attr.aria-label]="'INVOICES.ACTIONS_ARIA' | translate">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
@@ -70,7 +76,7 @@
                           <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                         </svg>
-                        Modifica
+                        {{ 'INVOICES.MENU_EDIT' | translate }}
                       </button>
                       @if (invoice.status === 'DRAFT') {
                         <button class="invoices__dropdown-item" (click)="changeStatus(invoice, 'SENT', $event)">
@@ -78,7 +84,7 @@
                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
                           </svg>
-                          Segna come inviata
+                          {{ 'INVOICES.MENU_MARK_SENT' | translate }}
                         </button>
                       }
                       @if (invoice.status === 'SENT' || invoice.status === 'OVERDUE') {
@@ -87,7 +93,7 @@
                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="20 6 9 17 4 12"/>
                           </svg>
-                          Segna come pagata
+                          {{ 'INVOICES.MENU_MARK_PAID' | translate }}
                         </button>
                       }
                       @if (invoice.status !== 'PAID' && invoice.status !== 'CANCELLED') {
@@ -96,7 +102,7 @@
                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
                           </svg>
-                          Annulla
+                          {{ 'INVOICES.MENU_CANCEL' | translate }}
                         </button>
                       }
                       <button class="invoices__dropdown-item invoices__dropdown-item--danger" (click)="removeInvoice(invoice.id, $event)">
@@ -107,7 +113,7 @@
                           <path d="M10 11v6"/><path d="M14 11v6"/>
                           <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                         </svg>
-                        Elimina
+                        {{ 'INVOICES.MENU_DELETE' | translate }}
                       </button>
                     </div>
                   }
@@ -122,20 +128,20 @@
 
 </div>
 
-<!-- Modal crea / modifica fattura -->
+<!-- Create / edit modal -->
 <app-modal [open]="modalOpen()" [title]="modalTitle()" size="lg" (closed)="modalOpen.set(false)">
   <form class="invoice-form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <div class="invoice-form__row">
       <app-select
-        label="Cliente"
-        placeholder="Seleziona un cliente…"
+        [label]="'INVOICES.FORM.CLIENT_LABEL' | translate"
+        [placeholder]="'INVOICES.FORM.CLIENT_PLACEHOLDER' | translate"
         formControlName="clientId"
         [options]="clientOptions()"
         [error]="!!form.get('clientId')?.invalid && !!form.get('clientId')?.touched"
       />
       <app-input
-        label="N° fattura"
+        [label]="'INVOICES.FORM.NUMBER_LABEL' | translate"
         type="number"
         formControlName="number"
         [error]="!!form.get('number')?.invalid && !!form.get('number')?.touched"
@@ -143,19 +149,19 @@
     </div>
 
     <div class="invoice-form__row">
-      <app-datepicker label="Data emissione" formControlName="issueDate" />
-      <app-datepicker label="Data scadenza"  formControlName="dueDate"   />
+      <app-datepicker [label]="'INVOICES.FORM.ISSUE_DATE_LABEL' | translate" formControlName="issueDate" />
+      <app-datepicker [label]="'INVOICES.FORM.DUE_DATE_LABEL' | translate"   formControlName="dueDate"   />
     </div>
 
-    <app-select label="Stato" formControlName="status" [options]="statusOptions" />
+    <app-select [label]="'INVOICES.FORM.STATUS_LABEL' | translate" formControlName="status" [options]="statusOptions" />
 
-    <app-input label="Note" placeholder="Note aggiuntive (opzionale)" formControlName="notes" />
+    <app-input [label]="'INVOICES.FORM.NOTES_LABEL' | translate" [placeholder]="'INVOICES.FORM.NOTES_PLACEHOLDER' | translate" formControlName="notes" />
 
-    <!-- Voci -->
+    <!-- Line items -->
     <div class="invoice-form__items">
       <div class="invoice-form__items-header">
-        <span>Voci</span>
-        <app-button label="Aggiungi voce" variant="ghost" size="sm" (clicked)="addItem()">
+        <span>{{ 'INVOICES.FORM.ITEMS_HEADER' | translate }}</span>
+        <app-button [label]="'INVOICES.FORM.ADD_ITEM' | translate" variant="ghost" size="sm" (clicked)="addItem()">
           <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -168,22 +174,22 @@
           <div class="invoice-form__item" [formGroupName]="$index">
             <div class="invoice-form__item-main">
               <app-input
-                label="Descrizione"
-                placeholder="Es. Sviluppo frontend"
+                [label]="'INVOICES.FORM.ITEM_DESC_LABEL' | translate"
+                [placeholder]="'INVOICES.FORM.ITEM_DESC_PLACEHOLDER' | translate"
                 formControlName="description"
                 [error]="!!item.get('description')?.invalid && !!item.get('description')?.touched"
               />
             </div>
             <div class="invoice-form__item-nums">
-              <app-input label="Qtà"    type="number" formControlName="quantity"  />
-              <app-input label="Prezzo" type="number" formControlName="unitPrice" />
-              <app-select label="Valuta" formControlName="currency" [options]="currencyOptions" />
+              <app-input [label]="'INVOICES.FORM.ITEM_QTY_LABEL' | translate"    type="number" formControlName="quantity"  />
+              <app-input [label]="'INVOICES.FORM.ITEM_PRICE_LABEL' | translate"   type="number" formControlName="unitPrice" />
+              <app-select [label]="'INVOICES.FORM.ITEM_CURRENCY_LABEL' | translate" formControlName="currency" [options]="currencyOptions" />
               <div class="invoice-form__item-total">
-                <span class="invoice-form__item-total-label">Totale</span>
+                <span class="invoice-form__item-total-label">{{ 'INVOICES.FORM.ITEM_TOTAL_LABEL' | translate }}</span>
                 <span class="invoice-form__item-total-value">{{ rowTotal($index) | number:'1.2-2' }}</span>
               </div>
               @if (itemsArray.length > 1) {
-                <button type="button" class="invoice-form__item-remove" (click)="removeItem($index)" aria-label="Rimuovi">
+                <button type="button" class="invoice-form__item-remove" (click)="removeItem($index)" [attr.aria-label]="'INVOICES.FORM.ITEM_REMOVE_ARIA' | translate">
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -196,7 +202,7 @@
       </div>
 
       <div class="invoice-form__total">
-        <span>Totale fattura</span>
+        <span>{{ 'INVOICES.FORM.INVOICE_TOTAL' | translate }}</span>
         <strong>{{ formTotal() | number:'1.2-2' }}</strong>
       </div>
     </div>
@@ -204,7 +210,7 @@
   </form>
 
   <div modal-footer>
-    <app-button label="Annulla" variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
-    <app-button [label]="editingId() ? 'Salva modifiche' : 'Crea fattura'" size="sm" [loading]="saving()" (clicked)="onSubmit()" />
+    <app-button [label]="'COMMON.CANCEL' | translate" variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
+    <app-button [label]="editingId() ? ('COMMON.SAVE' | translate) : ('INVOICES.CREATE' | translate)" size="sm" [loading]="saving()" (clicked)="onSubmit()" />
   </div>
 </app-modal>

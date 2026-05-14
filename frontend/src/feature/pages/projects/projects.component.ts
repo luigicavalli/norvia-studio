@@ -2,6 +2,7 @@ import { Component, computed, HostListener, inject, signal } from '@angular/core
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink }                                        from '@angular/router';
 import { DecimalPipe }                                       from '@angular/common';
+import { TranslatePipe, TranslateService }                   from '@ngx-translate/core';
 
 import { ProjectService }                                          from '../../../services/project.service';
 import type { Project, ProjectStatus, ProjectPriority, SaveProjectData } from '../../../models/project.model';
@@ -27,8 +28,8 @@ type FilterTab = 'all' | ProjectStatus;
 @Component({
   selector:    'app-projects',
   standalone:  true,
-  imports:     [ReactiveFormsModule, FormsModule, RouterLink, DecimalPipe, ButtonComponent, InputComponent,
-                SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent, AvatarComponent],
+  imports:     [ReactiveFormsModule, FormsModule, RouterLink, DecimalPipe, TranslatePipe, ButtonComponent,
+                InputComponent, SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent, AvatarComponent],
   templateUrl: './projects.component.html',
   styleUrl:    './projects.component.scss',
 })
@@ -41,6 +42,7 @@ export class ProjectsComponent {
   private readonly  workspaceService   = inject(WorkspaceService);
   private readonly  toast              = inject(ToastService);
   private readonly  fb                 = inject(FormBuilder);
+  private readonly  translate          = inject(TranslateService);
 
   protected readonly modalOpen    = signal(false);
   protected readonly activeTab    = signal<FilterTab>('all');
@@ -55,18 +57,18 @@ export class ProjectsComponent {
   protected readonly selectedMemberId   = signal<string>('');
 
   protected readonly statusOptions: SelectOption[] = [
-    { value: 'ACTIVE',    label: 'Attivo'     },
-    { value: 'ON_HOLD',   label: 'In pausa'   },
-    { value: 'COMPLETED', label: 'Completato' },
-    { value: 'DRAFT',     label: 'Bozza'      },
-    { value: 'CANCELLED', label: 'Annullato'  },
+    { value: 'ACTIVE',    label: this.translate.instant('PROJECTS.STATUS.ACTIVE')    },
+    { value: 'ON_HOLD',   label: this.translate.instant('PROJECTS.STATUS.ON_HOLD')   },
+    { value: 'COMPLETED', label: this.translate.instant('PROJECTS.STATUS.COMPLETED') },
+    { value: 'DRAFT',     label: this.translate.instant('PROJECTS.STATUS.DRAFT')     },
+    { value: 'CANCELLED', label: this.translate.instant('PROJECTS.STATUS.CANCELLED') },
   ];
 
   protected readonly priorityOptions: SelectOption[] = [
-    { value: 'LOW',      label: 'Bassa'   },
-    { value: 'MEDIUM',   label: 'Media'   },
-    { value: 'HIGH',     label: 'Alta'    },
-    { value: 'CRITICAL', label: 'Critica' },
+    { value: 'LOW',      label: this.translate.instant('PROJECTS.PRIORITY.LOW')      },
+    { value: 'MEDIUM',   label: this.translate.instant('PROJECTS.PRIORITY.MEDIUM')   },
+    { value: 'HIGH',     label: this.translate.instant('PROJECTS.PRIORITY.HIGH')     },
+    { value: 'CRITICAL', label: this.translate.instant('PROJECTS.PRIORITY.CRITICAL') },
   ];
 
   protected readonly currencyOptions: SelectOption[] = [
@@ -76,10 +78,10 @@ export class ProjectsComponent {
   ];
 
   protected readonly tabs: { key: FilterTab; label: string }[] = [
-    { key: 'all',       label: 'Tutti'      },
-    { key: 'ACTIVE',    label: 'Attivi'     },
-    { key: 'ON_HOLD',   label: 'In pausa'   },
-    { key: 'COMPLETED', label: 'Completati' },
+    { key: 'all',       label: this.translate.instant('PROJECTS.TABS.ALL')       },
+    { key: 'ACTIVE',    label: this.translate.instant('PROJECTS.TABS.ACTIVE')    },
+    { key: 'ON_HOLD',   label: this.translate.instant('PROJECTS.TABS.ON_HOLD')   },
+    { key: 'COMPLETED', label: this.translate.instant('PROJECTS.TABS.COMPLETED') },
   ];
 
   protected readonly clientOptions = computed<SelectOption[]>(() =>
@@ -94,7 +96,7 @@ export class ProjectsComponent {
   });
 
   protected readonly modalTitle = computed(() =>
-    this.editingId() ? 'Modifica progetto' : 'Nuovo progetto',
+    this.translate.instant(this.editingId() ? 'PROJECTS.MODAL_TITLE_EDIT' : 'PROJECTS.MODAL_TITLE_CREATE'),
   );
 
   protected readonly form = this.fb.group({
@@ -141,7 +143,7 @@ export class ProjectsComponent {
     const client   = this.clientService.clients().find(c => c.id === clientId);
 
     if (!client) {
-      this.toast.warning('Seleziona un cliente.');
+      this.toast.warning(this.translate.instant('PROJECTS.TOAST.SELECT_CLIENT'));
       return;
     }
 
@@ -163,14 +165,14 @@ export class ProjectsComponent {
       if (id) {
         const existing = this.projectService.projects().find(p => p.id === id)!;
         await this.projectService.update(id, data, existing);
-        this.toast.success('Progetto aggiornato.');
+        this.toast.success(this.translate.instant('PROJECTS.TOAST.UPDATED'));
       } else {
         await this.projectService.create(data);
-        this.toast.success('Progetto creato con successo.');
+        this.toast.success(this.translate.instant('PROJECTS.TOAST.CREATED'));
       }
       this.modalOpen.set(false);
     } catch {
-      this.toast.danger('Errore durante il salvataggio del progetto.');
+      this.toast.danger(this.translate.instant('PROJECTS.TOAST.SAVE_ERROR'));
     } finally {
       this.saving.set(false);
     }
@@ -181,9 +183,9 @@ export class ProjectsComponent {
     try {
       await this.projectService.remove(id);
       this.openMenuId.set(null);
-      this.toast.info('Progetto eliminato.');
+      this.toast.info(this.translate.instant('PROJECTS.TOAST.DELETED'));
     } catch {
-      this.toast.danger('Errore durante l\'eliminazione.');
+      this.toast.danger(this.translate.instant('PROJECTS.TOAST.DELETE_ERROR'));
     }
   }
 
@@ -192,20 +194,23 @@ export class ProjectsComponent {
   }
 
   protected statusBadge(status: ProjectStatus): { label: string; variant: BadgeVariant } {
-    const map: Record<string, { label: string; variant: BadgeVariant }> = {
-      ACTIVE:    { label: 'Attivo',      variant: 'success' },
-      ON_HOLD:   { label: 'In pausa',    variant: 'warning' },
-      COMPLETED: { label: 'Completato',  variant: 'default' },
-      DRAFT:     { label: 'Bozza',       variant: 'default' },
-      CANCELLED: { label: 'Annullato',   variant: 'danger'  },
-      UNKNOWN:   { label: 'Sconosciuto', variant: 'default' },
+    const variants: Record<string, BadgeVariant> = {
+      ACTIVE:    'success',
+      ON_HOLD:   'warning',
+      COMPLETED: 'default',
+      DRAFT:     'default',
+      CANCELLED: 'danger',
     };
-    return map[status] ?? { label: status, variant: 'default' };
+    return {
+      label:   this.translate.instant(`PROJECTS.STATUS.${status}`, undefined) || status,
+      variant: variants[status] ?? 'default',
+    };
   }
 
   protected formatDate(date: Date | null): string {
     if (!date) return '—';
-    return new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+    const locale = this.translate.getCurrentLang() === 'en' ? 'en-GB' : 'it-IT';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
   }
 
   protected readonly assignableMembers = computed<SelectOption[]>(() => {
@@ -220,7 +225,6 @@ export class ProjectsComponent {
     this.openMenuId.set(null);
     this.assignModalProject.set(project);
     this.selectedMemberId.set('');
-    // Prende i dati già in cache dal signal globale
     this.assignments.set(this.assignmentService.byProject().get(project.id) ?? []);
   }
 
@@ -237,9 +241,9 @@ export class ProjectsComponent {
       this.assignments.set(list);
       this.assignmentService.updateLocalCache(project.id, list);
       this.selectedMemberId.set('');
-      this.toast.success('Membro assegnato.');
+      this.toast.success(this.translate.instant('PROJECTS.TOAST.MEMBER_ADDED'));
     } catch {
-      this.toast.danger('Errore durante l\'assegnazione.');
+      this.toast.danger(this.translate.instant('PROJECTS.TOAST.MEMBER_ADD_ERROR'));
     } finally {
       this.assigningSaving.set(false);
     }
@@ -252,9 +256,9 @@ export class ProjectsComponent {
       this.assignments.set(updated);
       const project = this.assignModalProject();
       if (project) this.assignmentService.updateLocalCache(project.id, updated);
-      this.toast.info('Assegnazione rimossa.');
+      this.toast.info(this.translate.instant('PROJECTS.TOAST.MEMBER_REMOVED'));
     } catch {
-      this.toast.danger('Errore durante la rimozione.');
+      this.toast.danger(this.translate.instant('PROJECTS.TOAST.MEMBER_REMOVE_ERROR'));
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "norvia-studio-frontend",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "license": "UNLICENSED",
   "author": "Luigi Cavalli",
   "scripts": {
@@ -22,6 +22,8 @@
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
     "@clerk/clerk-js": "^5.114.1",
+    "@ngx-translate/core": "^17.0.0",
+    "@ngx-translate/http-loader": "^17.0.0",
     "@sentry/angular": "^10.51.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"

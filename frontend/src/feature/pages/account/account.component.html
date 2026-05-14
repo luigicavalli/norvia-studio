@@ -9,25 +9,25 @@
     </div>
   </div>
 
-  <!-- Profilo -->
+  <!-- Profile -->
   <section class="account__card">
     <div class="account__card-header">
-      <h2>Informazioni personali</h2>
-      <p>Aggiorna il tuo nome visualizzato.</p>
+      <h2>{{ 'ACCOUNT.PROFILE_TITLE' | translate }}</h2>
+      <p>{{ 'ACCOUNT.PROFILE_SUBTITLE' | translate }}</p>
     </div>
 
     <form class="account__form" [formGroup]="profileForm" (ngSubmit)="onSaveProfile()">
       <div class="account__row">
         <app-input
-          label="Nome"
-          placeholder="Mario"
+          [label]="'FORM.FIRST_NAME' | translate"
+          [placeholder]="'ACCOUNT.FIRST_NAME_PLACEHOLDER' | translate"
           formControlName="firstName"
           [error]="!!fieldError('profile', 'firstName')"
           [errorMessage]="fieldError('profile', 'firstName')"
         />
         <app-input
-          label="Cognome"
-          placeholder="Rossi"
+          [label]="'FORM.LAST_NAME' | translate"
+          [placeholder]="'ACCOUNT.LAST_NAME_PLACEHOLDER' | translate"
           formControlName="lastName"
           [error]="!!fieldError('profile', 'lastName')"
           [errorMessage]="fieldError('profile', 'lastName')"
@@ -35,21 +35,21 @@
       </div>
 
       <div class="account__form-footer">
-        <app-button label="Salva modifiche" type="submit" size="sm" [loading]="profileSaving()" />
+        <app-button [label]="'COMMON.SAVE' | translate" type="submit" size="sm" [loading]="profileSaving()" />
       </div>
     </form>
   </section>
 
-  <!-- Password -->
+  <!-- Security -->
   <section class="account__card">
     <div class="account__card-header">
-      <h2>Sicurezza</h2>
-      <p>Aggiorna la tua password di accesso.</p>
+      <h2>{{ 'ACCOUNT.SECURITY_TITLE' | translate }}</h2>
+      <p>{{ 'ACCOUNT.SECURITY_SUBTITLE' | translate }}</p>
     </div>
 
     <form class="account__form" [formGroup]="passwordForm" (ngSubmit)="onUpdatePassword()">
       <app-input
-        label="Password attuale"
+        [label]="'ACCOUNT.CURRENT_PASSWORD_LABEL' | translate"
         type="password"
         placeholder="••••••••"
         formControlName="currentPassword"
@@ -58,7 +58,7 @@
       />
       <div class="account__row">
         <app-input
-          label="Nuova password"
+          [label]="'ACCOUNT.NEW_PASSWORD_LABEL' | translate"
           type="password"
           placeholder="••••••••"
           formControlName="newPassword"
@@ -66,7 +66,7 @@
           [errorMessage]="fieldError('password', 'newPassword')"
         />
         <app-input
-          label="Conferma password"
+          [label]="'ACCOUNT.CONFIRM_PASSWORD_LABEL' | translate"
           type="password"
           placeholder="••••••••"
           formControlName="confirmPassword"
@@ -76,33 +76,33 @@
       </div>
 
       <div class="account__form-footer">
-        <app-button label="Aggiorna password" type="submit" size="sm" [loading]="passwordSaving()" />
+        <app-button [label]="'ACCOUNT.UPDATE_PASSWORD_BTN' | translate" type="submit" size="sm" [loading]="passwordSaving()" />
       </div>
     </form>
   </section>
 
-  <!-- Zona pericolosa -->
+  <!-- Danger zone -->
   <section class="account__card account__card--danger">
     <div class="account__card-header">
-      <h2>Zona pericolosa</h2>
-      <p>Azioni irreversibili sull'account.</p>
+      <h2>{{ 'ACCOUNT.DANGER_TITLE' | translate }}</h2>
+      <p>{{ 'ACCOUNT.DANGER_SUBTITLE' | translate }}</p>
     </div>
     <div class="account__danger-body">
       <div>
-        <strong>Elimina account</strong>
-        <p>L'account e tutti i dati associati verranno eliminati definitivamente.</p>
+        <strong>{{ 'ACCOUNT.DELETE_TITLE' | translate }}</strong>
+        <p>{{ 'ACCOUNT.DELETE_DESC' | translate }}</p>
       </div>
-      <app-button label="Elimina account" size="sm" color="danger" variant="outlined" (clicked)="openDeleteModal()" />
+      <app-button [label]="'ACCOUNT.DELETE_BTN' | translate" size="sm" color="danger" variant="outlined" (clicked)="openDeleteModal()" />
     </div>
   </section>
 
 </div>
 
-<!-- Modal conferma eliminazione account -->
-<app-modal [open]="deleteOpen()" title="Elimina account" size="sm" (closed)="deleteOpen.set(false)">
+<!-- Delete account confirmation modal -->
+<app-modal [open]="deleteOpen()" [title]="'ACCOUNT.DELETE_MODAL_TITLE' | translate" size="sm" (closed)="deleteOpen.set(false)">
   <div class="delete-confirm">
-    <p>Questa azione è <strong>irreversibile</strong>. Verranno eliminati account e tutti i dati associati.</p>
-    <p class="delete-confirm__prompt">Per confermare, digita il tuo indirizzo email: <strong>{{ email() }}</strong></p>
+    <p>{{ 'ACCOUNT.DELETE_MODAL_DESC' | translate }}</p>
+    <p class="delete-confirm__prompt">{{ 'ACCOUNT.DELETE_MODAL_PROMPT' | translate }} <strong>{{ email() }}</strong></p>
     <input
       class="delete-confirm__input"
       type="email"
@@ -112,9 +112,9 @@
     />
   </div>
   <div modal-footer>
-    <app-button label="Annulla" variant="ghost" size="sm" (clicked)="deleteOpen.set(false)" />
+    <app-button [label]="'COMMON.CANCEL' | translate" variant="ghost" size="sm" (clicked)="deleteOpen.set(false)" />
     <app-button
-      label="Elimina definitivamente"
+      [label]="'ACCOUNT.DELETE_CONFIRM_BTN' | translate"
       size="sm"
       color="danger"
       [loading]="deleting()"

@@ -1,6 +1,7 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterOutlet }              from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe, TranslateService }              from '@ngx-translate/core';
 
 import { SidebarComponent }   from '../sidebar/sidebar.component';
 import { ToastComponent }     from '../shared/toast/toast.component';
@@ -21,7 +22,7 @@ import { ToastService }       from '../shared/toast/toast.service';
   selector:    'app-shell',
   standalone:  true,
   imports:     [RouterOutlet, SidebarComponent, ToastComponent,
-                ReactiveFormsModule, ButtonComponent, InputComponent],
+                ReactiveFormsModule, TranslatePipe, ButtonComponent, InputComponent],
   templateUrl: './shell.component.html',
   styleUrl:    './shell.component.scss',
 })
@@ -37,6 +38,7 @@ export class ShellComponent implements OnInit {
   private   readonly invoiceService     = inject(InvoiceService);
   private   readonly toast            = inject(ToastService);
   private   readonly fb               = inject(FormBuilder);
+  private   readonly translate        = inject(TranslateService);
 
   protected readonly setupForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -98,9 +100,9 @@ export class ShellComponent implements OnInit {
         this.quoteService.load(),
         this.invoiceService.load(),
       ]);
-      this.toast.success('Workspace creato con successo!');
+      this.toast.success(this.translate.instant('SHELL.TOAST.WORKSPACE_CREATED'));
     } catch {
-      this.toast.danger('Errore durante la creazione del workspace.');
+      this.toast.danger(this.translate.instant('SHELL.TOAST.WORKSPACE_CREATE_ERROR'));
     } finally {
       this.saving.set(false);
     }
