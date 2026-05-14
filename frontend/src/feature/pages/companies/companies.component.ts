@@ -1,5 +1,6 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators }      from '@angular/forms';
+import { TranslatePipe, TranslateService }                   from '@ngx-translate/core';
 
 import { CompanyService } from '../../../services/company.service';
 import type { Company }   from '../../../models/company.model';
@@ -12,7 +13,7 @@ import { ModalComponent }  from '../../components/shared/modal/modal.component';
 @Component({
   selector:    'app-companies',
   standalone:  true,
-  imports:     [ReactiveFormsModule, ButtonComponent, InputComponent, ModalComponent],
+  imports:     [ReactiveFormsModule, TranslatePipe, ButtonComponent, InputComponent, ModalComponent],
   templateUrl: './companies.component.html',
   styleUrl:    './companies.component.scss',
 })
@@ -21,6 +22,7 @@ export class CompaniesComponent {
   protected readonly companyService = inject(CompanyService);
   private readonly  toast           = inject(ToastService);
   private readonly  fb              = inject(FormBuilder);
+  private readonly  translate       = inject(TranslateService);
 
   protected readonly modalOpen  = signal(false);
   protected readonly query      = signal('');
@@ -41,7 +43,7 @@ export class CompaniesComponent {
   });
 
   protected readonly modalTitle = computed(() =>
-    this.editingId() ? 'Modifica azienda' : 'Nuova azienda',
+    this.translate.instant(this.editingId() ? 'COMPANIES.MODAL_TITLE_EDIT' : 'COMPANIES.MODAL_TITLE_CREATE'),
   );
 
   protected readonly form = this.fb.group({
@@ -102,14 +104,14 @@ export class CompaniesComponent {
       if (id) {
         const existing = this.companyService.companies().find(c => c.id === id)!;
         await this.companyService.update(id, data, existing);
-        this.toast.success('Azienda aggiornata.');
+        this.toast.success(this.translate.instant('COMPANIES.TOAST.UPDATED'));
       } else {
         await this.companyService.create(data);
-        this.toast.success('Azienda aggiunta con successo.');
+        this.toast.success(this.translate.instant('COMPANIES.TOAST.CREATED'));
       }
       this.modalOpen.set(false);
     } catch {
-      this.toast.danger('Errore durante il salvataggio.');
+      this.toast.danger(this.translate.instant('COMPANIES.TOAST.SAVE_ERROR'));
     } finally {
       this.saving.set(false);
     }
@@ -120,9 +122,9 @@ export class CompaniesComponent {
     try {
       await this.companyService.remove(id);
       this.openMenuId.set(null);
-      this.toast.info('Azienda eliminata.');
+      this.toast.info(this.translate.instant('COMPANIES.TOAST.DELETED'));
     } catch {
-      this.toast.danger('Errore durante l\'eliminazione.');
+      this.toast.danger(this.translate.instant('COMPANIES.TOAST.DELETE_ERROR'));
     }
   }
 
@@ -140,8 +142,8 @@ export class CompaniesComponent {
   protected fieldError(field: string): string {
     const ctrl = this.form.get(field);
     if (!ctrl?.invalid || !ctrl.touched) return '';
-    if (ctrl.hasError('required')) return 'Campo obbligatorio';
-    if (ctrl.hasError('email'))    return "Inserisci un'email valida";
+    if (ctrl.hasError('required')) return this.translate.instant('VALIDATION.REQUIRED');
+    if (ctrl.hasError('email'))    return this.translate.instant('VALIDATION.EMAIL');
     return '';
   }
 

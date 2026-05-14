@@ -78,6 +78,87 @@
     "CANCEL": "Annulla",
     "SAVE": "Salva modifiche"
   },
+  "COMPANIES": {
+    "TITLE": "Aziende",
+    "SUBTITLE_SINGLE": "{{ count }} azienda totale",
+    "SUBTITLE_PLURAL": "{{ count }} aziende totali",
+    "NEW_COMPANY": "Nuova azienda",
+    "SEARCH_PLACEHOLDER": "Cerca per nome, città, P.IVA o email…",
+    "SEARCH_CLEAR_ARIA": "Cancella ricerca",
+    "LOADING": "Caricamento aziende…",
+    "EMPTY_SEARCH": "Nessun risultato per \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Prova con un termine diverso.",
+    "EMPTY_TITLE": "Nessuna azienda",
+    "EMPTY_HINT": "Aggiungi la tua prima azienda per iniziare.",
+    "ADD_COMPANY": "Aggiungi azienda",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_DELETE": "Elimina",
+    "MODAL_TITLE_CREATE": "Nuova azienda",
+    "MODAL_TITLE_EDIT": "Modifica azienda",
+    "FORM": {
+      "NAME_LABEL": "Nome azienda",
+      "NAME_PLACEHOLDER": "Es. Rossi & Associati",
+      "TAX_CODE_LABEL": "P.IVA / Codice fiscale",
+      "TAX_CODE_PLACEHOLDER": "IT12345678901",
+      "EMAIL_PLACEHOLDER": "info@azienda.it",
+      "PHONE_LABEL": "Telefono",
+      "PHONE_PLACEHOLDER": "+39 02 1234567",
+      "WEBSITE_LABEL": "Sito web",
+      "WEBSITE_PLACEHOLDER": "https://www.azienda.it",
+      "ADDRESS_LABEL": "Indirizzo",
+      "ADDRESS_PLACEHOLDER": "Via Roma 1",
+      "CITY_LABEL": "Città",
+      "CITY_PLACEHOLDER": "Milano",
+      "ZIP_LABEL": "CAP",
+      "ZIP_PLACEHOLDER": "20121",
+      "COUNTRY_LABEL": "Paese",
+      "COUNTRY_PLACEHOLDER": "Italia"
+    },
+    "TOAST": {
+      "UPDATED": "Azienda aggiornata.",
+      "CREATED": "Azienda aggiunta con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio.",
+      "DELETED": "Azienda eliminata.",
+      "DELETE_ERROR": "Errore durante l'eliminazione."
+    }
+  },
+  "CLIENTS": {
+    "TITLE": "Clienti",
+    "SUBTITLE_SINGLE": "{{ count }} cliente totale",
+    "SUBTITLE_PLURAL": "{{ count }} clienti totali",
+    "NEW_CLIENT": "Nuovo cliente",
+    "SEARCH_PLACEHOLDER": "Cerca per nome, azienda o email…",
+    "SEARCH_CLEAR_ARIA": "Cancella ricerca",
+    "LOADING": "Caricamento clienti…",
+    "EMPTY_SEARCH": "Nessun risultato per \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Prova con un termine diverso.",
+    "EMPTY_TITLE": "Nessun cliente",
+    "EMPTY_HINT": "Aggiungi il tuo primo cliente per iniziare.",
+    "ADD_CLIENT": "Aggiungi cliente",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_DELETE": "Elimina",
+    "MODAL_TITLE_CREATE": "Nuovo cliente",
+    "MODAL_TITLE_EDIT": "Modifica cliente",
+    "FORM": {
+      "FIRST_NAME_PLACEHOLDER": "Es. Mario",
+      "LAST_NAME_PLACEHOLDER": "Es. Rossi",
+      "PHONE_LABEL": "Telefono",
+      "PHONE_PLACEHOLDER": "+39 02 1234567",
+      "COMPANY_LABEL": "Azienda",
+      "COMPANY_PLACEHOLDER": "Nessuna azienda",
+      "NOTES_LABEL": "Note",
+      "NOTES_PLACEHOLDER": "Informazioni aggiuntive sul cliente…"
+    },
+    "TOAST": {
+      "UPDATED": "Cliente aggiornato.",
+      "CREATED": "Cliente aggiunto con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio del cliente.",
+      "DELETED": "Cliente eliminato.",
+      "DELETE_ERROR": "Errore durante l'eliminazione."
+    }
+  },
   "PROJECTS": {
     "TITLE": "Progetti",
     "SUBTITLE_SINGLE": "{{ count }} progetto totale",
@@ -191,6 +272,43 @@
     "ACCEPTED": "Accettato",
     "REJECTED": "Rifiutato",
     "EXPIRED": "Scaduto"
+  },
+  "TEAM": {
+    "TITLE": "Team",
+    "SUBTITLE_SINGLE": "{{ count }} membro nel workspace",
+    "SUBTITLE_PLURAL": "{{ count }} membri nel workspace",
+    "INVITE_BTN": "Invita membro",
+    "ACTIVE_SECTION": "Membri attivi",
+    "YOU": "Tu",
+    "CHANGE_ROLE_ARIA": "Cambia ruolo",
+    "REMOVE_ARIA": "Rimuovi membro",
+    "NO_OTHER_MEMBERS": "Nessun altro membro attivo.",
+    "PENDING_SECTION": "Inviti in sospeso",
+    "PENDING_INVITE_STATUS": "Invito in attesa di accettazione",
+    "CANCEL_INVITE_ARIA": "Annulla invito",
+    "MODAL_TITLE": "Invita un membro",
+    "FORM": {
+      "EMAIL_LABEL": "Indirizzo email",
+      "EMAIL_PLACEHOLDER": "collega@email.it",
+      "ROLE_LABEL": "Ruolo"
+    },
+    "ROLES": {
+      "ADMIN": "Amministratore",
+      "MEMBER": "Membro",
+      "VIEWER": "Osservatore",
+      "OWNER": "Proprietario",
+      "SUPERADMIN": "Super Admin",
+      "ADMIN_DESC": "Accesso completo a tutte le impostazioni e i dati.",
+      "MEMBER_DESC": "Può creare e gestire progetti e task.",
+      "VIEWER_DESC": "Solo lettura, non può modificare nulla."
+    },
+    "TOAST": {
+      "ALREADY_EXISTS": "Questo indirizzo email è già nel team.",
+      "INVITED": "Invito inviato a {{ email }}.",
+      "ROLE_UPDATED": "Ruolo aggiornato.",
+      "ROLE_UPDATE_ERROR": "Errore durante l'aggiornamento del ruolo.",
+      "REMOVED": "{{ email }} rimosso dal team."
+    }
   },
   "VALIDATION": {
     "REQUIRED": "Campo obbligatorio",

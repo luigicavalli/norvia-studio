@@ -78,6 +78,87 @@
     "CANCEL": "Cancel",
     "SAVE": "Save changes"
   },
+  "COMPANIES": {
+    "TITLE": "Companies",
+    "SUBTITLE_SINGLE": "{{ count }} company total",
+    "SUBTITLE_PLURAL": "{{ count }} companies total",
+    "NEW_COMPANY": "New company",
+    "SEARCH_PLACEHOLDER": "Search by name, city, VAT or email…",
+    "SEARCH_CLEAR_ARIA": "Clear search",
+    "LOADING": "Loading companies…",
+    "EMPTY_SEARCH": "No results for \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Try a different term.",
+    "EMPTY_TITLE": "No companies",
+    "EMPTY_HINT": "Add your first company to get started.",
+    "ADD_COMPANY": "Add company",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_DELETE": "Delete",
+    "MODAL_TITLE_CREATE": "New company",
+    "MODAL_TITLE_EDIT": "Edit company",
+    "FORM": {
+      "NAME_LABEL": "Company name",
+      "NAME_PLACEHOLDER": "E.g. Smith & Associates",
+      "TAX_CODE_LABEL": "VAT / Tax code",
+      "TAX_CODE_PLACEHOLDER": "GB123456789",
+      "EMAIL_PLACEHOLDER": "info@company.com",
+      "PHONE_LABEL": "Phone",
+      "PHONE_PLACEHOLDER": "+44 20 1234567",
+      "WEBSITE_LABEL": "Website",
+      "WEBSITE_PLACEHOLDER": "https://www.company.com",
+      "ADDRESS_LABEL": "Address",
+      "ADDRESS_PLACEHOLDER": "1 Main Street",
+      "CITY_LABEL": "City",
+      "CITY_PLACEHOLDER": "London",
+      "ZIP_LABEL": "Postcode",
+      "ZIP_PLACEHOLDER": "EC1A 1BB",
+      "COUNTRY_LABEL": "Country",
+      "COUNTRY_PLACEHOLDER": "United Kingdom"
+    },
+    "TOAST": {
+      "UPDATED": "Company updated.",
+      "CREATED": "Company added successfully.",
+      "SAVE_ERROR": "Error saving the company.",
+      "DELETED": "Company deleted.",
+      "DELETE_ERROR": "Error deleting the company."
+    }
+  },
+  "CLIENTS": {
+    "TITLE": "Clients",
+    "SUBTITLE_SINGLE": "{{ count }} client total",
+    "SUBTITLE_PLURAL": "{{ count }} clients total",
+    "NEW_CLIENT": "New client",
+    "SEARCH_PLACEHOLDER": "Search by name, company or email…",
+    "SEARCH_CLEAR_ARIA": "Clear search",
+    "LOADING": "Loading clients…",
+    "EMPTY_SEARCH": "No results for \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Try a different term.",
+    "EMPTY_TITLE": "No clients",
+    "EMPTY_HINT": "Add your first client to get started.",
+    "ADD_CLIENT": "Add client",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_DELETE": "Delete",
+    "MODAL_TITLE_CREATE": "New client",
+    "MODAL_TITLE_EDIT": "Edit client",
+    "FORM": {
+      "FIRST_NAME_PLACEHOLDER": "E.g. John",
+      "LAST_NAME_PLACEHOLDER": "E.g. Smith",
+      "PHONE_LABEL": "Phone",
+      "PHONE_PLACEHOLDER": "+44 20 1234567",
+      "COMPANY_LABEL": "Company",
+      "COMPANY_PLACEHOLDER": "No company",
+      "NOTES_LABEL": "Notes",
+      "NOTES_PLACEHOLDER": "Additional information about the client…"
+    },
+    "TOAST": {
+      "UPDATED": "Client updated.",
+      "CREATED": "Client added successfully.",
+      "SAVE_ERROR": "Error saving the client.",
+      "DELETED": "Client deleted.",
+      "DELETE_ERROR": "Error deleting the client."
+    }
+  },
   "PROJECTS": {
     "TITLE": "Projects",
     "SUBTITLE_SINGLE": "{{ count }} project total",
@@ -191,6 +272,43 @@
     "ACCEPTED": "Accepted",
     "REJECTED": "Rejected",
     "EXPIRED": "Expired"
+  },
+  "TEAM": {
+    "TITLE": "Team",
+    "SUBTITLE_SINGLE": "{{ count }} member in the workspace",
+    "SUBTITLE_PLURAL": "{{ count }} members in the workspace",
+    "INVITE_BTN": "Invite member",
+    "ACTIVE_SECTION": "Active members",
+    "YOU": "You",
+    "CHANGE_ROLE_ARIA": "Change role",
+    "REMOVE_ARIA": "Remove member",
+    "NO_OTHER_MEMBERS": "No other active members.",
+    "PENDING_SECTION": "Pending invites",
+    "PENDING_INVITE_STATUS": "Invite pending acceptance",
+    "CANCEL_INVITE_ARIA": "Cancel invite",
+    "MODAL_TITLE": "Invite a member",
+    "FORM": {
+      "EMAIL_LABEL": "Email address",
+      "EMAIL_PLACEHOLDER": "colleague@company.com",
+      "ROLE_LABEL": "Role"
+    },
+    "ROLES": {
+      "ADMIN": "Administrator",
+      "MEMBER": "Member",
+      "VIEWER": "Viewer",
+      "OWNER": "Owner",
+      "SUPERADMIN": "Super Admin",
+      "ADMIN_DESC": "Full access to all settings and data.",
+      "MEMBER_DESC": "Can create and manage projects and tasks.",
+      "VIEWER_DESC": "Read-only, cannot modify anything."
+    },
+    "TOAST": {
+      "ALREADY_EXISTS": "This email address is already in the team.",
+      "INVITED": "Invite sent to {{ email }}.",
+      "ROLE_UPDATED": "Role updated.",
+      "ROLE_UPDATE_ERROR": "Error updating the role.",
+      "REMOVED": "{{ email }} removed from the team."
+    }
   },
   "VALIDATION": {
     "REQUIRED": "Required field",

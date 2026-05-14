@@ -3,10 +3,16 @@
   <!-- Header -->
   <div class="clients__header">
     <div>
-      <h1>Clienti</h1>
-      <p class="clients__subtitle">{{ clientService.total() }} client{{ clientService.total() === 1 ? 'e' : 'i' }} totali</p>
+      <h1>{{ 'CLIENTS.TITLE' | translate }}</h1>
+      <p class="clients__subtitle">
+        @if (clientService.total() === 1) {
+          {{ 'CLIENTS.SUBTITLE_SINGLE' | translate: { count: 1 } }}
+        } @else {
+          {{ 'CLIENTS.SUBTITLE_PLURAL' | translate: { count: clientService.total() } }}
+        }
+      </p>
     </div>
-    <app-button label="Nuovo cliente" size="sm" (clicked)="openCreate()">
+    <app-button [label]="'CLIENTS.NEW_CLIENT' | translate" size="sm" (clicked)="openCreate()">
       <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -25,12 +31,12 @@
       <input
         class="clients__search-input"
         type="text"
-        placeholder="Cerca per nome, azienda o email…"
+        [placeholder]="'CLIENTS.SEARCH_PLACEHOLDER' | translate"
         [value]="query()"
         (input)="query.set($any($event.target).value)"
       />
       @if (query()) {
-        <button class="clients__search-clear" (click)="query.set('')" aria-label="Cancella ricerca">
+        <button class="clients__search-clear" (click)="query.set('')" [attr.aria-label]="'CLIENTS.SEARCH_CLEAR_ARIA' | translate">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -43,7 +49,7 @@
   <!-- Grid -->
   @if (clientService.loading()) {
     <div class="clients__loading">
-      <p>Caricamento clienti…</p>
+      <p>{{ 'CLIENTS.LOADING' | translate }}</p>
     </div>
   } @else if (filtered().length === 0) {
     <div class="clients__empty">
@@ -52,8 +58,8 @@
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <p>Nessun risultato per "{{ query() }}"</p>
-        <small>Prova con un termine diverso.</small>
+        <p>{{ 'CLIENTS.EMPTY_SEARCH' | translate: { query: query() } }}</p>
+        <small>{{ 'CLIENTS.EMPTY_SEARCH_HINT' | translate }}</small>
       } @else {
         <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -61,9 +67,9 @@
           <circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
         </svg>
-        <p>Nessun cliente</p>
-        <small>Aggiungi il tuo primo cliente per iniziare.</small>
-        <app-button label="Aggiungi cliente" size="sm" (clicked)="openCreate()" />
+        <p>{{ 'CLIENTS.EMPTY_TITLE' | translate }}</p>
+        <small>{{ 'CLIENTS.EMPTY_HINT' | translate }}</small>
+        <app-button [label]="'CLIENTS.ADD_CLIENT' | translate" size="sm" (clicked)="openCreate()" />
       }
     </div>
   } @else {
@@ -81,7 +87,7 @@
               }
             </div>
             <div class="client-card__menu-wrap" (click)="$event.stopPropagation()">
-              <button class="client-card__menu-btn" (click)="toggleMenu(client.id)" aria-label="Azioni">
+              <button class="client-card__menu-btn" (click)="toggleMenu(client.id)" [attr.aria-label]="'CLIENTS.ACTIONS_ARIA' | translate">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/>
@@ -95,7 +101,7 @@
                       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                     </svg>
-                    Modifica
+                    {{ 'CLIENTS.MENU_EDIT' | translate }}
                   </button>
                   <button class="client-card__dropdown-item client-card__dropdown-item--danger"
                           (click)="removeClient(client.id, $event)">
@@ -106,7 +112,7 @@
                       <path d="M10 11v6"/><path d="M14 11v6"/>
                       <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
                     </svg>
-                    Elimina
+                    {{ 'CLIENTS.MENU_DELETE' | translate }}
                   </button>
                 </div>
               }
@@ -152,21 +158,21 @@
 
 </div>
 
-<!-- Modal nuovo cliente -->
+<!-- Modal nuovo / modifica cliente -->
 <app-modal [open]="modalOpen()" [title]="modalTitle()" size="md" (closed)="modalOpen.set(false)">
   <form class="client-form" [formGroup]="form" (ngSubmit)="onSubmit()">
 
     <div class="client-form__row">
       <app-input
-        label="Nome"
-        placeholder="Es. Mario"
+        [label]="'FORM.FIRST_NAME' | translate"
+        [placeholder]="'CLIENTS.FORM.FIRST_NAME_PLACEHOLDER' | translate"
         formControlName="firstName"
         [error]="!!fieldError('firstName')"
         [errorMessage]="fieldError('firstName')"
       />
       <app-input
-        label="Cognome"
-        placeholder="Es. Rossi"
+        [label]="'FORM.LAST_NAME' | translate"
+        [placeholder]="'CLIENTS.FORM.LAST_NAME_PLACEHOLDER' | translate"
         formControlName="lastName"
         [error]="!!fieldError('lastName')"
         [errorMessage]="fieldError('lastName')"
@@ -175,7 +181,7 @@
 
     <div class="client-form__row">
       <app-input
-        label="Email"
+        [label]="'FORM.EMAIL' | translate"
         type="email"
         placeholder="mario@email.it"
         formControlName="email"
@@ -183,29 +189,29 @@
         [errorMessage]="fieldError('email')"
       />
       <app-input
-        label="Telefono"
-        placeholder="+39 02 1234567"
+        [label]="'CLIENTS.FORM.PHONE_LABEL' | translate"
+        [placeholder]="'CLIENTS.FORM.PHONE_PLACEHOLDER' | translate"
         formControlName="phone"
       />
     </div>
 
     <app-select
-      label="Azienda"
+      [label]="'CLIENTS.FORM.COMPANY_LABEL' | translate"
       formControlName="companyId"
       [options]="companyService.asOptions()"
-      placeholder="Nessuna azienda"
+      [placeholder]="'CLIENTS.FORM.COMPANY_PLACEHOLDER' | translate"
     />
 
     <app-input
-      label="Note"
-      placeholder="Informazioni aggiuntive sul cliente…"
+      [label]="'CLIENTS.FORM.NOTES_LABEL' | translate"
+      [placeholder]="'CLIENTS.FORM.NOTES_PLACEHOLDER' | translate"
       formControlName="notes"
     />
 
   </form>
 
   <div modal-footer>
-    <app-button label="Annulla"         variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
-    <app-button [label]="editingId() ? 'Salva modifiche' : 'Aggiungi cliente'" size="sm" [loading]="saving()" (clicked)="onSubmit()" />
+    <app-button [label]="'COMMON.CANCEL' | translate" variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
+    <app-button [label]="editingId() ? ('COMMON.SAVE' | translate) : ('CLIENTS.ADD_CLIENT' | translate)" size="sm" [loading]="saving()" (clicked)="onSubmit()" />
   </div>
 </app-modal>

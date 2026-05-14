@@ -1,17 +1,17 @@
-import { Component, computed, inject } from '@angular/core';
-import { DecimalPipe }                 from '@angular/common';
-import { RouterLink }                  from '@angular/router';
+import { RouterLink }                      from '@angular/router';
+import { DecimalPipe }                     from '@angular/common';
+import { Component, computed, inject }     from '@angular/core';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { AuthService }     from '../../../services/auth.service';
-import { ProjectService }  from '../../../services/project.service';
-import { ClientService }   from '../../../services/client.service';
-import { InvoiceService }  from '../../../services/invoice.service';
-import { QuoteService }    from '../../../services/quote.service';
-import { BadgeComponent }  from '../../components/shared/badge/badge.component';
-import { BadgeVariant }    from '../../components/shared/badge/badge.component';
-import type { InvoiceStatus } from '../../../models/invoice.model';
+import { AuthService }        from '../../../services/auth.service';
+import { QuoteService }       from '../../../services/quote.service';
+import { BadgeVariant }       from '../../components/shared/badge/badge.component';
+import { ClientService }      from '../../../services/client.service';
+import { ProjectService }     from '../../../services/project.service';
+import { InvoiceService }     from '../../../services/invoice.service';
+import { BadgeComponent }     from '../../components/shared/badge/badge.component';
 import type { QuoteStatus }   from '../../../models/quote.model';
+import type { InvoiceStatus } from '../../../models/invoice.model';
 
 
 @Component({

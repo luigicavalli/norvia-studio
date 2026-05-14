@@ -14,13 +14,14 @@ Norvia Studio is a multi-tenant SaaS platform that lets small creative teams man
 
 ```
 norvia-studio/
-├── backend/        # Node.js / Express REST API (Clean Architecture)
-├── frontend/       # Angular 21 SPA
+├── backend/             # Node.js / Express REST API (Clean Architecture)
+├── frontend/            # Angular 21 SPA
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml  # GitHub Actions CI pipeline
-│       └── cd.yml  # GitHub Actions CD pipeline
-├── .env.example    # Root environment variable template
+│       ├── ci.yml       # GitHub Actions CI pipeline
+│       ├── cd.yml       # GitHub Actions CD pipeline
+│       └── preview.yml  # GitHub Actions Firebase Preview pipeline
+├── .env.example         # Root environment variable template
 └── README.md
 ```
 

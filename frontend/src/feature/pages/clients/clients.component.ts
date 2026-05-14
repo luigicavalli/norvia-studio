@@ -1,5 +1,6 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators }      from '@angular/forms';
+import { TranslatePipe, TranslateService }                   from '@ngx-translate/core';
 
 import { ClientService }  from '../../../services/client.service';
 import { CompanyService } from '../../../services/company.service';
@@ -14,7 +15,7 @@ import { SelectComponent } from '../../components/shared/select/select.component
 @Component({
   selector:    'app-clients',
   standalone:  true,
-  imports:     [ReactiveFormsModule, ButtonComponent, InputComponent, ModalComponent, SelectComponent],
+  imports:     [ReactiveFormsModule, TranslatePipe, ButtonComponent, InputComponent, ModalComponent, SelectComponent],
   templateUrl: './clients.component.html',
   styleUrl:    './clients.component.scss',
 })
@@ -24,6 +25,7 @@ export class ClientsComponent {
   protected readonly companyService = inject(CompanyService);
   private readonly  toast           = inject(ToastService);
   private readonly  fb              = inject(FormBuilder);
+  private readonly  translate       = inject(TranslateService);
 
   protected readonly modalOpen  = signal(false);
   protected readonly query      = signal('');
@@ -43,7 +45,7 @@ export class ClientsComponent {
   });
 
   protected readonly modalTitle = computed(() =>
-    this.editingId() ? 'Modifica cliente' : 'Nuovo cliente',
+    this.translate.instant(this.editingId() ? 'CLIENTS.MODAL_TITLE_EDIT' : 'CLIENTS.MODAL_TITLE_CREATE'),
   );
 
   protected readonly form = this.fb.group({
@@ -95,14 +97,14 @@ export class ClientsComponent {
       if (id) {
         const existing = this.clientService.clients().find(c => c.id === id)!;
         await this.clientService.update(id, data, existing);
-        this.toast.success('Cliente aggiornato.');
+        this.toast.success(this.translate.instant('CLIENTS.TOAST.UPDATED'));
       } else {
         await this.clientService.create(data);
-        this.toast.success('Cliente aggiunto con successo.');
+        this.toast.success(this.translate.instant('CLIENTS.TOAST.CREATED'));
       }
       this.modalOpen.set(false);
     } catch {
-      this.toast.danger('Errore durante il salvataggio del cliente.');
+      this.toast.danger(this.translate.instant('CLIENTS.TOAST.SAVE_ERROR'));
     } finally {
       this.saving.set(false);
     }
@@ -113,9 +115,9 @@ export class ClientsComponent {
     try {
       await this.clientService.remove(id);
       this.openMenuId.set(null);
-      this.toast.info('Cliente eliminato.');
+      this.toast.info(this.translate.instant('CLIENTS.TOAST.DELETED'));
     } catch {
-      this.toast.danger('Errore durante l\'eliminazione.');
+      this.toast.danger(this.translate.instant('CLIENTS.TOAST.DELETE_ERROR'));
     }
   }
 
@@ -133,8 +135,8 @@ export class ClientsComponent {
   protected fieldError(field: string): string {
     const ctrl = this.form.get(field);
     if (!ctrl?.invalid || !ctrl.touched) return '';
-    if (ctrl.hasError('required')) return 'Campo obbligatorio';
-    if (ctrl.hasError('email'))    return "Inserisci un'email valida";
+    if (ctrl.hasError('required')) return this.translate.instant('VALIDATION.REQUIRED');
+    if (ctrl.hasError('email'))    return this.translate.instant('VALIDATION.EMAIL');
     return '';
   }
 
