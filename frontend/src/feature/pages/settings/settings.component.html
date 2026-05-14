@@ -65,25 +65,23 @@
   </section>
   -->
 
-  <!-- Lingua — in attesa di sistema i18n (TODO) -->
-  <!--
+  <!-- Lingua -->
   <section class="settings__card">
     <div class="settings__card-header">
       <h2>Lingua</h2>
       <p>Lingua dell'interfaccia.</p>
     </div>
-    <div class="settings__form" [formGroup]="appearanceForm">
+    <form class="settings__form" [formGroup]="appearanceForm" (ngSubmit)="onSaveLanguage()">
       <app-select
         label="Lingua"
         formControlName="language"
         [options]="languageOptions"
       />
       <div class="settings__form-footer">
-        <app-button label="Salva lingua" type="button" size="sm" [loading]="notifSaving()" (clicked)="onSaveNotifications()" />
+        <app-button label="Salva lingua" type="submit" size="sm" [loading]="languageSaving()" />
       </div>
-    </div>
+    </form>
   </section>
-  -->
 
   <!-- Piano -->
   <section class="settings__card">

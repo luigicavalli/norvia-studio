@@ -43,6 +43,82 @@
     "BIRTH_DATE": "Date of birth",
     "VERIFY_CODE": "Verification code"
   },
+  "COMMON": {
+    "CANCEL": "Cancel",
+    "SAVE": "Save changes"
+  },
+  "PROJECTS": {
+    "TITLE": "Projects",
+    "SUBTITLE_SINGLE": "{{ count }} project total",
+    "SUBTITLE_PLURAL": "{{ count }} projects total",
+    "NEW_PROJECT": "New project",
+    "LOADING": "Loading projects…",
+    "EMPTY_TITLE": "No projects",
+    "EMPTY_HINT": "Create your first project to get started.",
+    "CREATE": "Create project",
+    "ACTIONS_ARIA": "Actions",
+    "MENU_EDIT": "Edit",
+    "MENU_TEAM": "Manage team",
+    "MENU_DELETE": "Delete",
+    "TEAM_MODAL_TITLE": "Team — {{ name }}",
+    "NO_MEMBERS": "No members assigned to this project.",
+    "REMOVE_ARIA": "Remove",
+    "ADD_MEMBER_LABEL": "Add member",
+    "ADD_MEMBER_PLACEHOLDER": "Select a member…",
+    "ADD_MEMBER_BTN": "Add",
+    "ALL_ASSIGNED": "All active members are already assigned.",
+    "MODAL_TITLE_CREATE": "New project",
+    "MODAL_TITLE_EDIT": "Edit project",
+    "FORM": {
+      "NAME_LABEL": "Project name",
+      "NAME_PLACEHOLDER": "E.g. Company website",
+      "CLIENT_LABEL": "Client",
+      "CLIENT_PLACEHOLDER": "Select a client…",
+      "DESCRIPTION_LABEL": "Description",
+      "DESCRIPTION_PLACEHOLDER": "Brief project description",
+      "STATUS_LABEL": "Status",
+      "PRIORITY_LABEL": "Priority",
+      "START_DATE_LABEL": "Start date",
+      "DUE_DATE_LABEL": "Due date",
+      "BUDGET_LABEL": "Budget",
+      "CURRENCY_LABEL": "Currency",
+      "NO_CLIENTS": "No clients available.",
+      "NO_CLIENTS_LINK": "Add a client",
+      "NO_CLIENTS_SUFFIX": "before creating a project."
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "ON_HOLD": "On hold",
+      "COMPLETED": "Completed",
+      "DRAFT": "Draft",
+      "CANCELLED": "Cancelled",
+      "UNKNOWN": "Unknown"
+    },
+    "PRIORITY": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical"
+    },
+    "TABS": {
+      "ALL": "All",
+      "ACTIVE": "Active",
+      "ON_HOLD": "On hold",
+      "COMPLETED": "Completed"
+    },
+    "TOAST": {
+      "SELECT_CLIENT": "Please select a client.",
+      "UPDATED": "Project updated.",
+      "CREATED": "Project created successfully.",
+      "SAVE_ERROR": "Error saving the project.",
+      "DELETED": "Project deleted.",
+      "DELETE_ERROR": "Error deleting the project.",
+      "MEMBER_ADDED": "Member assigned.",
+      "MEMBER_ADD_ERROR": "Error assigning the member.",
+      "MEMBER_REMOVED": "Assignment removed.",
+      "MEMBER_REMOVE_ERROR": "Error removing the assignment."
+    }
+  },
   "HOME": {
     "GREETING": "Hello 👋",
     "GREETING_NAME": "Hello, {{ name }} 👋",

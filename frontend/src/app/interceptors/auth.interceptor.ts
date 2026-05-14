@@ -19,6 +19,8 @@ export const authInterceptor: HttpInterceptorFn = (
   req:  HttpRequest<unknown>,
   next: HttpHandlerFn,
 ) => {
+  if (req.url.startsWith('/i18n/')) return next(req);
+
   const auth = inject(AuthService);
 
   return from(auth.getToken()).pipe(

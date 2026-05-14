@@ -43,6 +43,82 @@
     "BIRTH_DATE": "Data di nascita",
     "VERIFY_CODE": "Codice di verifica"
   },
+  "COMMON": {
+    "CANCEL": "Annulla",
+    "SAVE": "Salva modifiche"
+  },
+  "PROJECTS": {
+    "TITLE": "Progetti",
+    "SUBTITLE_SINGLE": "{{ count }} progetto totale",
+    "SUBTITLE_PLURAL": "{{ count }} progetti totali",
+    "NEW_PROJECT": "Nuovo progetto",
+    "LOADING": "Caricamento progetti…",
+    "EMPTY_TITLE": "Nessun progetto",
+    "EMPTY_HINT": "Crea il tuo primo progetto per iniziare.",
+    "CREATE": "Crea progetto",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_TEAM": "Gestisci team",
+    "MENU_DELETE": "Elimina",
+    "TEAM_MODAL_TITLE": "Team — {{ name }}",
+    "NO_MEMBERS": "Nessun membro assegnato a questo progetto.",
+    "REMOVE_ARIA": "Rimuovi",
+    "ADD_MEMBER_LABEL": "Aggiungi membro",
+    "ADD_MEMBER_PLACEHOLDER": "Seleziona un membro…",
+    "ADD_MEMBER_BTN": "Aggiungi",
+    "ALL_ASSIGNED": "Tutti i membri attivi sono già assegnati.",
+    "MODAL_TITLE_CREATE": "Nuovo progetto",
+    "MODAL_TITLE_EDIT": "Modifica progetto",
+    "FORM": {
+      "NAME_LABEL": "Nome progetto",
+      "NAME_PLACEHOLDER": "Es. Sito web aziendale",
+      "CLIENT_LABEL": "Cliente",
+      "CLIENT_PLACEHOLDER": "Seleziona un cliente…",
+      "DESCRIPTION_LABEL": "Descrizione",
+      "DESCRIPTION_PLACEHOLDER": "Breve descrizione del progetto",
+      "STATUS_LABEL": "Stato",
+      "PRIORITY_LABEL": "Priorità",
+      "START_DATE_LABEL": "Data inizio",
+      "DUE_DATE_LABEL": "Scadenza",
+      "BUDGET_LABEL": "Budget",
+      "CURRENCY_LABEL": "Valuta",
+      "NO_CLIENTS": "Nessun cliente disponibile.",
+      "NO_CLIENTS_LINK": "Aggiungi un cliente",
+      "NO_CLIENTS_SUFFIX": "prima di creare un progetto."
+    },
+    "STATUS": {
+      "ACTIVE": "Attivo",
+      "ON_HOLD": "In pausa",
+      "COMPLETED": "Completato",
+      "DRAFT": "Bozza",
+      "CANCELLED": "Annullato",
+      "UNKNOWN": "Sconosciuto"
+    },
+    "PRIORITY": {
+      "LOW": "Bassa",
+      "MEDIUM": "Media",
+      "HIGH": "Alta",
+      "CRITICAL": "Critica"
+    },
+    "TABS": {
+      "ALL": "Tutti",
+      "ACTIVE": "Attivi",
+      "ON_HOLD": "In pausa",
+      "COMPLETED": "Completati"
+    },
+    "TOAST": {
+      "SELECT_CLIENT": "Seleziona un cliente.",
+      "UPDATED": "Progetto aggiornato.",
+      "CREATED": "Progetto creato con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio del progetto.",
+      "DELETED": "Progetto eliminato.",
+      "DELETE_ERROR": "Errore durante l'eliminazione.",
+      "MEMBER_ADDED": "Membro assegnato.",
+      "MEMBER_ADD_ERROR": "Errore durante l'assegnazione.",
+      "MEMBER_REMOVED": "Assegnazione rimossa.",
+      "MEMBER_REMOVE_ERROR": "Errore durante la rimozione."
+    }
+  },
   "HOME": {
     "GREETING": "Ciao 👋",
     "GREETING_NAME": "Ciao, {{ name }} 👋",
