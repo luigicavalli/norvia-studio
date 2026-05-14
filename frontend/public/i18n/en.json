@@ -43,6 +43,48 @@
     "BIRTH_DATE": "Date of birth",
     "VERIFY_CODE": "Verification code"
   },
+  "HOME": {
+    "GREETING": "Hello 👋",
+    "GREETING_NAME": "Hello, {{ name }} 👋",
+    "STATS": {
+      "ACTIVE_PROJECTS": "Active projects",
+      "ON_HOLD_PROJECTS": "On hold",
+      "CLIENTS": "Clients",
+      "COMPLETED": "Completed",
+      "OUTSTANDING": "Outstanding",
+      "DRAFT_QUOTES": "Draft quotes"
+    },
+    "INVOICES": {
+      "TITLE": "Pending invoices",
+      "SEE_ALL": "See all →",
+      "EMPTY": "No pending invoices",
+      "EMPTY_HINT": "Sent or overdue invoices will appear here.",
+      "DUE_DATE": "Due",
+      "OVERDUE_DAYS": "· {{ days }}d overdue",
+      "DUE_SOON": "· in {{ days }}d"
+    },
+    "QUOTES": {
+      "TITLE": "Recent quotes",
+      "SEE_ALL": "See all →",
+      "EMPTY": "No quotes",
+      "EMPTY_HINT": "Created quotes will appear here.",
+      "NUMBER": "N°"
+    }
+  },
+  "INVOICE_STATUS": {
+    "DRAFT": "Draft",
+    "SENT": "Sent",
+    "PAID": "Paid",
+    "OVERDUE": "Overdue",
+    "CANCELLED": "Cancelled"
+  },
+  "QUOTE_STATUS": {
+    "DRAFT": "Draft",
+    "SENT": "Sent",
+    "ACCEPTED": "Accepted",
+    "REJECTED": "Rejected",
+    "EXPIRED": "Expired"
+  },
   "VALIDATION": {
     "REQUIRED": "Required field",
     "EMAIL": "Enter a valid email",

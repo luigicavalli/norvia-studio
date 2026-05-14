@@ -23,7 +23,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([authInterceptor]),
     ),
-    provideTranslateService({ lang: 'it' }),
+    provideTranslateService({ lang: 'en' }),
     provideTranslateHttpLoader({ prefix: '/i18n/', suffix: '.json' }),
     { provide: ErrorHandler, useValue: Sentry.createErrorHandler() },
     { provide: Sentry.TraceService, deps: [Router] },

@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { DecimalPipe }                 from '@angular/common';
 import { RouterLink }                  from '@angular/router';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { AuthService }     from '../../../services/auth.service';
 import { ProjectService }  from '../../../services/project.service';
@@ -16,7 +17,7 @@ import type { QuoteStatus }   from '../../../models/quote.model';
 @Component({
   selector:    'app-home',
   standalone:  true,
-  imports:     [DecimalPipe, RouterLink, BadgeComponent],
+  imports:     [DecimalPipe, RouterLink, TranslatePipe, BadgeComponent],
   templateUrl: './home.component.html',
   styleUrl:    './home.component.scss',
 })
@@ -25,17 +26,16 @@ export class HomeComponent {
   private readonly auth           = inject(AuthService);
   private readonly projectService = inject(ProjectService);
   private readonly clientService  = inject(ClientService);
+  private readonly translate      = inject(TranslateService);
   protected readonly invoiceService = inject(InvoiceService);
   protected readonly quoteService   = inject(QuoteService);
 
   protected readonly firstName = computed(() => this.auth.user()?.firstName ?? '');
 
-  protected readonly today = new Intl.DateTimeFormat('it-IT', {
-    weekday: 'long',
-    day:     'numeric',
-    month:   'long',
-    year:    'numeric',
-  }).format(new Date());
+  protected readonly today = new Intl.DateTimeFormat(
+    this.translate.getCurrentLang() === 'en' ? 'en-GB' : 'it-IT',
+    { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' },
+  ).format(new Date());
 
   protected readonly loading = computed(() =>
     !this.projectService.loaded() || !this.clientService.loaded(),
@@ -81,7 +81,8 @@ export class HomeComponent {
 
   protected formatDate(date: Date | null): string {
     if (!date) return '—';
-    return new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short' }).format(date);
+    const locale = this.translate.getCurrentLang() === 'en' ? 'en-GB' : 'it-IT';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short' }).format(date);
   }
 
   protected dueDays(date: Date | null): number {
@@ -90,25 +91,31 @@ export class HomeComponent {
   }
 
   protected invoiceStatusBadge(status: InvoiceStatus): { label: string; variant: BadgeVariant } {
-    const map: Record<InvoiceStatus, { label: string; variant: BadgeVariant }> = {
-      DRAFT:     { label: 'Bozza',     variant: 'default' },
-      SENT:      { label: 'Inviata',   variant: 'info'    },
-      PAID:      { label: 'Pagata',    variant: 'success' },
-      OVERDUE:   { label: 'Scaduta',   variant: 'warning' },
-      CANCELLED: { label: 'Annullata', variant: 'danger'  },
+    const variants: Record<InvoiceStatus, BadgeVariant> = {
+      DRAFT:     'default',
+      SENT:      'info',
+      PAID:      'success',
+      OVERDUE:   'warning',
+      CANCELLED: 'danger',
     };
-    return map[status] ?? { label: status, variant: 'default' };
+    return {
+      label:   this.translate.instant(`INVOICE_STATUS.${status}`),
+      variant: variants[status] ?? 'default',
+    };
   }
 
   protected quoteStatusBadge(status: QuoteStatus): { label: string; variant: BadgeVariant } {
-    const map: Record<QuoteStatus, { label: string; variant: BadgeVariant }> = {
-      DRAFT:    { label: 'Bozza',     variant: 'default' },
-      SENT:     { label: 'Inviato',   variant: 'info'    },
-      ACCEPTED: { label: 'Accettato', variant: 'success' },
-      REJECTED: { label: 'Rifiutato', variant: 'danger'  },
-      EXPIRED:  { label: 'Scaduto',   variant: 'warning' },
+    const variants: Record<QuoteStatus, BadgeVariant> = {
+      DRAFT:    'default',
+      SENT:     'info',
+      ACCEPTED: 'success',
+      REJECTED: 'danger',
+      EXPIRED:  'warning',
     };
-    return map[status] ?? { label: status, variant: 'default' };
+    return {
+      label:   this.translate.instant(`QUOTE_STATUS.${status}`),
+      variant: variants[status] ?? 'default',
+    };
   }
 
 }

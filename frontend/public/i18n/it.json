@@ -43,6 +43,48 @@
     "BIRTH_DATE": "Data di nascita",
     "VERIFY_CODE": "Codice di verifica"
   },
+  "HOME": {
+    "GREETING": "Ciao 👋",
+    "GREETING_NAME": "Ciao, {{ name }} 👋",
+    "STATS": {
+      "ACTIVE_PROJECTS": "Progetti attivi",
+      "ON_HOLD_PROJECTS": "Progetti in pausa",
+      "CLIENTS": "Clienti",
+      "COMPLETED": "Prog. completati",
+      "OUTSTANDING": "Da incassare",
+      "DRAFT_QUOTES": "Prev. in bozza"
+    },
+    "INVOICES": {
+      "TITLE": "Fatture in sospeso",
+      "SEE_ALL": "Vedi tutte →",
+      "EMPTY": "Nessuna fattura in sospeso",
+      "EMPTY_HINT": "Le fatture inviate o scadute appariranno qui.",
+      "DUE_DATE": "Scad.",
+      "OVERDUE_DAYS": "· {{ days }}gg scaduta",
+      "DUE_SOON": "· tra {{ days }}gg"
+    },
+    "QUOTES": {
+      "TITLE": "Preventivi recenti",
+      "SEE_ALL": "Vedi tutti →",
+      "EMPTY": "Nessun preventivo",
+      "EMPTY_HINT": "I preventivi creati appariranno qui.",
+      "NUMBER": "N°"
+    }
+  },
+  "INVOICE_STATUS": {
+    "DRAFT": "Bozza",
+    "SENT": "Inviata",
+    "PAID": "Pagata",
+    "OVERDUE": "Scaduta",
+    "CANCELLED": "Annullata"
+  },
+  "QUOTE_STATUS": {
+    "DRAFT": "Bozza",
+    "SENT": "Inviato",
+    "ACCEPTED": "Accettato",
+    "REJECTED": "Rifiutato",
+    "EXPIRED": "Scaduto"
+  },
   "VALIDATION": {
     "REQUIRED": "Campo obbligatorio",
     "EMAIL": "Inserisci un'email valida",

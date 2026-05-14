@@ -3,7 +3,13 @@
   <!-- Header -->
   <div class="home__header">
     <div>
-      <h1>Ciao{{ firstName() ? ', ' + firstName() : '' }} 👋</h1>
+      <h1>
+        @if (firstName()) {
+          {{ 'HOME.GREETING_NAME' | translate: { name: firstName() } }}
+        } @else {
+          {{ 'HOME.GREETING' | translate }}
+        }
+      </h1>
       <p class="home__date">{{ today }}</p>
     </div>
   </div>
@@ -32,7 +38,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ activeProjects() }}</span>
-          <span class="stat-card__label">Progetti attivi</span>
+          <span class="stat-card__label">{{ 'HOME.STATS.ACTIVE_PROJECTS' | translate }}</span>
         </div>
       </div>
 
@@ -45,7 +51,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ onHoldProjects() }}</span>
-          <span class="stat-card__label">Progetti in pausa</span>
+          <span class="stat-card__label">{{ 'HOME.STATS.ON_HOLD_PROJECTS' | translate }}</span>
         </div>
       </div>
 
@@ -59,7 +65,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ totalClients() }}</span>
-          <span class="stat-card__label">Clienti</span>
+          <span class="stat-card__label">{{ 'HOME.STATS.CLIENTS' | translate }}</span>
         </div>
       </div>
 
@@ -72,7 +78,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ completedCount() }}</span>
-          <span class="stat-card__label">Prog. completati</span>
+          <span class="stat-card__label">{{ 'HOME.STATS.COMPLETED' | translate }}</span>
         </div>
       </div>
 
@@ -86,7 +92,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ outstandingTotal() | number:'1.0-0' }} €</span>
-          <span class="stat-card__label">Da incassare</span>
+          <span class="stat-card__label">{{ 'HOME.STATS.OUTSTANDING' | translate }}</span>
         </div>
       </div>
 
@@ -100,7 +106,7 @@
         </div>
         <div class="stat-card__body">
           <span class="stat-card__value">{{ draftQuotesCount() }}</span>
-          <span class="stat-card__label">Prev. in bozza</span>
+          <span class="stat-card__label">{{ 'HOME.STATS.DRAFT_QUOTES' | translate }}</span>
         </div>
       </div>
 
@@ -114,14 +120,14 @@
     <!-- Fatture in sospeso -->
     <section class="home__widget">
       <div class="home__widget-header">
-        <h2>Fatture in sospeso</h2>
-        <a class="home__widget-link" routerLink="/invoices">Vedi tutte →</a>
+        <h2>{{ 'HOME.INVOICES.TITLE' | translate }}</h2>
+        <a class="home__widget-link" routerLink="/invoices">{{ 'HOME.INVOICES.SEE_ALL' | translate }}</a>
       </div>
 
       @if (pendingInvoices().length === 0) {
         <div class="widget-empty">
-          <p>Nessuna fattura in sospeso</p>
-          <small>Le fatture inviate o scadute appariranno qui.</small>
+          <p>{{ 'HOME.INVOICES.EMPTY' | translate }}</p>
+          <small>{{ 'HOME.INVOICES.EMPTY_HINT' | translate }}</small>
         </div>
       } @else {
         <div class="widget-list">
@@ -130,11 +136,11 @@
               <div class="widget-row__info">
                 <span class="widget-row__name">{{ inv.clientName || '—' }}</span>
                 <span class="widget-row__meta">
-                  Scad. {{ formatDate(inv.dueDate) }}
+                  {{ 'HOME.INVOICES.DUE_DATE' | translate }} {{ formatDate(inv.dueDate) }}
                   @if (dueDays(inv.dueDate) < 0) {
-                    <span class="widget-row__overdue">· {{ -dueDays(inv.dueDate) }}gg scaduta</span>
+                    <span class="widget-row__overdue">{{ 'HOME.INVOICES.OVERDUE_DAYS' | translate: { days: -dueDays(inv.dueDate) } }}</span>
                   } @else if (dueDays(inv.dueDate) <= 7) {
-                    <span class="widget-row__soon">· tra {{ dueDays(inv.dueDate) }}gg</span>
+                    <span class="widget-row__soon">{{ 'HOME.INVOICES.DUE_SOON' | translate: { days: dueDays(inv.dueDate) } }}</span>
                   }
                 </span>
               </div>
@@ -151,14 +157,14 @@
     <!-- Preventivi recenti -->
     <section class="home__widget">
       <div class="home__widget-header">
-        <h2>Preventivi recenti</h2>
-        <a class="home__widget-link" routerLink="/quotes">Vedi tutti →</a>
+        <h2>{{ 'HOME.QUOTES.TITLE' | translate }}</h2>
+        <a class="home__widget-link" routerLink="/quotes">{{ 'HOME.QUOTES.SEE_ALL' | translate }}</a>
       </div>
 
       @if (recentQuotes().length === 0) {
         <div class="widget-empty">
-          <p>Nessun preventivo</p>
-          <small>I preventivi creati appariranno qui.</small>
+          <p>{{ 'HOME.QUOTES.EMPTY' | translate }}</p>
+          <small>{{ 'HOME.QUOTES.EMPTY_HINT' | translate }}</small>
         </div>
       } @else {
         <div class="widget-list">
@@ -166,7 +172,7 @@
             <div class="widget-row">
               <div class="widget-row__info">
                 <span class="widget-row__name">{{ quote.clientName || '—' }}</span>
-                <span class="widget-row__meta">N° {{ quote.number }} · {{ formatDate(quote.issueDate) }}</span>
+                <span class="widget-row__meta">{{ 'HOME.QUOTES.NUMBER' | translate }} {{ quote.number }} · {{ formatDate(quote.issueDate) }}</span>
               </div>
               <div class="widget-row__right">
                 <span class="widget-row__amount">{{ quoteService.total(quote) | number:'1.2-2' }} €</span>
