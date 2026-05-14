@@ -1,0 +1,55 @@
+{
+  "INDEX": {
+    "BRAND": {
+      "HEADLINE": "Manage projects and clients with clarity.",
+      "SUBHEADLINE": "Workspace, team and deadlines in one place, without noise.",
+      "FEATURE_WORKSPACE": "Multi-workspace management",
+      "FEATURE_CLIENTS": "Centralized clients and companies",
+      "FEATURE_TEAM": "Real-time team collaboration"
+    },
+    "TABS": {
+      "LOGIN": "Sign in",
+      "REGISTER": "Sign up"
+    },
+    "LOGIN": {
+      "SUBMIT": "Sign in",
+      "NO_ACCOUNT": "Don't have an account?",
+      "REGISTER_LINK": "Sign up"
+    },
+    "MFA": {
+      "TITLE": "Two-step verification",
+      "DESCRIPTION": "Enter the code from your authenticator app.",
+      "SUBMIT": "Verify",
+      "BACK": "← Back to sign in"
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verify your email",
+      "DESCRIPTION": "We sent a verification code to your email address.",
+      "SUBMIT": "Verify email",
+      "BACK": "← Back to sign in"
+    },
+    "REGISTER": {
+      "SUBMIT": "Create account",
+      "PASSWORD_HINT": "Minimum 8 characters",
+      "HAS_ACCOUNT": "Already have an account?",
+      "LOGIN_LINK": "Sign in"
+    }
+  },
+  "FORM": {
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FIRST_NAME": "First name",
+    "LAST_NAME": "Last name",
+    "BIRTH_DATE": "Date of birth",
+    "VERIFY_CODE": "Verification code"
+  },
+  "VALIDATION": {
+    "REQUIRED": "Required field",
+    "EMAIL": "Enter a valid email",
+    "MIN_LENGTH": "Minimum {{ length }} characters"
+  },
+  "ERRORS": {
+    "UNKNOWN": "Unknown error",
+    "GENERIC": "An error occurred. Please try again."
+  }
+}

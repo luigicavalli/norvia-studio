@@ -1,0 +1,55 @@
+{
+  "INDEX": {
+    "BRAND": {
+      "HEADLINE": "Gestisci progetti e clienti con chiarezza.",
+      "SUBHEADLINE": "Workspace, team e scadenze in un unico posto, senza rumore.",
+      "FEATURE_WORKSPACE": "Gestione multi-workspace",
+      "FEATURE_CLIENTS": "Clienti e aziende centralizzati",
+      "FEATURE_TEAM": "Collaborazione del team in tempo reale"
+    },
+    "TABS": {
+      "LOGIN": "Accedi",
+      "REGISTER": "Registrati"
+    },
+    "LOGIN": {
+      "SUBMIT": "Accedi",
+      "NO_ACCOUNT": "Non hai un account?",
+      "REGISTER_LINK": "Registrati"
+    },
+    "MFA": {
+      "TITLE": "Verifica in due passaggi",
+      "DESCRIPTION": "Inserisci il codice dalla tua app di autenticazione.",
+      "SUBMIT": "Verifica",
+      "BACK": "← Torna al login"
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verifica la tua email",
+      "DESCRIPTION": "Abbiamo inviato un codice di verifica al tuo indirizzo email.",
+      "SUBMIT": "Verifica email",
+      "BACK": "← Torna al login"
+    },
+    "REGISTER": {
+      "SUBMIT": "Crea account",
+      "PASSWORD_HINT": "Minimo 8 caratteri",
+      "HAS_ACCOUNT": "Hai già un account?",
+      "LOGIN_LINK": "Accedi"
+    }
+  },
+  "FORM": {
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FIRST_NAME": "Nome",
+    "LAST_NAME": "Cognome",
+    "BIRTH_DATE": "Data di nascita",
+    "VERIFY_CODE": "Codice di verifica"
+  },
+  "VALIDATION": {
+    "REQUIRED": "Campo obbligatorio",
+    "EMAIL": "Inserisci un'email valida",
+    "MIN_LENGTH": "Minimo {{ length }} caratteri"
+  },
+  "ERRORS": {
+    "UNKNOWN": "Errore sconosciuto",
+    "GENERIC": "Si è verificato un errore. Riprova."
+  }
+}
