@@ -43,6 +43,37 @@
     "BIRTH_DATE": "Data di nascita",
     "VERIFY_CODE": "Codice di verifica"
   },
+  "SHELL": {
+    "OPEN_MENU_ARIA": "Apri menu",
+    "LOGOUT_ARIA": "Esci",
+    "WORKSPACE": {
+      "CREATE_BTN": "Crea workspace",
+      "MODAL_TITLE": "Nuovo workspace",
+      "NAME_LABEL": "Nome workspace",
+      "NAME_PLACEHOLDER": "Es. Studio Rossi, My Agency…",
+      "DESCRIPTION_LABEL": "Descrizione",
+      "DESCRIPTION_PLACEHOLDER": "Una breve descrizione del workspace (opzionale)",
+      "SUBMIT": "Crea workspace"
+    },
+    "ONBOARDING": {
+      "TITLE": "Benvenuto in Norvia Studio",
+      "SUBTITLE": "Crea il tuo primo workspace per iniziare a gestire progetti e clienti."
+    },
+    "NAV": {
+      "HOME": "Home",
+      "PROJECTS": "Progetti",
+      "CLIENTS": "Clienti",
+      "COMPANIES": "Aziende",
+      "TEAM": "Team",
+      "QUOTES": "Preventivi",
+      "INVOICES": "Fatture",
+      "SETTINGS": "Impostazioni"
+    },
+    "TOAST": {
+      "WORKSPACE_CREATED": "Workspace creato con successo!",
+      "WORKSPACE_CREATE_ERROR": "Errore durante la creazione del workspace."
+    }
+  },
   "COMMON": {
     "CANCEL": "Annulla",
     "SAVE": "Salva modifiche"
