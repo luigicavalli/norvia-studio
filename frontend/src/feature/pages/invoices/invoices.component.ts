@@ -1,6 +1,7 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe }                                              from '@angular/common';
+import { TranslatePipe, TranslateService }                         from '@ngx-translate/core';
 
 import { InvoiceService }  from '../../../services/invoice.service';
 import { ClientService }   from '../../../services/client.service';
@@ -19,7 +20,7 @@ import { BadgeVariant }        from '../../components/shared/badge/badge.compone
 @Component({
   selector:    'app-invoices',
   standalone:  true,
-  imports:     [ReactiveFormsModule, DecimalPipe, ButtonComponent, InputComponent,
+  imports:     [ReactiveFormsModule, DecimalPipe, TranslatePipe, ButtonComponent, InputComponent,
                 SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent],
   templateUrl: './invoices.component.html',
   styleUrl:    './invoices.component.scss',
@@ -29,6 +30,7 @@ export class InvoicesComponent {
   protected readonly invoiceService = inject(InvoiceService);
   protected readonly clientService  = inject(ClientService);
   private readonly  toast           = inject(ToastService);
+  private readonly  translate       = inject(TranslateService);
   private readonly  fb              = inject(FormBuilder);
 
   protected readonly modalOpen  = signal(false);
@@ -37,11 +39,11 @@ export class InvoicesComponent {
   protected readonly saving     = signal(false);
 
   protected readonly statusOptions: SelectOption[] = [
-    { value: 'DRAFT',     label: 'Bozza'      },
-    { value: 'SENT',      label: 'Inviata'    },
-    { value: 'PAID',      label: 'Pagata'     },
-    { value: 'OVERDUE',   label: 'Scaduta'    },
-    { value: 'CANCELLED', label: 'Annullata'  },
+    { value: 'DRAFT',     label: this.translate.instant('INVOICE_STATUS.DRAFT')     },
+    { value: 'SENT',      label: this.translate.instant('INVOICE_STATUS.SENT')      },
+    { value: 'PAID',      label: this.translate.instant('INVOICE_STATUS.PAID')      },
+    { value: 'OVERDUE',   label: this.translate.instant('INVOICE_STATUS.OVERDUE')   },
+    { value: 'CANCELLED', label: this.translate.instant('INVOICE_STATUS.CANCELLED') },
   ];
 
   protected readonly currencyOptions: SelectOption[] = [
@@ -55,7 +57,7 @@ export class InvoicesComponent {
   );
 
   protected readonly modalTitle = computed(() =>
-    this.editingId() ? 'Modifica fattura' : 'Nuova fattura',
+    this.translate.instant(this.editingId() ? 'INVOICES.MODAL_TITLE_EDIT' : 'INVOICES.MODAL_TITLE_CREATE'),
   );
 
   protected readonly form = this.fb.group({
@@ -144,14 +146,14 @@ export class InvoicesComponent {
       if (id) {
         const existing = this.invoiceService.invoices().find(inv => inv.id === id)!;
         await this.invoiceService.update(id, data, existing);
-        this.toast.success('Fattura aggiornata.');
+        this.toast.success(this.translate.instant('INVOICES.TOAST.UPDATED'));
       } else {
         await this.invoiceService.create(data);
-        this.toast.success('Fattura creata con successo.');
+        this.toast.success(this.translate.instant('INVOICES.TOAST.CREATED'));
       }
       this.modalOpen.set(false);
     } catch {
-      this.toast.danger('Errore durante il salvataggio della fattura.');
+      this.toast.danger(this.translate.instant('INVOICES.TOAST.SAVE_ERROR'));
     } finally {
       this.saving.set(false);
     }
@@ -162,9 +164,9 @@ export class InvoicesComponent {
     try {
       await this.invoiceService.remove(id);
       this.openMenuId.set(null);
-      this.toast.info('Fattura eliminata.');
+      this.toast.info(this.translate.instant('INVOICES.TOAST.DELETED'));
     } catch {
-      this.toast.danger('Errore durante l\'eliminazione.');
+      this.toast.danger(this.translate.instant('INVOICES.TOAST.DELETE_ERROR'));
     }
   }
 
@@ -173,9 +175,9 @@ export class InvoicesComponent {
     this.openMenuId.set(null);
     try {
       await this.invoiceService.updateStatus(invoice.id, status);
-      this.toast.success('Stato aggiornato.');
+      this.toast.success(this.translate.instant('INVOICES.TOAST.STATUS_UPDATED'));
     } catch {
-      this.toast.danger('Errore durante l\'aggiornamento dello stato.');
+      this.toast.danger(this.translate.instant('INVOICES.TOAST.STATUS_UPDATE_ERROR'));
     }
   }
 
@@ -185,18 +187,19 @@ export class InvoicesComponent {
 
   protected statusBadge(status: InvoiceStatus): { label: string; variant: BadgeVariant } {
     const map: Record<InvoiceStatus, { label: string; variant: BadgeVariant }> = {
-      DRAFT:     { label: 'Bozza',     variant: 'default' },
-      SENT:      { label: 'Inviata',   variant: 'info'    },
-      PAID:      { label: 'Pagata',    variant: 'success' },
-      OVERDUE:   { label: 'Scaduta',   variant: 'warning' },
-      CANCELLED: { label: 'Annullata', variant: 'danger'  },
+      DRAFT:     { label: this.translate.instant('INVOICE_STATUS.DRAFT'),     variant: 'default' },
+      SENT:      { label: this.translate.instant('INVOICE_STATUS.SENT'),      variant: 'info'    },
+      PAID:      { label: this.translate.instant('INVOICE_STATUS.PAID'),      variant: 'success' },
+      OVERDUE:   { label: this.translate.instant('INVOICE_STATUS.OVERDUE'),   variant: 'warning' },
+      CANCELLED: { label: this.translate.instant('INVOICE_STATUS.CANCELLED'), variant: 'danger'  },
     };
     return map[status] ?? { label: status, variant: 'default' };
   }
 
   protected formatDate(date: Date | null): string {
     if (!date) return '—';
-    return new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+    const locale = this.translate.currentLang === 'en' ? 'en-GB' : 'it-IT';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
   }
 
   protected rowTotal(index: number): number {

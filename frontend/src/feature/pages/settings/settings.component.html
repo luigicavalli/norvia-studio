@@ -1,34 +1,34 @@
 <div class="settings">
 
   <div class="settings__header">
-    <h1>Impostazioni</h1>
-    <p>Gestisci il tuo workspace e le tue preferenze.</p>
+    <h1>{{ 'SETTINGS.TITLE' | translate }}</h1>
+    <p>{{ 'SETTINGS.SUBTITLE' | translate }}</p>
   </div>
 
   <!-- Workspace -->
   <section class="settings__card">
     <div class="settings__card-header">
-      <h2>Workspace</h2>
-      <p>Nome e descrizione del tuo spazio di lavoro.</p>
+      <h2>{{ 'SETTINGS.WORKSPACE_TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.WORKSPACE_SUBTITLE' | translate }}</p>
     </div>
     <form class="settings__form" [formGroup]="workspaceForm" (ngSubmit)="onSaveWorkspace()">
       <app-input
-        label="Nome workspace"
-        placeholder="Il mio workspace"
+        [label]="'SETTINGS.WORKSPACE_NAME_LABEL' | translate"
+        [placeholder]="'SETTINGS.WORKSPACE_NAME_PLACEHOLDER' | translate"
         formControlName="name"
       />
       <app-input
-        label="Descrizione"
-        placeholder="Una breve descrizione del workspace (opzionale)"
+        [label]="'SETTINGS.WORKSPACE_DESC_LABEL' | translate"
+        [placeholder]="'SETTINGS.WORKSPACE_DESC_PLACEHOLDER' | translate"
         formControlName="description"
       />
       <div class="settings__form-footer">
-        <app-button label="Salva" type="submit" size="sm" [loading]="workspaceSaving()" />
+        <app-button [label]="'SETTINGS.WORKSPACE_SAVE_BTN' | translate" type="submit" size="sm" [loading]="workspaceSaving()" />
       </div>
     </form>
   </section>
 
-  <!-- Notifiche — in attesa di sistema email (TODO) -->
+  <!-- Notifications — pending email system (TODO) -->
   <!--
   <section class="settings__card">
     <div class="settings__card-header">
@@ -65,45 +65,40 @@
   </section>
   -->
 
-  <!-- Lingua -->
+  <!-- Language -->
   <section class="settings__card">
     <div class="settings__card-header">
-      <h2>Lingua</h2>
-      <p>Lingua dell'interfaccia.</p>
+      <h2>{{ 'SETTINGS.LANGUAGE_TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.LANGUAGE_SUBTITLE' | translate }}</p>
     </div>
     <form class="settings__form" [formGroup]="appearanceForm" (ngSubmit)="onSaveLanguage()">
       <app-select
-        label="Lingua"
+        [label]="'SETTINGS.LANGUAGE_LABEL' | translate"
         formControlName="language"
         [options]="languageOptions"
       />
       <div class="settings__form-footer">
-        <app-button label="Salva lingua" type="submit" size="sm" [loading]="languageSaving()" />
+        <app-button [label]="'SETTINGS.LANGUAGE_SAVE_BTN' | translate" type="submit" size="sm" [loading]="languageSaving()" />
       </div>
     </form>
   </section>
 
-  <!-- Piano -->
+  <!-- Plan -->
   <section class="settings__card">
     <div class="settings__card-header">
-      <h2>Piano</h2>
-      <p>Il tuo piano attuale e le funzionalità disponibili.</p>
+      <h2>{{ 'SETTINGS.PLAN_TITLE' | translate }}</h2>
+      <p>{{ 'SETTINGS.PLAN_SUBTITLE' | translate }}</p>
     </div>
     <div class="settings__plan">
       <div class="settings__plan-info">
         <div class="settings__plan-name">
           <strong>Free</strong>
-          <app-badge label="Attivo" variant="success" size="sm" />
+          <app-badge [label]="'SETTINGS.PLAN_ACTIVE' | translate" variant="success" size="sm" />
         </div>
-        <!-- <ul class="settings__plan-features">
-          <li>Fino a 3 progetti</li>
-          <li>1 membro del team</li>
-          <li>Storage 1 GB</li>
-        </ul> -->
       </div>
       <div class="settings__plan-upgrade">
-        <app-button label="Passa a Pro" size="sm" [disabled]="true" />
-        <p class="settings__plan-coming-soon">I piani a pagamento sono in arrivo.</p>
+        <app-button [label]="'SETTINGS.PLAN_UPGRADE_BTN' | translate" size="sm" [disabled]="true" />
+        <p class="settings__plan-coming-soon">{{ 'SETTINGS.PLAN_COMING_SOON' | translate }}</p>
       </div>
     </div>
   </section>

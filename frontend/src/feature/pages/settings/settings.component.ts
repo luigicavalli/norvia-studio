@@ -1,7 +1,7 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { TranslateService }             from '@ngx-translate/core';
+import { TranslatePipe, TranslateService }  from '@ngx-translate/core';
 import { firstValueFrom }              from 'rxjs';
 import { WorkspaceService }            from '../../../services/workspace.service';
 import { AuthService }                 from '../../../services/auth.service';
@@ -17,7 +17,7 @@ import { SelectOption }                from '../../components/shared/select/sele
 @Component({
   selector:    'app-settings',
   standalone:  true,
-  imports:     [ReactiveFormsModule, InputComponent, ButtonComponent, SelectComponent, /*ToggleComponent,*/ BadgeComponent],
+  imports:     [ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent, SelectComponent, /*ToggleComponent,*/ BadgeComponent],
   templateUrl: './settings.component.html',
   styleUrl:    './settings.component.scss',
 })
@@ -84,9 +84,9 @@ export class SettingsComponent implements OnInit {
     try {
       const { name, description } = this.workspaceForm.value;
       await this.workspaceService.update(id, name!, description ?? undefined);
-      this.toast.success('Impostazioni workspace salvate.');
+      this.toast.success(this.translate.instant('SETTINGS.TOAST.WORKSPACE_SAVED'));
     } catch {
-      this.toast.danger('Errore durante il salvataggio.');
+      this.toast.danger(this.translate.instant('SETTINGS.TOAST.WORKSPACE_SAVE_ERROR'));
     } finally {
       this.workspaceSaving.set(false);
     }
@@ -100,7 +100,7 @@ export class SettingsComponent implements OnInit {
       await firstValueFrom(this.translate.use(lang));
       window.location.reload();
     } catch {
-      this.toast.danger('Errore durante il salvataggio della lingua.');
+      this.toast.danger(this.translate.instant('SETTINGS.TOAST.LANGUAGE_SAVE_ERROR'));
       this.languageSaving.set(false);
     }
   }
@@ -116,9 +116,9 @@ export class SettingsComponent implements OnInit {
         weeklyDigest: v.weeklyDigest ?? true,
         language:     this.appearanceForm.value.language ?? 'it',
       });
-      this.toast.success('Preferenze aggiornate.');
+      this.toast.success(this.translate.instant('SETTINGS.TOAST.NOTIF_SAVED'));
     } catch {
-      this.toast.danger('Errore durante il salvataggio delle preferenze.');
+      this.toast.danger(this.translate.instant('SETTINGS.TOAST.NOTIF_SAVE_ERROR'));
     } finally {
       this.notifSaving.set(false);
     }
