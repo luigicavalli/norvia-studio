@@ -75,8 +75,9 @@ The frontend follows standard Angular patterns with no NgModules:
 
 - **Services** — thin wrappers around `HttpClient`, exposing Angular signals for reactive state
 - **Guards** — `authGuard` protects all authenticated routes; `guestGuard` redirects already-authenticated users away from the login page
-- **Interceptors** — `authInterceptor` attaches the Clerk JWT to every outgoing request
+- **Interceptors** — `authInterceptor` attaches the Clerk JWT to every outgoing request; skips `/i18n/` requests to avoid a bootstrap deadlock
 - **Shared components** — a small design-system library (`Button`, `Input`, `Badge`, `Modal`, `Toast`, etc.) used throughout the feature pages
+- **i18n** — full Italian / English support via `@ngx-translate/core` v17; translation files in `frontend/public/i18n/`; language preference persisted in Clerk `unsafeMetadata`; unauthenticated users fall back to `navigator.language`
 
 ---
 
