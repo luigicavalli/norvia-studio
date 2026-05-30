@@ -1,6 +1,7 @@
 import { Component, computed, HostListener, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe }                                              from '@angular/common';
+import { TranslatePipe, TranslateService }                         from '@ngx-translate/core';
 
 import { QuoteService }   from '../../../services/quote.service';
 import { ClientService }  from '../../../services/client.service';
@@ -19,7 +20,7 @@ import { BadgeVariant }         from '../../components/shared/badge/badge.compon
 @Component({
   selector:    'app-quotes',
   standalone:  true,
-  imports:     [ReactiveFormsModule, DecimalPipe, ButtonComponent, InputComponent,
+  imports:     [ReactiveFormsModule, DecimalPipe, TranslatePipe, ButtonComponent, InputComponent,
                 SelectComponent, ModalComponent, BadgeComponent, DatepickerComponent],
   templateUrl: './quotes.component.html',
   styleUrl:    './quotes.component.scss',
@@ -29,6 +30,7 @@ export class QuotesComponent {
   protected readonly quoteService  = inject(QuoteService);
   protected readonly clientService = inject(ClientService);
   private readonly  toast          = inject(ToastService);
+  private readonly  translate      = inject(TranslateService);
   private readonly  fb             = inject(FormBuilder);
 
   protected readonly modalOpen  = signal(false);
@@ -37,11 +39,11 @@ export class QuotesComponent {
   protected readonly saving     = signal(false);
 
   protected readonly statusOptions: SelectOption[] = [
-    { value: 'DRAFT',    label: 'Bozza'     },
-    { value: 'SENT',     label: 'Inviato'   },
-    { value: 'ACCEPTED', label: 'Accettato' },
-    { value: 'REJECTED', label: 'Rifiutato' },
-    { value: 'EXPIRED',  label: 'Scaduto'   },
+    { value: 'DRAFT',    label: this.translate.instant('QUOTE_STATUS.DRAFT')    },
+    { value: 'SENT',     label: this.translate.instant('QUOTE_STATUS.SENT')     },
+    { value: 'ACCEPTED', label: this.translate.instant('QUOTE_STATUS.ACCEPTED') },
+    { value: 'REJECTED', label: this.translate.instant('QUOTE_STATUS.REJECTED') },
+    { value: 'EXPIRED',  label: this.translate.instant('QUOTE_STATUS.EXPIRED')  },
   ];
 
   protected readonly currencyOptions: SelectOption[] = [
@@ -55,7 +57,7 @@ export class QuotesComponent {
   );
 
   protected readonly modalTitle = computed(() =>
-    this.editingId() ? 'Modifica preventivo' : 'Nuovo preventivo',
+    this.translate.instant(this.editingId() ? 'QUOTES.MODAL_TITLE_EDIT' : 'QUOTES.MODAL_TITLE_CREATE'),
   );
 
   protected readonly form = this.fb.group({
@@ -144,14 +146,14 @@ export class QuotesComponent {
       if (id) {
         const existing = this.quoteService.quotes().find(q => q.id === id)!;
         await this.quoteService.update(id, data, existing);
-        this.toast.success('Preventivo aggiornato.');
+        this.toast.success(this.translate.instant('QUOTES.TOAST.UPDATED'));
       } else {
         await this.quoteService.create(data);
-        this.toast.success('Preventivo creato con successo.');
+        this.toast.success(this.translate.instant('QUOTES.TOAST.CREATED'));
       }
       this.modalOpen.set(false);
     } catch {
-      this.toast.danger('Errore durante il salvataggio del preventivo.');
+      this.toast.danger(this.translate.instant('QUOTES.TOAST.SAVE_ERROR'));
     } finally {
       this.saving.set(false);
     }
@@ -162,9 +164,9 @@ export class QuotesComponent {
     try {
       await this.quoteService.remove(id);
       this.openMenuId.set(null);
-      this.toast.info('Preventivo eliminato.');
+      this.toast.info(this.translate.instant('QUOTES.TOAST.DELETED'));
     } catch {
-      this.toast.danger('Errore durante l\'eliminazione.');
+      this.toast.danger(this.translate.instant('QUOTES.TOAST.DELETE_ERROR'));
     }
   }
 
@@ -173,9 +175,9 @@ export class QuotesComponent {
     this.openMenuId.set(null);
     try {
       await this.quoteService.updateStatus(quote.id, status);
-      this.toast.success('Stato aggiornato.');
+      this.toast.success(this.translate.instant('QUOTES.TOAST.STATUS_UPDATED'));
     } catch {
-      this.toast.danger('Errore durante l\'aggiornamento dello stato.');
+      this.toast.danger(this.translate.instant('QUOTES.TOAST.STATUS_UPDATE_ERROR'));
     }
   }
 
@@ -185,18 +187,19 @@ export class QuotesComponent {
 
   protected statusBadge(status: QuoteStatus): { label: string; variant: BadgeVariant } {
     const map: Record<QuoteStatus, { label: string; variant: BadgeVariant }> = {
-      DRAFT:    { label: 'Bozza',     variant: 'default' },
-      SENT:     { label: 'Inviato',   variant: 'info'    },
-      ACCEPTED: { label: 'Accettato', variant: 'success' },
-      REJECTED: { label: 'Rifiutato', variant: 'danger'  },
-      EXPIRED:  { label: 'Scaduto',   variant: 'warning' },
+      DRAFT:    { label: this.translate.instant('QUOTE_STATUS.DRAFT'),    variant: 'default' },
+      SENT:     { label: this.translate.instant('QUOTE_STATUS.SENT'),     variant: 'info'    },
+      ACCEPTED: { label: this.translate.instant('QUOTE_STATUS.ACCEPTED'), variant: 'success' },
+      REJECTED: { label: this.translate.instant('QUOTE_STATUS.REJECTED'), variant: 'danger'  },
+      EXPIRED:  { label: this.translate.instant('QUOTE_STATUS.EXPIRED'),  variant: 'warning' },
     };
     return map[status] ?? { label: status, variant: 'default' };
   }
 
   protected formatDate(date: Date | null): string {
     if (!date) return '—';
-    return new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
+    const locale = this.translate.currentLang === 'en' ? 'en-GB' : 'it-IT';
+    return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(date);
   }
 
   protected rowTotal(index: number): number {

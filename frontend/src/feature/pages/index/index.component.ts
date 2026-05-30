@@ -5,6 +5,7 @@
  */
 import { Component, inject, signal }                               from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe, TranslateService }                         from '@ngx-translate/core';
 
 /**
  * --------
@@ -27,14 +28,15 @@ type AuthMode = 'login' | 'register' | 'mfa' | 'verify-email';
 
 @Component({
   selector:    'app-index',
-  imports:     [ReactiveFormsModule, ButtonComponent, DatepickerComponent, InputComponent],
+  imports:     [ReactiveFormsModule, TranslatePipe, ButtonComponent, DatepickerComponent, InputComponent],
   styleUrl:    './index.component.scss',
   templateUrl: './index.component.html',
 })
 export class IndexComponent {
 
-  private  readonly fb   = inject(FormBuilder);
-  private  readonly auth = inject(AuthService);
+  private  readonly fb        = inject(FormBuilder);
+  private  readonly auth      = inject(AuthService);
+  private  readonly translate = inject(TranslateService);
 
   protected readonly mode      = signal<AuthMode>('login');
   protected readonly loading   = signal<boolean>(false);
@@ -158,9 +160,9 @@ export class IndexComponent {
     if (!ctrl?.invalid || !ctrl.touched) return '';
 
     const e = ctrl.errors ?? {};
-    if (e['required'])  return 'Campo obbligatorio';
-    if (e['email'])     return 'Inserisci un\'email valida';
-    if (e['minlength']) return `Minimo ${e['minlength'].requiredLength} caratteri`;
+    if (e['required'])  return this.translate.instant('VALIDATION.REQUIRED');
+    if (e['email'])     return this.translate.instant('VALIDATION.EMAIL');
+    if (e['minlength']) return this.translate.instant('VALIDATION.MIN_LENGTH', { length: e['minlength'].requiredLength });
 
     return '';
   }
@@ -168,9 +170,9 @@ export class IndexComponent {
   private parseClerkError(err: unknown): string {
     if (err && typeof err === 'object' && 'errors' in err) {
       const errors = (err as { errors: { message: string }[] }).errors;
-      return errors?.[0]?.message ?? 'Errore sconosciuto';
+      return errors?.[0]?.message ?? this.translate.instant('ERRORS.UNKNOWN');
     }
-    return 'Si è verificato un errore. Riprova.';
+    return this.translate.instant('ERRORS.GENERIC');
   }
 
 }

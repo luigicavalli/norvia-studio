@@ -12,6 +12,7 @@ Angular 21 single-page application for Norvia Studio.
 | **Language** | TypeScript 5.9 |
 | **Build tool** | Angular CLI 21 / Vite 7 |
 | **Auth** | Clerk (`@clerk/clerk-js`) |
+| **i18n** | `@ngx-translate/core` v17 + `@ngx-translate/http-loader` v17 |
 | **Error tracking** | Sentry (`@sentry/angular`) |
 | **HTTP** | Angular `HttpClient` |
 | **Reactive state** | Angular Signals + RxJS 7 |
@@ -104,13 +105,13 @@ src/
 │   └── invoice.service.ts           # Invoice API + signal state + total() + nextNumber()
 ├── app/
 │   ├── app.ts                       # Root component
-│   ├── app.config.ts                # provideRouter, provideHttpClient, APP_INITIALIZER
+│   ├── app.config.ts                # provideRouter, provideHttpClient, provideTranslateService, APP_INITIALIZER
 │   ├── app.routes.ts                # Route definitions
 │   ├── guards/
 │   │   ├── auth.guard.ts            # Redirects unauthenticated users to /
 │   │   └── guest.guard.ts           # Redirects authenticated users away from /
 │   └── interceptors/
-│       └── auth.interceptor.ts      # Attaches Clerk JWT to every request
+│       └── auth.interceptor.ts      # Attaches Clerk JWT to every request; skips /i18n/ paths
 └── feature/
     ├── pages/
     │   ├── index/                   # Public landing page (no auth)
@@ -122,7 +123,7 @@ src/
     │   ├── invoices/                # Invoice list, create, edit, status transitions
     │   ├── team/                    # Team management (roles, inline role change)
     │   ├── account/                 # User profile, password, delete account
-    │   └── settings/                # Workspace settings
+    │   └── settings/                # Workspace settings, language selector
     └── components/
         ├── shell/                   # Authenticated layout wrapper
         ├── navbar/                  # Top navigation bar
@@ -157,10 +158,20 @@ Each service has a `load()` method that fetches from the API and updates the sig
 
 ### Authentication flow
 
-1. `app.config.ts` registers `AuthService.init()` via `provideAppInitializer` — Clerk is fully loaded before the app renders.
+1. `app.config.ts` registers a single `provideAppInitializer` that sequentially runs `auth.init()` then `translate.use(lang)` — Clerk and translations are both ready before the first component renders.
 2. `authGuard` checks `authService.isSignedIn()` on every protected navigation; unauthenticated users are redirected to `/`.
 3. `guestGuard` on the `/` route redirects already-authenticated users to `/home`.
-4. `authInterceptor` calls `authService.getToken()` and injects `Authorization: Bearer <token>` into every outgoing HTTP request.
+4. `authInterceptor` calls `authService.getToken()` and injects `Authorization: Bearer <token>` into every outgoing HTTP request; `/i18n/` requests are skipped to avoid a deadlock during bootstrap.
+
+### Internationalisation (i18n)
+
+The app supports **Italian** (default) and **English** via `@ngx-translate/core` v17.
+
+- Translation JSON files live in `public/i18n/it.json` and `public/i18n/en.json`, served as static assets.
+- The active language is resolved at bootstrap: authenticated users read `unsafeMetadata.language` from Clerk; unauthenticated users (login page) fall back to `navigator.language`.
+- Components use the `| translate` pipe in templates and `TranslateService.instant()` for TypeScript-computed strings (toasts, badge labels, select options).
+- Changing the language from the Settings page calls `translate.use(lang)`, saves the preference to Clerk, then reloads the page so all `instant()`-computed values are refreshed.
+- In tests, provide a mock `TranslateService` with an `instant()` stub returning the expected strings; the mock must also expose `onLangChange`, `onTranslationChange`, and `onFallbackLangChange` as Observables so `TranslatePipe` can subscribe to them.
 
 ### Routing
 
@@ -234,6 +245,7 @@ Test utilities used:
 - `TestBed` + `provideHttpClientTesting()` for service tests — requests are intercepted with `HttpTestingController`
 - `ComponentFixture` for component tests — rendered in a minimal DOM via jsdom
 - `vi.fn()` / `vi.useFakeTimers()` for mocking Vitest globals
+- Components that use `TranslatePipe` require `{ provide: TranslateService, useValue: mockTranslateService }` in the test providers; the mock must implement `instant()`, `get()`, `use()`, and the three `on*Change` Observables
 
 ---
 

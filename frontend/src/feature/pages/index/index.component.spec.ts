@@ -6,6 +6,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal }                    from '@angular/core';
 import { ReactiveFormsModule }       from '@angular/forms';
+import { Subject }                   from 'rxjs';
+import { of }                        from 'rxjs';
 
 /**
  * ----------
@@ -19,7 +21,34 @@ import { IndexComponent } from './index.component';
  * SERVICES
  * --------
  */
-import { AuthService } from '../../../services/auth.service';
+import { AuthService }      from '../../../services/auth.service';
+import { TranslateService } from '@ngx-translate/core';
+
+
+// ─── Mock TranslateService ────────────────────────────────────────────────────
+
+const TRANSLATIONS: Record<string, string> = {
+  'VALIDATION.REQUIRED':    'Campo obbligatorio',
+  'VALIDATION.EMAIL':       "Inserisci un'email valida",
+  'ERRORS.GENERIC':         'Si è verificato un errore. Riprova.',
+  'ERRORS.UNKNOWN':         'Errore sconosciuto',
+};
+
+const mockTranslateService = {
+  instant: (key: string, params?: Record<string, unknown>): string => {
+    if (key === 'VALIDATION.MIN_LENGTH' && params?.['length']) {
+      return `Minimo ${params['length']} caratteri`;
+    }
+    return TRANSLATIONS[key] ?? key;
+  },
+  get:                  (key: string) => of(TRANSLATIONS[key] ?? key),
+  use:                  vi.fn().mockReturnValue(of('it')),
+  currentLang:          'it',
+  onLangChange:         new Subject(),
+  onTranslationChange:  new Subject(),
+  onFallbackLangChange: new Subject(),
+  onDefaultLangChange:  new Subject(),
+};
 
 
 // ─── Mock AuthService ────────────────────────────────────────────────────────
@@ -77,7 +106,10 @@ describe('IndexComponent', () => {
 
     await TestBed.configureTestingModule({
       imports:   [IndexComponent, ReactiveFormsModule],
-      providers: [{ provide: AuthService, useValue: mockAuthService }],
+      providers: [
+        { provide: AuthService,      useValue: mockAuthService      },
+        { provide: TranslateService, useValue: mockTranslateService },
+      ],
     }).compileComponents();
 
     fixture   = TestBed.createComponent(IndexComponent);
@@ -113,12 +145,12 @@ describe('IndexComponent', () => {
   it('should render the login form when mode is login', () => {
     const el: HTMLElement = fixture.nativeElement;
     expect(el.querySelector('form')).toBeTruthy();
-    expect(el.querySelector('app-button[label="Accedi"]')).toBeTruthy();
+    expect(el.querySelector('form app-button')).toBeTruthy();
   });
 
   it('should not render the register form when mode is login', () => {
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('app-button[label="Crea account"]')).toBeNull();
+    expect(el.querySelector('app-datepicker')).toBeNull();
   });
 
   it('should render brand panel', () => {
@@ -188,7 +220,7 @@ describe('IndexComponent', () => {
     fixture.detectChanges();
 
     const el: HTMLElement = fixture.nativeElement;
-    expect(el.querySelector('app-button[label="Crea account"]')).toBeTruthy();
+    expect(el.querySelector('form app-button')).toBeTruthy();
     expect(el.querySelector('app-datepicker')).toBeTruthy();
   });
 

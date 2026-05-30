@@ -1,6 +1,6 @@
 <!-- Mobile top bar -->
 <header class="mobile-bar">
-  <button class="mobile-bar__hamburger" (click)="sidebar.open()" aria-label="Apri menu">
+  <button class="mobile-bar__hamburger" (click)="sidebar.open()" [attr.aria-label]="'SHELL.OPEN_MENU_ARIA' | translate">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="6"  x2="21" y2="6"/>
@@ -34,19 +34,19 @@
         </svg>
       </div>
 
-      <h2 class="workspace-setup__title">Benvenuto in Norvia Studio</h2>
-      <p class="workspace-setup__subtitle">Crea il tuo primo workspace per iniziare a gestire progetti e clienti.</p>
+      <h2 class="workspace-setup__title">{{ 'SHELL.ONBOARDING.TITLE' | translate }}</h2>
+      <p class="workspace-setup__subtitle">{{ 'SHELL.ONBOARDING.SUBTITLE' | translate }}</p>
 
       <form class="workspace-setup__form" [formGroup]="setupForm" (ngSubmit)="onCreateWorkspace()">
         <app-input
-          label="Nome workspace"
-          placeholder="Es. Studio Rossi, My Agency…"
+          [label]="'SHELL.WORKSPACE.NAME_LABEL' | translate"
+          [placeholder]="'SHELL.WORKSPACE.NAME_PLACEHOLDER' | translate"
           formControlName="name"
           [error]="!!setupForm.get('name')?.invalid && !!setupForm.get('name')?.touched"
-          [errorMessage]="setupForm.get('name')?.touched && setupForm.get('name')?.hasError('required') ? 'Campo obbligatorio' : ''"
+          [errorMessage]="setupForm.get('name')?.touched && setupForm.get('name')?.hasError('required') ? ('VALIDATION.REQUIRED' | translate) : ''"
         />
         <app-button
-          label="Crea workspace"
+          [label]="'SHELL.WORKSPACE.SUBMIT' | translate"
           [loading]="saving()"
           (clicked)="onCreateWorkspace()"
         />

@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe, TranslateService }                         from '@ngx-translate/core';
 
 import { AuthService }  from '../../../services/auth.service';
 import { ToastService } from '../../components/shared/toast/toast.service';
@@ -12,20 +13,21 @@ import { ModalComponent }   from '../../components/shared/modal/modal.component'
 @Component({
   selector:    'app-account',
   standalone:  true,
-  imports:     [ReactiveFormsModule, AvatarComponent, InputComponent, ButtonComponent, ModalComponent],
+  imports:     [ReactiveFormsModule, TranslatePipe, AvatarComponent, InputComponent, ButtonComponent, ModalComponent],
   templateUrl: './account.component.html',
   styleUrl:    './account.component.scss',
 })
 export class AccountComponent implements OnInit {
 
-  private readonly auth  = inject(AuthService);
-  private readonly toast = inject(ToastService);
-  private readonly fb    = inject(FormBuilder);
+  private readonly auth      = inject(AuthService);
+  private readonly toast     = inject(ToastService);
+  private readonly translate = inject(TranslateService);
+  private readonly fb        = inject(FormBuilder);
 
   protected readonly user        = this.auth.user;
   protected readonly displayName = computed(() => {
     const u = this.user();
-    return [u?.firstName, u?.lastName].filter(Boolean).join(' ') || 'Utente';
+    return [u?.firstName, u?.lastName].filter(Boolean).join(' ') || this.translate.instant('ACCOUNT.USER_FALLBACK');
   });
   protected readonly email = computed(() =>
     this.user()?.primaryEmailAddress?.emailAddress ?? '',
@@ -63,9 +65,9 @@ export class AccountComponent implements OnInit {
     try {
       const { firstName, lastName } = this.profileForm.value;
       await this.auth.updateProfile(firstName!, lastName!);
-      this.toast.success('Profilo aggiornato con successo.');
+      this.toast.success(this.translate.instant('ACCOUNT.TOAST.PROFILE_UPDATED'));
     } catch {
-      this.toast.danger('Errore durante l\'aggiornamento del profilo.');
+      this.toast.danger(this.translate.instant('ACCOUNT.TOAST.PROFILE_ERROR'));
     } finally {
       this.profileSaving.set(false);
     }
@@ -76,17 +78,17 @@ export class AccountComponent implements OnInit {
 
     const { newPassword, confirmPassword, currentPassword } = this.passwordForm.value;
     if (newPassword !== confirmPassword) {
-      this.toast.warning('Le password non coincidono.');
+      this.toast.warning(this.translate.instant('ACCOUNT.TOAST.PASSWORD_MISMATCH'));
       return;
     }
 
     this.passwordSaving.set(true);
     try {
       await this.auth.updatePassword(currentPassword!, newPassword!);
-      this.toast.success('Password aggiornata con successo.');
+      this.toast.success(this.translate.instant('ACCOUNT.TOAST.PASSWORD_UPDATED'));
       this.passwordForm.reset();
     } catch {
-      this.toast.danger('Password attuale non corretta.');
+      this.toast.danger(this.translate.instant('ACCOUNT.TOAST.PASSWORD_ERROR'));
     } finally {
       this.passwordSaving.set(false);
     }
@@ -104,7 +106,7 @@ export class AccountComponent implements OnInit {
     try {
       await this.auth.deleteAccount();
     } catch {
-      this.toast.danger('Errore durante l\'eliminazione dell\'account.');
+      this.toast.danger(this.translate.instant('ACCOUNT.TOAST.DELETE_ERROR'));
       this.deleting.set(false);
     }
   }
@@ -114,8 +116,8 @@ export class AccountComponent implements OnInit {
     const ctrl  = group.get(field);
     if (!ctrl?.invalid || !ctrl.touched) return '';
     const e = ctrl.errors ?? {};
-    if (e['required'])  return 'Campo obbligatorio';
-    if (e['minlength']) return `Minimo ${e['minlength'].requiredLength} caratteri`;
+    if (e['required'])  return this.translate.instant('VALIDATION.REQUIRED');
+    if (e['minlength']) return this.translate.instant('VALIDATION.MIN_LENGTH', { length: e['minlength'].requiredLength });
     return '';
   }
 

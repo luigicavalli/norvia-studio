@@ -1,6 +1,7 @@
 import { Component, computed, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators }                   from '@angular/forms';
 import { RouterLink, RouterLinkActive }                                   from '@angular/router';
+import { TranslatePipe, TranslateService }                                from '@ngx-translate/core';
 
 import { AuthService }      from '../../../services/auth.service';
 import { WorkspaceService } from '../../../services/workspace.service';
@@ -19,7 +20,7 @@ interface NavItem {
 @Component({
   selector:    'app-sidebar',
   standalone:  true,
-  imports:     [RouterLink, RouterLinkActive, ReactiveFormsModule, InputComponent, ButtonComponent, ModalComponent],
+  imports:     [RouterLink, RouterLinkActive, ReactiveFormsModule, TranslatePipe, InputComponent, ButtonComponent, ModalComponent],
   templateUrl: './sidebar.component.html',
   styleUrl:    './sidebar.component.scss',
 })
@@ -29,6 +30,7 @@ export class SidebarComponent {
   private readonly elRef              = inject(ElementRef);
   private readonly toast              = inject(ToastService);
   private readonly fb                 = inject(FormBuilder);
+  private readonly translate          = inject(TranslateService);
   protected readonly workspaceService = inject(WorkspaceService);
 
   protected readonly user        = this.auth.user;
@@ -82,22 +84,22 @@ export class SidebarComponent {
       const { name, description } = this.createForm.value;
       await this.workspaceService.create(name!, description ?? undefined);
       this.createOpen.set(false);
-      this.toast.success('Workspace creato con successo!');
+      this.toast.success(this.translate.instant('SHELL.TOAST.WORKSPACE_CREATED'));
     } catch {
-      this.toast.danger('Errore durante la creazione del workspace.');
+      this.toast.danger(this.translate.instant('SHELL.TOAST.WORKSPACE_CREATE_ERROR'));
     } finally {
       this.saving.set(false);
     }
   }
 
   protected readonly navItems: NavItem[] = [
-    { label: 'Home',     path: '/home',      icon: 'home'     },
-    { label: 'Progetti', path: '/projects',  icon: 'folder'   },
-    { label: 'Clienti',  path: '/clients',   icon: 'briefcase'},
-    { label: 'Aziende',  path: '/companies', icon: 'building' },
-    { label: 'Team',        path: '/team',    icon: 'users'     },
-    { label: 'Preventivi', path: '/quotes',   icon: 'file-text'  },
-    { label: 'Fatture',   path: '/invoices', icon: 'receipt'    },
+    { label: this.translate.instant('SHELL.NAV.HOME'),      path: '/home',      icon: 'home'      },
+    { label: this.translate.instant('SHELL.NAV.PROJECTS'),  path: '/projects',  icon: 'folder'    },
+    { label: this.translate.instant('SHELL.NAV.CLIENTS'),   path: '/clients',   icon: 'briefcase' },
+    { label: this.translate.instant('SHELL.NAV.COMPANIES'), path: '/companies', icon: 'building'  },
+    { label: this.translate.instant('SHELL.NAV.TEAM'),      path: '/team',      icon: 'users'     },
+    { label: this.translate.instant('SHELL.NAV.QUOTES'),    path: '/quotes',    icon: 'file-text' },
+    { label: this.translate.instant('SHELL.NAV.INVOICES'),  path: '/invoices',  icon: 'receipt'   },
   ];
 
   protected async onSignOut(): Promise<void> {

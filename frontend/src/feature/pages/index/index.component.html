@@ -15,22 +15,22 @@
       </div>
 
       <div class="auth-brand__copy">
-        <h1>Gestisci progetti e clienti con chiarezza.</h1>
-        <p>Workspace, team e scadenze in un unico posto, senza rumore.</p>
+        <h1>{{ 'INDEX.BRAND.HEADLINE' | translate }}</h1>
+        <p>{{ 'INDEX.BRAND.SUBHEADLINE' | translate }}</p>
       </div>
 
       <ul class="auth-brand__features">
         <li>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Gestione multi-workspace
+          {{ 'INDEX.BRAND.FEATURE_WORKSPACE' | translate }}
         </li>
         <li>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Clienti e aziende centralizzati
+          {{ 'INDEX.BRAND.FEATURE_CLIENTS' | translate }}
         </li>
         <li>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Collaborazione del team in tempo reale
+          {{ 'INDEX.BRAND.FEATURE_TEAM' | translate }}
         </li>
       </ul>
 
@@ -59,12 +59,12 @@
             class="auth-tab"
             [class.auth-tab--active]="mode() === 'login'"
             (click)="setMode('login')"
-          >Accedi</button>
+          >{{ 'INDEX.TABS.LOGIN' | translate }}</button>
           <button
             class="auth-tab"
             [class.auth-tab--active]="mode() === 'register'"
             (click)="setMode('register')"
-          >Registrati</button>
+          >{{ 'INDEX.TABS.REGISTER' | translate }}</button>
         </div>
       }
 
@@ -73,7 +73,7 @@
         <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onLogin()">
 
           <app-input
-            label="Email"
+            [label]="'FORM.EMAIL' | translate"
             type="email"
             placeholder="mario@email.it"
             formControlName="email"
@@ -82,7 +82,7 @@
           />
 
           <app-input
-            label="Password"
+            [label]="'FORM.PASSWORD' | translate"
             type="password"
             placeholder="••••••••"
             formControlName="password"
@@ -95,7 +95,7 @@
           }
 
           <app-button
-            label="Accedi"
+            [label]="'INDEX.LOGIN.SUBMIT' | translate"
             type="submit"
             size="md"
             width="100%"
@@ -103,8 +103,8 @@
           />
 
           <p class="auth-switch">
-            Non hai un account?
-            <button type="button" class="auth-switch__link" (click)="setMode('register')">Registrati</button>
+            {{ 'INDEX.LOGIN.NO_ACCOUNT' | translate }}
+            <button type="button" class="auth-switch__link" (click)="setMode('register')">{{ 'INDEX.LOGIN.REGISTER_LINK' | translate }}</button>
           </p>
 
         </form>
@@ -122,12 +122,12 @@
                 <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
               </svg>
             </div>
-            <h2>Verifica in due passaggi</h2>
-            <p>Inserisci il codice dalla tua app di autenticazione.</p>
+            <h2>{{ 'INDEX.MFA.TITLE' | translate }}</h2>
+            <p>{{ 'INDEX.MFA.DESCRIPTION' | translate }}</p>
           </div>
 
           <app-input
-            label="Codice di verifica"
+            [label]="'FORM.VERIFY_CODE' | translate"
             placeholder="000000"
             formControlName="code"
             [error]="!!fieldError('mfa', 'code')"
@@ -139,7 +139,7 @@
           }
 
           <app-button
-            label="Verifica"
+            [label]="'INDEX.MFA.SUBMIT' | translate"
             type="submit"
             size="md"
             width="100%"
@@ -147,7 +147,7 @@
           />
 
           <p class="auth-switch">
-            <button type="button" class="auth-switch__link" (click)="setMode('login')">← Torna al login</button>
+            <button type="button" class="auth-switch__link" (click)="setMode('login')">{{ 'INDEX.MFA.BACK' | translate }}</button>
           </p>
 
         </form>
@@ -165,12 +165,12 @@
                 <polyline points="22,6 12,13 2,6"/>
               </svg>
             </div>
-            <h2>Verifica la tua email</h2>
-            <p>Abbiamo inviato un codice di verifica al tuo indirizzo email.</p>
+            <h2>{{ 'INDEX.VERIFY_EMAIL.TITLE' | translate }}</h2>
+            <p>{{ 'INDEX.VERIFY_EMAIL.DESCRIPTION' | translate }}</p>
           </div>
 
           <app-input
-            label="Codice di verifica"
+            [label]="'FORM.VERIFY_CODE' | translate"
             placeholder="000000"
             formControlName="code"
             [error]="!!fieldError('verify-email', 'code')"
@@ -182,7 +182,7 @@
           }
 
           <app-button
-            label="Verifica email"
+            [label]="'INDEX.VERIFY_EMAIL.SUBMIT' | translate"
             type="submit"
             size="md"
             width="100%"
@@ -190,7 +190,7 @@
           />
 
           <p class="auth-switch">
-            <button type="button" class="auth-switch__link" (click)="setMode('login')">← Torna al login</button>
+            <button type="button" class="auth-switch__link" (click)="setMode('login')">{{ 'INDEX.VERIFY_EMAIL.BACK' | translate }}</button>
           </p>
 
         </form>
@@ -202,14 +202,14 @@
 
           <div class="auth-form__row">
             <app-input
-              label="Nome"
+              [label]="'FORM.FIRST_NAME' | translate"
               placeholder="Mario"
               formControlName="firstName"
               [error]="!!fieldError('register', 'firstName')"
               [errorMessage]="fieldError('register', 'firstName')"
             />
             <app-input
-              label="Cognome"
+              [label]="'FORM.LAST_NAME' | translate"
               placeholder="Rossi"
               formControlName="lastName"
               [error]="!!fieldError('register', 'lastName')"
@@ -218,14 +218,14 @@
           </div>
 
           <app-datepicker
-            label="Data di nascita"
+            [label]="'FORM.BIRTH_DATE' | translate"
             formControlName="birthDate"
             [error]="!!fieldError('register', 'birthDate')"
             [errorMessage]="fieldError('register', 'birthDate')"
           />
 
           <app-input
-            label="Email"
+            [label]="'FORM.EMAIL' | translate"
             type="email"
             placeholder="mario@email.it"
             formControlName="email"
@@ -234,10 +234,10 @@
           />
 
           <app-input
-            label="Password"
+            [label]="'FORM.PASSWORD' | translate"
             type="password"
             placeholder="••••••••"
-            hint="Minimo 8 caratteri"
+            [hint]="'INDEX.REGISTER.PASSWORD_HINT' | translate"
             formControlName="password"
             [error]="!!fieldError('register', 'password')"
             [errorMessage]="fieldError('register', 'password')"
@@ -250,7 +250,7 @@
           <div id="clerk-captcha"></div>
 
           <app-button
-            label="Crea account"
+            [label]="'INDEX.REGISTER.SUBMIT' | translate"
             type="submit"
             size="md"
             width="100%"
@@ -258,8 +258,8 @@
           />
 
           <p class="auth-switch">
-            Hai già un account?
-            <button type="button" class="auth-switch__link" (click)="setMode('login')">Accedi</button>
+            {{ 'INDEX.REGISTER.HAS_ACCOUNT' | translate }}
+            <button type="button" class="auth-switch__link" (click)="setMode('login')">{{ 'INDEX.REGISTER.LOGIN_LINK' | translate }}</button>
           </p>
 
         </form>

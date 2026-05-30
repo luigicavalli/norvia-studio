@@ -3,10 +3,16 @@
   <!-- Header -->
   <div class="team__header">
     <div>
-      <h1>Team</h1>
-      <p class="team__subtitle">{{ totalCount() }} membr{{ totalCount() === 1 ? 'o' : 'i' }} nel workspace</p>
+      <h1>{{ 'TEAM.TITLE' | translate }}</h1>
+      <p class="team__subtitle">
+        @if (totalCount() === 1) {
+          {{ 'TEAM.SUBTITLE_SINGLE' | translate: { count: 1 } }}
+        } @else {
+          {{ 'TEAM.SUBTITLE_PLURAL' | translate: { count: totalCount() } }}
+        }
+      </p>
     </div>
-    <app-button label="Invita membro" size="sm" (clicked)="openModal()">
+    <app-button [label]="'TEAM.INVITE_BTN' | translate" size="sm" (clicked)="openModal()">
       <svg slot="icon-left" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
@@ -16,7 +22,7 @@
 
   <!-- Members list -->
   <section class="team__section">
-    <h4 class="team__section-title">Membri attivi</h4>
+    <h4 class="team__section-title">{{ 'TEAM.ACTIVE_SECTION' | translate }}</h4>
 
     <div class="team__list">
 
@@ -39,7 +45,7 @@
           <div class="team__row-info">
             <span class="team__row-name">
               {{ currentUser().name }}
-              <span class="team__you-badge">Tu</span>
+              <span class="team__you-badge">{{ 'TEAM.YOU' | translate }}</span>
             </span>
             <span class="team__row-email">{{ currentUser().email }}</span>
           </div>
@@ -63,7 +69,7 @@
                 class="team__role-select"
                 [value]="member.role"
                 (change)="changeRole(member.id, $event)"
-                aria-label="Cambia ruolo"
+                [attr.aria-label]="'TEAM.CHANGE_ROLE_ARIA' | translate"
               >
                 @for (opt of roleOptions; track opt.value) {
                   <option [value]="opt.value">{{ opt.label }}</option>
@@ -77,7 +83,7 @@
               />
             }
             @if (canChangeRole(member.role)) {
-              <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" aria-label="Rimuovi membro">
+              <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" [attr.aria-label]="'TEAM.REMOVE_ARIA' | translate">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -88,7 +94,7 @@
         }
 
         @if (activeMembers().length === 0) {
-          <p class="team__list-empty">Nessun altro membro attivo.</p>
+          <p class="team__list-empty">{{ 'TEAM.NO_OTHER_MEMBERS' | translate }}</p>
         }
 
       }
@@ -99,7 +105,7 @@
   <!-- Pending invites -->
   @if (teamService.pending().length > 0) {
     <section class="team__section">
-      <h4 class="team__section-title">Inviti in sospeso</h4>
+      <h4 class="team__section-title">{{ 'TEAM.PENDING_SECTION' | translate }}</h4>
 
       <div class="team__list team__list--pending">
         @for (member of teamService.pending(); track member.id) {
@@ -113,14 +119,14 @@
             </div>
             <div class="team__row-info">
               <span class="team__row-name">{{ member.email }}</span>
-              <span class="team__row-email">Invito in attesa di accettazione</span>
+              <span class="team__row-email">{{ 'TEAM.PENDING_INVITE_STATUS' | translate }}</span>
             </div>
             <app-badge
               [label]="roleBadge(member.role).label"
               [variant]="roleBadge(member.role).variant"
               size="sm"
             />
-            <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" aria-label="Annulla invito">
+            <button class="team__remove-btn" (click)="removeMember(member.id, member.email)" [attr.aria-label]="'TEAM.CANCEL_INVITE_ARIA' | translate">
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -134,44 +140,44 @@
 
 </div>
 
-<!-- Modal invito -->
-<app-modal [open]="modalOpen()" title="Invita un membro" size="sm" (closed)="modalOpen.set(false)">
+<!-- Invite modal -->
+<app-modal [open]="modalOpen()" [title]="'TEAM.MODAL_TITLE' | translate" size="sm" (closed)="modalOpen.set(false)">
   <form class="invite-form" [formGroup]="form" (ngSubmit)="onInvite()">
 
     <app-input
-      label="Indirizzo email"
+      [label]="'TEAM.FORM.EMAIL_LABEL' | translate"
       type="email"
-      placeholder="collega@email.it"
+      [placeholder]="'TEAM.FORM.EMAIL_PLACEHOLDER' | translate"
       formControlName="email"
       [error]="!!fieldError('email')"
       [errorMessage]="fieldError('email')"
     />
 
     <app-select
-      label="Ruolo"
+      [label]="'TEAM.FORM.ROLE_LABEL' | translate"
       formControlName="role"
       [options]="roleOptions"
     />
 
     <div class="invite-form__roles">
       <div class="invite-form__role-info">
-        <strong>Amministratore</strong>
-        <span>Accesso completo a tutte le impostazioni e i dati.</span>
+        <strong>{{ 'TEAM.ROLES.ADMIN' | translate }}</strong>
+        <span>{{ 'TEAM.ROLES.ADMIN_DESC' | translate }}</span>
       </div>
       <div class="invite-form__role-info">
-        <strong>Membro</strong>
-        <span>Può creare e gestire progetti e task.</span>
+        <strong>{{ 'TEAM.ROLES.MEMBER' | translate }}</strong>
+        <span>{{ 'TEAM.ROLES.MEMBER_DESC' | translate }}</span>
       </div>
       <div class="invite-form__role-info">
-        <strong>Osservatore</strong>
-        <span>Solo lettura, non può modificare nulla.</span>
+        <strong>{{ 'TEAM.ROLES.VIEWER' | translate }}</strong>
+        <span>{{ 'TEAM.ROLES.VIEWER_DESC' | translate }}</span>
       </div>
     </div>
 
   </form>
 
   <div modal-footer>
-    <app-button label="Annulla"        variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
-    <app-button label="Invia invito"                   size="sm" (clicked)="onInvite()" />
+    <app-button [label]="'COMMON.CANCEL' | translate" variant="ghost" size="sm" (clicked)="modalOpen.set(false)" />
+    <app-button [label]="'TEAM.INVITE_BTN' | translate" size="sm" (clicked)="onInvite()" />
   </div>
 </app-modal>

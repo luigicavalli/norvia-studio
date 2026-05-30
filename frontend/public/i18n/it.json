@@ -1,0 +1,490 @@
+{
+  "INDEX": {
+    "BRAND": {
+      "HEADLINE": "Gestisci progetti e clienti con chiarezza.",
+      "SUBHEADLINE": "Workspace, team e scadenze in un unico posto, senza rumore.",
+      "FEATURE_WORKSPACE": "Gestione multi-workspace",
+      "FEATURE_CLIENTS": "Clienti e aziende centralizzati",
+      "FEATURE_TEAM": "Collaborazione del team in tempo reale"
+    },
+    "TABS": {
+      "LOGIN": "Accedi",
+      "REGISTER": "Registrati"
+    },
+    "LOGIN": {
+      "SUBMIT": "Accedi",
+      "NO_ACCOUNT": "Non hai un account?",
+      "REGISTER_LINK": "Registrati"
+    },
+    "MFA": {
+      "TITLE": "Verifica in due passaggi",
+      "DESCRIPTION": "Inserisci il codice dalla tua app di autenticazione.",
+      "SUBMIT": "Verifica",
+      "BACK": "← Torna al login"
+    },
+    "VERIFY_EMAIL": {
+      "TITLE": "Verifica la tua email",
+      "DESCRIPTION": "Abbiamo inviato un codice di verifica al tuo indirizzo email.",
+      "SUBMIT": "Verifica email",
+      "BACK": "← Torna al login"
+    },
+    "REGISTER": {
+      "SUBMIT": "Crea account",
+      "PASSWORD_HINT": "Minimo 8 caratteri",
+      "HAS_ACCOUNT": "Hai già un account?",
+      "LOGIN_LINK": "Accedi"
+    }
+  },
+  "FORM": {
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FIRST_NAME": "Nome",
+    "LAST_NAME": "Cognome",
+    "BIRTH_DATE": "Data di nascita",
+    "VERIFY_CODE": "Codice di verifica"
+  },
+  "SHELL": {
+    "OPEN_MENU_ARIA": "Apri menu",
+    "LOGOUT_ARIA": "Esci",
+    "WORKSPACE": {
+      "CREATE_BTN": "Crea workspace",
+      "MODAL_TITLE": "Nuovo workspace",
+      "NAME_LABEL": "Nome workspace",
+      "NAME_PLACEHOLDER": "Es. Studio Rossi, My Agency…",
+      "DESCRIPTION_LABEL": "Descrizione",
+      "DESCRIPTION_PLACEHOLDER": "Una breve descrizione del workspace (opzionale)",
+      "SUBMIT": "Crea workspace"
+    },
+    "ONBOARDING": {
+      "TITLE": "Benvenuto in Norvia Studio",
+      "SUBTITLE": "Crea il tuo primo workspace per iniziare a gestire progetti e clienti."
+    },
+    "NAV": {
+      "HOME": "Home",
+      "PROJECTS": "Progetti",
+      "CLIENTS": "Clienti",
+      "COMPANIES": "Aziende",
+      "TEAM": "Team",
+      "QUOTES": "Preventivi",
+      "INVOICES": "Fatture",
+      "SETTINGS": "Impostazioni"
+    },
+    "TOAST": {
+      "WORKSPACE_CREATED": "Workspace creato con successo!",
+      "WORKSPACE_CREATE_ERROR": "Errore durante la creazione del workspace."
+    }
+  },
+  "COMMON": {
+    "CANCEL": "Annulla",
+    "SAVE": "Salva modifiche"
+  },
+  "COMPANIES": {
+    "TITLE": "Aziende",
+    "SUBTITLE_SINGLE": "{{ count }} azienda totale",
+    "SUBTITLE_PLURAL": "{{ count }} aziende totali",
+    "NEW_COMPANY": "Nuova azienda",
+    "SEARCH_PLACEHOLDER": "Cerca per nome, città, P.IVA o email…",
+    "SEARCH_CLEAR_ARIA": "Cancella ricerca",
+    "LOADING": "Caricamento aziende…",
+    "EMPTY_SEARCH": "Nessun risultato per \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Prova con un termine diverso.",
+    "EMPTY_TITLE": "Nessuna azienda",
+    "EMPTY_HINT": "Aggiungi la tua prima azienda per iniziare.",
+    "ADD_COMPANY": "Aggiungi azienda",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_DELETE": "Elimina",
+    "MODAL_TITLE_CREATE": "Nuova azienda",
+    "MODAL_TITLE_EDIT": "Modifica azienda",
+    "FORM": {
+      "NAME_LABEL": "Nome azienda",
+      "NAME_PLACEHOLDER": "Es. Rossi & Associati",
+      "TAX_CODE_LABEL": "P.IVA / Codice fiscale",
+      "TAX_CODE_PLACEHOLDER": "IT12345678901",
+      "EMAIL_PLACEHOLDER": "info@azienda.it",
+      "PHONE_LABEL": "Telefono",
+      "PHONE_PLACEHOLDER": "+39 02 1234567",
+      "WEBSITE_LABEL": "Sito web",
+      "WEBSITE_PLACEHOLDER": "https://www.azienda.it",
+      "ADDRESS_LABEL": "Indirizzo",
+      "ADDRESS_PLACEHOLDER": "Via Roma 1",
+      "CITY_LABEL": "Città",
+      "CITY_PLACEHOLDER": "Milano",
+      "ZIP_LABEL": "CAP",
+      "ZIP_PLACEHOLDER": "20121",
+      "COUNTRY_LABEL": "Paese",
+      "COUNTRY_PLACEHOLDER": "Italia"
+    },
+    "TOAST": {
+      "UPDATED": "Azienda aggiornata.",
+      "CREATED": "Azienda aggiunta con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio.",
+      "DELETED": "Azienda eliminata.",
+      "DELETE_ERROR": "Errore durante l'eliminazione."
+    }
+  },
+  "CLIENTS": {
+    "TITLE": "Clienti",
+    "SUBTITLE_SINGLE": "{{ count }} cliente totale",
+    "SUBTITLE_PLURAL": "{{ count }} clienti totali",
+    "NEW_CLIENT": "Nuovo cliente",
+    "SEARCH_PLACEHOLDER": "Cerca per nome, azienda o email…",
+    "SEARCH_CLEAR_ARIA": "Cancella ricerca",
+    "LOADING": "Caricamento clienti…",
+    "EMPTY_SEARCH": "Nessun risultato per \"{{ query }}\"",
+    "EMPTY_SEARCH_HINT": "Prova con un termine diverso.",
+    "EMPTY_TITLE": "Nessun cliente",
+    "EMPTY_HINT": "Aggiungi il tuo primo cliente per iniziare.",
+    "ADD_CLIENT": "Aggiungi cliente",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_DELETE": "Elimina",
+    "MODAL_TITLE_CREATE": "Nuovo cliente",
+    "MODAL_TITLE_EDIT": "Modifica cliente",
+    "FORM": {
+      "FIRST_NAME_PLACEHOLDER": "Es. Mario",
+      "LAST_NAME_PLACEHOLDER": "Es. Rossi",
+      "PHONE_LABEL": "Telefono",
+      "PHONE_PLACEHOLDER": "+39 02 1234567",
+      "COMPANY_LABEL": "Azienda",
+      "COMPANY_PLACEHOLDER": "Nessuna azienda",
+      "NOTES_LABEL": "Note",
+      "NOTES_PLACEHOLDER": "Informazioni aggiuntive sul cliente…"
+    },
+    "TOAST": {
+      "UPDATED": "Cliente aggiornato.",
+      "CREATED": "Cliente aggiunto con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio del cliente.",
+      "DELETED": "Cliente eliminato.",
+      "DELETE_ERROR": "Errore durante l'eliminazione."
+    }
+  },
+  "PROJECTS": {
+    "TITLE": "Progetti",
+    "SUBTITLE_SINGLE": "{{ count }} progetto totale",
+    "SUBTITLE_PLURAL": "{{ count }} progetti totali",
+    "NEW_PROJECT": "Nuovo progetto",
+    "LOADING": "Caricamento progetti…",
+    "EMPTY_TITLE": "Nessun progetto",
+    "EMPTY_HINT": "Crea il tuo primo progetto per iniziare.",
+    "CREATE": "Crea progetto",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_TEAM": "Gestisci team",
+    "MENU_DELETE": "Elimina",
+    "TEAM_MODAL_TITLE": "Team — {{ name }}",
+    "NO_MEMBERS": "Nessun membro assegnato a questo progetto.",
+    "REMOVE_ARIA": "Rimuovi",
+    "ADD_MEMBER_LABEL": "Aggiungi membro",
+    "ADD_MEMBER_PLACEHOLDER": "Seleziona un membro…",
+    "ADD_MEMBER_BTN": "Aggiungi",
+    "ALL_ASSIGNED": "Tutti i membri attivi sono già assegnati.",
+    "MODAL_TITLE_CREATE": "Nuovo progetto",
+    "MODAL_TITLE_EDIT": "Modifica progetto",
+    "FORM": {
+      "NAME_LABEL": "Nome progetto",
+      "NAME_PLACEHOLDER": "Es. Sito web aziendale",
+      "CLIENT_LABEL": "Cliente",
+      "CLIENT_PLACEHOLDER": "Seleziona un cliente…",
+      "DESCRIPTION_LABEL": "Descrizione",
+      "DESCRIPTION_PLACEHOLDER": "Breve descrizione del progetto",
+      "STATUS_LABEL": "Stato",
+      "PRIORITY_LABEL": "Priorità",
+      "START_DATE_LABEL": "Data inizio",
+      "DUE_DATE_LABEL": "Scadenza",
+      "BUDGET_LABEL": "Budget",
+      "CURRENCY_LABEL": "Valuta",
+      "NO_CLIENTS": "Nessun cliente disponibile.",
+      "NO_CLIENTS_LINK": "Aggiungi un cliente",
+      "NO_CLIENTS_SUFFIX": "prima di creare un progetto."
+    },
+    "STATUS": {
+      "ACTIVE": "Attivo",
+      "ON_HOLD": "In pausa",
+      "COMPLETED": "Completato",
+      "DRAFT": "Bozza",
+      "CANCELLED": "Annullato",
+      "UNKNOWN": "Sconosciuto"
+    },
+    "PRIORITY": {
+      "LOW": "Bassa",
+      "MEDIUM": "Media",
+      "HIGH": "Alta",
+      "CRITICAL": "Critica"
+    },
+    "TABS": {
+      "ALL": "Tutti",
+      "ACTIVE": "Attivi",
+      "ON_HOLD": "In pausa",
+      "COMPLETED": "Completati"
+    },
+    "TOAST": {
+      "SELECT_CLIENT": "Seleziona un cliente.",
+      "UPDATED": "Progetto aggiornato.",
+      "CREATED": "Progetto creato con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio del progetto.",
+      "DELETED": "Progetto eliminato.",
+      "DELETE_ERROR": "Errore durante l'eliminazione.",
+      "MEMBER_ADDED": "Membro assegnato.",
+      "MEMBER_ADD_ERROR": "Errore durante l'assegnazione.",
+      "MEMBER_REMOVED": "Assegnazione rimossa.",
+      "MEMBER_REMOVE_ERROR": "Errore durante la rimozione."
+    }
+  },
+  "HOME": {
+    "GREETING": "Ciao 👋",
+    "GREETING_NAME": "Ciao, {{ name }} 👋",
+    "STATS": {
+      "ACTIVE_PROJECTS": "Progetti attivi",
+      "ON_HOLD_PROJECTS": "Progetti in pausa",
+      "CLIENTS": "Clienti",
+      "COMPLETED": "Prog. completati",
+      "OUTSTANDING": "Da incassare",
+      "DRAFT_QUOTES": "Prev. in bozza"
+    },
+    "INVOICES": {
+      "TITLE": "Fatture in sospeso",
+      "SEE_ALL": "Vedi tutte →",
+      "EMPTY": "Nessuna fattura in sospeso",
+      "EMPTY_HINT": "Le fatture inviate o scadute appariranno qui.",
+      "DUE_DATE": "Scad.",
+      "OVERDUE_DAYS": "· {{ days }}gg scaduta",
+      "DUE_SOON": "· tra {{ days }}gg"
+    },
+    "QUOTES": {
+      "TITLE": "Preventivi recenti",
+      "SEE_ALL": "Vedi tutti →",
+      "EMPTY": "Nessun preventivo",
+      "EMPTY_HINT": "I preventivi creati appariranno qui.",
+      "NUMBER": "N°"
+    }
+  },
+  "INVOICE_STATUS": {
+    "DRAFT": "Bozza",
+    "SENT": "Inviata",
+    "PAID": "Pagata",
+    "OVERDUE": "Scaduta",
+    "CANCELLED": "Annullata"
+  },
+  "QUOTE_STATUS": {
+    "DRAFT": "Bozza",
+    "SENT": "Inviato",
+    "ACCEPTED": "Accettato",
+    "REJECTED": "Rifiutato",
+    "EXPIRED": "Scaduto"
+  },
+  "SETTINGS": {
+    "TITLE": "Impostazioni",
+    "SUBTITLE": "Gestisci il tuo workspace e le tue preferenze.",
+    "WORKSPACE_TITLE": "Workspace",
+    "WORKSPACE_SUBTITLE": "Nome e descrizione del tuo spazio di lavoro.",
+    "WORKSPACE_NAME_LABEL": "Nome workspace",
+    "WORKSPACE_NAME_PLACEHOLDER": "Il mio workspace",
+    "WORKSPACE_DESC_LABEL": "Descrizione",
+    "WORKSPACE_DESC_PLACEHOLDER": "Una breve descrizione del workspace (opzionale)",
+    "WORKSPACE_SAVE_BTN": "Salva",
+    "LANGUAGE_TITLE": "Lingua",
+    "LANGUAGE_SUBTITLE": "Lingua dell'interfaccia.",
+    "LANGUAGE_LABEL": "Lingua",
+    "LANGUAGE_SAVE_BTN": "Salva lingua",
+    "PLAN_TITLE": "Piano",
+    "PLAN_SUBTITLE": "Il tuo piano attuale e le funzionalità disponibili.",
+    "PLAN_ACTIVE": "Attivo",
+    "PLAN_UPGRADE_BTN": "Passa a Pro",
+    "PLAN_COMING_SOON": "I piani a pagamento sono in arrivo.",
+    "TOAST": {
+      "WORKSPACE_SAVED": "Impostazioni workspace salvate.",
+      "WORKSPACE_SAVE_ERROR": "Errore durante il salvataggio.",
+      "LANGUAGE_SAVE_ERROR": "Errore durante il salvataggio della lingua.",
+      "NOTIF_SAVED": "Preferenze aggiornate.",
+      "NOTIF_SAVE_ERROR": "Errore durante il salvataggio delle preferenze."
+    }
+  },
+  "QUOTES": {
+    "TITLE": "Preventivi",
+    "SUBTITLE_SINGLE": "{{ count }} preventivo totale",
+    "SUBTITLE_PLURAL": "{{ count }} preventivi totali",
+    "NEW_QUOTE": "Nuovo preventivo",
+    "LOADING": "Caricamento preventivi…",
+    "EMPTY_TITLE": "Nessun preventivo",
+    "EMPTY_HINT": "Crea il primo preventivo per iniziare.",
+    "CREATE": "Crea preventivo",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_MARK_SENT": "Segna come inviato",
+    "MENU_ACCEPTED": "Accettato",
+    "MENU_REJECTED": "Rifiutato",
+    "MENU_DELETE": "Elimina",
+    "TABLE": {
+      "NUMBER": "#",
+      "CLIENT": "Cliente",
+      "STATUS": "Stato",
+      "ISSUE_DATE": "Emissione",
+      "EXPIRES_AT": "Scadenza",
+      "TOTAL": "Totale"
+    },
+    "MODAL_TITLE_CREATE": "Nuovo preventivo",
+    "MODAL_TITLE_EDIT": "Modifica preventivo",
+    "FORM": {
+      "CLIENT_LABEL": "Cliente",
+      "CLIENT_PLACEHOLDER": "Seleziona un cliente…",
+      "NUMBER_LABEL": "N° preventivo",
+      "ISSUE_DATE_LABEL": "Data emissione",
+      "EXPIRES_AT_LABEL": "Data scadenza",
+      "STATUS_LABEL": "Stato",
+      "NOTES_LABEL": "Note",
+      "NOTES_PLACEHOLDER": "Note aggiuntive (opzionale)",
+      "ITEMS_HEADER": "Voci",
+      "ADD_ITEM": "Aggiungi voce",
+      "ITEM_DESC_LABEL": "Descrizione",
+      "ITEM_DESC_PLACEHOLDER": "Es. Progettazione UI",
+      "ITEM_QTY_LABEL": "Qtà",
+      "ITEM_PRICE_LABEL": "Prezzo",
+      "ITEM_CURRENCY_LABEL": "Valuta",
+      "ITEM_TOTAL_LABEL": "Totale",
+      "ITEM_REMOVE_ARIA": "Rimuovi",
+      "QUOTE_TOTAL": "Totale preventivo"
+    },
+    "TOAST": {
+      "UPDATED": "Preventivo aggiornato.",
+      "CREATED": "Preventivo creato con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio del preventivo.",
+      "DELETED": "Preventivo eliminato.",
+      "DELETE_ERROR": "Errore durante l'eliminazione.",
+      "STATUS_UPDATED": "Stato aggiornato.",
+      "STATUS_UPDATE_ERROR": "Errore durante l'aggiornamento dello stato."
+    }
+  },
+  "INVOICES": {
+    "TITLE": "Fatture",
+    "SUBTITLE_SINGLE": "{{ count }} fattura totale",
+    "SUBTITLE_PLURAL": "{{ count }} fatture totali",
+    "NEW_INVOICE": "Nuova fattura",
+    "LOADING": "Caricamento fatture…",
+    "EMPTY_TITLE": "Nessuna fattura",
+    "EMPTY_HINT": "Crea la prima fattura per iniziare.",
+    "CREATE": "Crea fattura",
+    "ACTIONS_ARIA": "Azioni",
+    "MENU_EDIT": "Modifica",
+    "MENU_MARK_SENT": "Segna come inviata",
+    "MENU_MARK_PAID": "Segna come pagata",
+    "MENU_CANCEL": "Annulla",
+    "MENU_DELETE": "Elimina",
+    "TABLE": {
+      "NUMBER": "#",
+      "CLIENT": "Cliente",
+      "STATUS": "Stato",
+      "ISSUE_DATE": "Emissione",
+      "DUE_DATE": "Scadenza",
+      "PAID_AT": "Pagata il",
+      "TOTAL": "Totale"
+    },
+    "MODAL_TITLE_CREATE": "Nuova fattura",
+    "MODAL_TITLE_EDIT": "Modifica fattura",
+    "FORM": {
+      "CLIENT_LABEL": "Cliente",
+      "CLIENT_PLACEHOLDER": "Seleziona un cliente…",
+      "NUMBER_LABEL": "N° fattura",
+      "ISSUE_DATE_LABEL": "Data emissione",
+      "DUE_DATE_LABEL": "Data scadenza",
+      "STATUS_LABEL": "Stato",
+      "NOTES_LABEL": "Note",
+      "NOTES_PLACEHOLDER": "Note aggiuntive (opzionale)",
+      "ITEMS_HEADER": "Voci",
+      "ADD_ITEM": "Aggiungi voce",
+      "ITEM_DESC_LABEL": "Descrizione",
+      "ITEM_DESC_PLACEHOLDER": "Es. Sviluppo frontend",
+      "ITEM_QTY_LABEL": "Qtà",
+      "ITEM_PRICE_LABEL": "Prezzo",
+      "ITEM_CURRENCY_LABEL": "Valuta",
+      "ITEM_TOTAL_LABEL": "Totale",
+      "ITEM_REMOVE_ARIA": "Rimuovi",
+      "INVOICE_TOTAL": "Totale fattura"
+    },
+    "TOAST": {
+      "UPDATED": "Fattura aggiornata.",
+      "CREATED": "Fattura creata con successo.",
+      "SAVE_ERROR": "Errore durante il salvataggio della fattura.",
+      "DELETED": "Fattura eliminata.",
+      "DELETE_ERROR": "Errore durante l'eliminazione.",
+      "STATUS_UPDATED": "Stato aggiornato.",
+      "STATUS_UPDATE_ERROR": "Errore durante l'aggiornamento dello stato."
+    }
+  },
+  "ACCOUNT": {
+    "USER_FALLBACK": "Utente",
+    "PROFILE_TITLE": "Informazioni personali",
+    "PROFILE_SUBTITLE": "Aggiorna il tuo nome visualizzato.",
+    "FIRST_NAME_PLACEHOLDER": "Mario",
+    "LAST_NAME_PLACEHOLDER": "Rossi",
+    "SECURITY_TITLE": "Sicurezza",
+    "SECURITY_SUBTITLE": "Aggiorna la tua password di accesso.",
+    "CURRENT_PASSWORD_LABEL": "Password attuale",
+    "NEW_PASSWORD_LABEL": "Nuova password",
+    "CONFIRM_PASSWORD_LABEL": "Conferma password",
+    "UPDATE_PASSWORD_BTN": "Aggiorna password",
+    "DANGER_TITLE": "Zona pericolosa",
+    "DANGER_SUBTITLE": "Azioni irreversibili sull'account.",
+    "DELETE_TITLE": "Elimina account",
+    "DELETE_DESC": "L'account e tutti i dati associati verranno eliminati definitivamente.",
+    "DELETE_BTN": "Elimina account",
+    "DELETE_MODAL_TITLE": "Elimina account",
+    "DELETE_MODAL_DESC": "Questa azione è <strong>irreversibile</strong>. Verranno eliminati account e tutti i dati associati.",
+    "DELETE_MODAL_PROMPT": "Per confermare, digita il tuo indirizzo email:",
+    "DELETE_CONFIRM_BTN": "Elimina definitivamente",
+    "TOAST": {
+      "PROFILE_UPDATED": "Profilo aggiornato con successo.",
+      "PROFILE_ERROR": "Errore durante l'aggiornamento del profilo.",
+      "PASSWORD_UPDATED": "Password aggiornata con successo.",
+      "PASSWORD_MISMATCH": "Le password non coincidono.",
+      "PASSWORD_ERROR": "Password attuale non corretta.",
+      "DELETE_ERROR": "Errore durante l'eliminazione dell'account."
+    }
+  },
+  "TEAM": {
+    "TITLE": "Team",
+    "SUBTITLE_SINGLE": "{{ count }} membro nel workspace",
+    "SUBTITLE_PLURAL": "{{ count }} membri nel workspace",
+    "INVITE_BTN": "Invita membro",
+    "ACTIVE_SECTION": "Membri attivi",
+    "YOU": "Tu",
+    "CHANGE_ROLE_ARIA": "Cambia ruolo",
+    "REMOVE_ARIA": "Rimuovi membro",
+    "NO_OTHER_MEMBERS": "Nessun altro membro attivo.",
+    "PENDING_SECTION": "Inviti in sospeso",
+    "PENDING_INVITE_STATUS": "Invito in attesa di accettazione",
+    "CANCEL_INVITE_ARIA": "Annulla invito",
+    "MODAL_TITLE": "Invita un membro",
+    "FORM": {
+      "EMAIL_LABEL": "Indirizzo email",
+      "EMAIL_PLACEHOLDER": "collega@email.it",
+      "ROLE_LABEL": "Ruolo"
+    },
+    "ROLES": {
+      "ADMIN": "Amministratore",
+      "MEMBER": "Membro",
+      "VIEWER": "Osservatore",
+      "OWNER": "Proprietario",
+      "SUPERADMIN": "Super Admin",
+      "ADMIN_DESC": "Accesso completo a tutte le impostazioni e i dati.",
+      "MEMBER_DESC": "Può creare e gestire progetti e task.",
+      "VIEWER_DESC": "Solo lettura, non può modificare nulla."
+    },
+    "TOAST": {
+      "ALREADY_EXISTS": "Questo indirizzo email è già nel team.",
+      "INVITED": "Invito inviato a {{ email }}.",
+      "ROLE_UPDATED": "Ruolo aggiornato.",
+      "ROLE_UPDATE_ERROR": "Errore durante l'aggiornamento del ruolo.",
+      "REMOVED": "{{ email }} rimosso dal team."
+    }
+  },
+  "VALIDATION": {
+    "REQUIRED": "Campo obbligatorio",
+    "EMAIL": "Inserisci un'email valida",
+    "MIN_LENGTH": "Minimo {{ length }} caratteri"
+  },
+  "ERRORS": {
+    "UNKNOWN": "Errore sconosciuto",
+    "GENERIC": "Si è verificato un errore. Riprova."
+  }
+}

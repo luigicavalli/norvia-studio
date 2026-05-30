@@ -50,7 +50,7 @@
                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            Crea workspace
+            {{ 'SHELL.WORKSPACE.CREATE_BTN' | translate }}
           </button>
         </div>
       }
@@ -147,7 +147,7 @@
                  1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9
                  a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
       </svg>
-      <span>Impostazioni</span>
+      <span>{{ 'SHELL.NAV.SETTINGS' | translate }}</span>
     </a>
 
     <div class="sidebar__divider"></div>
@@ -161,7 +161,7 @@
         }
         <span class="sidebar__user-name">{{ displayName() }}</span>
       </a>
-      <button class="sidebar__logout" (click)="onSignOut()" aria-label="Esci">
+      <button class="sidebar__logout" (click)="onSignOut()" [attr.aria-label]="'SHELL.LOGOUT_ARIA' | translate">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
@@ -176,23 +176,23 @@
 </aside>
 
 <!-- Modale crea workspace -->
-<app-modal [open]="createOpen()" title="Nuovo workspace" size="sm" (closed)="createOpen.set(false)">
+<app-modal [open]="createOpen()" [title]="'SHELL.WORKSPACE.MODAL_TITLE' | translate" size="sm" (closed)="createOpen.set(false)">
   <form [formGroup]="createForm" (ngSubmit)="onCreateWorkspace()">
     <app-input
-      label="Nome workspace"
-      placeholder="Es. Studio Rossi, My Agency…"
+      [label]="'SHELL.WORKSPACE.NAME_LABEL' | translate"
+      [placeholder]="'SHELL.WORKSPACE.NAME_PLACEHOLDER' | translate"
       formControlName="name"
       [error]="!!createForm.get('name')?.invalid && !!createForm.get('name')?.touched"
-      [errorMessage]="createForm.get('name')?.touched && createForm.get('name')?.hasError('required') ? 'Campo obbligatorio' : ''"
+      [errorMessage]="createForm.get('name')?.touched && createForm.get('name')?.hasError('required') ? ('VALIDATION.REQUIRED' | translate) : ''"
     />
     <app-input
-      label="Descrizione"
-      placeholder="Una breve descrizione del workspace (opzionale)"
+      [label]="'SHELL.WORKSPACE.DESCRIPTION_LABEL' | translate"
+      [placeholder]="'SHELL.WORKSPACE.DESCRIPTION_PLACEHOLDER' | translate"
       formControlName="description"
     />
   </form>
   <div modal-footer>
-    <app-button label="Annulla" variant="ghost" size="sm" (clicked)="createOpen.set(false)" />
-    <app-button label="Crea workspace" size="sm" [loading]="saving()" (clicked)="onCreateWorkspace()" />
+    <app-button [label]="'COMMON.CANCEL' | translate" variant="ghost" size="sm" (clicked)="createOpen.set(false)" />
+    <app-button [label]="'SHELL.WORKSPACE.SUBMIT' | translate" size="sm" [loading]="saving()" (clicked)="onCreateWorkspace()" />
   </div>
 </app-modal>
